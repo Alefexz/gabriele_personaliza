@@ -198,22 +198,36 @@
         // Chama a função ao abrir o site
         carregarLoja();
 
-        // 2. SISTEMA DE LOGIN SECRETO (DUPLO CLIQUE NO COPYRIGHT)
+        // 2. SISTEMA DE LOGIN SECRETO (PRESSIONAR POR 2 SEGUNDOS)
         const areaSecreta = document.getElementById('area-secreta');
-        
-        areaSecreta.addEventListener('dblclick', () => {
+        let pressTimer;
+
+        // Função que abre a senha
+        const abrirAdmin = () => {
             const senha = prompt("🔒 Área Restrita da Gabriele.\nDigite a senha de acesso:");
-            
-            // SENHA DEFINIDA: gabi123
             if(senha === "gabi123") {
-                // Salva o "crachá" no navegador
                 sessionStorage.setItem('admin_logado', 'sim');
-                // Redireciona para o painel
                 window.location.href = 'admin.html';
             } else if (senha !== null) {
                 alert("Senha incorreta!");
             }
+        };
+
+        // Para Celular (Touch)
+        areaSecreta.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Evita zoom ou menu de contexto
+            pressTimer = setTimeout(abrirAdmin, 2000); // Espera 2 segundos
         });
-    </script>
-</body>
-</html>
+        
+        areaSecreta.addEventListener('touchend', () => {
+            clearTimeout(pressTimer); // Se soltar antes, cancela
+        });
+
+        // Para Computador (Mouse)
+        areaSecreta.addEventListener('mousedown', () => {
+            pressTimer = setTimeout(abrirAdmin, 2000); // Espera 2 segundos
+        });
+        
+        areaSecreta.addEventListener('mouseup', () => {
+            clearTimeout(pressTimer);
+        });

@@ -20,7 +20,6 @@
             --primary-dark: #7E57C2;
             --accent: #D4AF37;
             --dark: #2D3436;
-            --light: #F9F9F9;
             --white: #FFFFFF;
             --shadow: 0 10px 30px rgba(0,0,0,0.08);
             --radius: 15px;
@@ -32,10 +31,10 @@
             background-color: #F0F2F5;
             display: flex;
             height: 100vh;
-            overflow: hidden;
+            overflow: hidden; /* No PC não rola a tela toda, só o conteúdo */
         }
 
-        /* --- SIDEBAR --- */
+        /* --- SIDEBAR (PC) --- */
         .sidebar {
             width: 260px;
             background: var(--white);
@@ -88,13 +87,11 @@
             position: relative;
         }
 
-        /* Header do Painel */
         .header-panel {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 40px;
-            animation: fadeInDown 0.8s ease;
+            margin-bottom: 30px;
         }
         .header-panel h2 { color: var(--dark); }
         .date-display { color: #b2bec3; font-size: 0.9rem; }
@@ -105,7 +102,6 @@
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 25px;
             margin-bottom: 40px;
-            animation: fadeInUp 1s ease;
         }
 
         .stat-card {
@@ -116,18 +112,16 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            transition: transform 0.3s;
         }
-        .stat-card:hover { transform: translateY(-5px); }
 
-        .stat-info h3 { font-size: 2.2rem; color: var(--dark); margin-bottom: 5px; }
+        .stat-info h3 { font-size: 2rem; color: var(--dark); margin-bottom: 5px; }
         .stat-info p { color: #b2bec3; font-size: 0.9rem; font-weight: 500; }
         
         .icon-box {
-            width: 60px; height: 60px;
+            width: 50px; height: 50px;
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
         }
         .bg-purple { background: #EDE7F6; color: var(--primary-dark); }
         .bg-green { background: #E8F5E9; color: #00b894; }
@@ -139,7 +133,6 @@
             border-radius: var(--radius);
             padding: 30px;
             box-shadow: var(--shadow);
-            animation: fadeInUp 1.2s ease;
         }
 
         .table-header {
@@ -153,26 +146,22 @@
             background: var(--primary);
             color: white;
             border: none;
-            padding: 12px 25px;
+            padding: 10px 20px;
             border-radius: 30px;
             font-weight: 600;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(179, 157, 219, 0.4);
-            transition: 0.3s;
             display: flex; align-items: center; gap: 8px;
         }
-        .btn-new:hover { background: var(--primary-dark); transform: scale(1.05); }
 
         table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 15px; color: #b2bec3; font-weight: 500; font-size: 0.9rem; }
-        td { padding: 20px 15px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
-        tr:last-child td { border: none; }
-        tr:hover td { background: #fafafa; }
-
+        th { text-align: left; padding: 15px; color: #b2bec3; font-weight: 500; font-size: 0.8rem; text-transform: uppercase; }
+        td { padding: 15px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+        
         .product-flex { display: flex; align-items: center; gap: 15px; }
         .mini-foto { 
-            width: 50px; height: 50px; 
-            border-radius: 10px; 
+            width: 45px; height: 45px; 
+            border-radius: 8px; 
             object-fit: cover; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
             background: #eee;
@@ -180,8 +169,8 @@
 
         .actions i {
             cursor: pointer;
-            font-size: 1.2rem;
-            margin-left: 15px;
+            font-size: 1.1rem;
+            margin-left: 10px;
             transition: 0.2s;
         }
         .fa-toggle-on { color: #00b894; }
@@ -189,7 +178,7 @@
         .fa-trash { color: #dfe6e9; }
         .fa-trash:hover { color: #ff7675; }
 
-        /* --- MODAL FORMULÁRIO (Efeito Glass) --- */
+        /* --- MODAL FORMULÁRIO --- */
         #form-overlay {
             display: none;
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -198,59 +187,88 @@
             z-index: 100;
             justify-content: center;
             align-items: center;
-            animation: fadeIn 0.3s;
         }
 
         .form-card {
             background: white;
             width: 90%; max-width: 500px;
-            padding: 40px;
+            padding: 30px;
             border-radius: 20px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.2);
             position: relative;
-            animation: slideUp 0.4s;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; color: #636e72; font-weight: 500; font-size: 0.9rem; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: #636e72; font-size: 0.9rem; }
         .form-group input, .form-group select {
-            width: 100%; padding: 12px 15px;
+            width: 100%; padding: 10px;
             border: 2px solid #f0f0f0; border-radius: 10px;
-            font-size: 1rem; transition: 0.3s;
         }
-        .form-group input:focus { border-color: var(--primary); outline: none; }
 
-        /* Upload Bonito */
         .upload-area {
             border: 2px dashed #d1d8e0;
             border-radius: 10px;
             padding: 20px;
             text-align: center;
             cursor: pointer;
-            transition: 0.3s;
         }
-        .upload-area:hover { border-color: var(--primary); background: #f8f9fa; }
-        #preview-img { max-width: 100%; height: 150px; object-fit: contain; display: none; margin: 10px auto; border-radius: 8px; }
+        #preview-img { max-width: 100%; height: 120px; object-fit: contain; display: none; margin: 10px auto; }
 
-        .btn-close {
-            position: absolute; top: 20px; right: 20px;
-            font-size: 1.5rem; color: #aaa; cursor: pointer;
-        }
+        .btn-close { position: absolute; top: 20px; right: 20px; font-size: 1.5rem; color: #aaa; cursor: pointer; }
 
-        /* Animações */
-        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideUp { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* Mobile */
+        /* =========================================
+           CORREÇÕES PARA MOBILE (CELULAR)
+           ========================================= */
         @media (max-width: 768px) {
-            body { flex-direction: column; height: auto; }
-            .sidebar { width: 100%; flex-direction: row; padding: 15px; overflow-x: auto; position: sticky; top: 0; }
-            .menu-item { white-space: nowrap; margin-bottom: 0; margin-right: 10px; font-size: 0.8rem; }
-            .brand { margin-bottom: 0; margin-right: 20px; font-size: 1.2rem; }
-            .btn-logout { margin-top: 0; }
-            .main-content { padding: 20px; }
+            body { 
+                flex-direction: column; 
+                height: auto; 
+                overflow-y: auto; /* Permite rolar a página toda no celular */
+            }
+            
+            /* Sidebar vira menu horizontal no topo */
+            .sidebar {
+                width: 100%;
+                height: auto;
+                flex-direction: row;
+                overflow-x: auto; /* Rolagem lateral no menu */
+                padding: 15px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+                position: relative;
+            }
+            
+            .sidebar h2 { display: none; } /* Esconde logo grande */
+            .btn-logout { margin-top: 0; margin-left: auto; }
+            
+            .menu-item {
+                margin-bottom: 0;
+                margin-right: 10px;
+                white-space: nowrap; /* Não quebra linha */
+                padding: 8px 15px;
+                font-size: 0.8rem;
+                flex-shrink: 0; /* Não encolhe os botões */
+            }
+
+            .main-content { padding: 20px 15px; }
+            
+            /* Header Stack */
+            .header-panel { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .icon-box { display: none; }
+
+            /* Tabela com Rolagem (ESSENCIAL) */
+            .table-wrapper {
+                padding: 15px;
+                overflow-x: auto; /* Permite arrastar a tabela para o lado */
+            }
+            
+            table {
+                min-width: 600px; /* Força largura mínima pra não espremer */
+            }
+
+            /* Cards empilhados */
+            .stats-grid { grid-template-columns: 1fr; gap: 15px; }
         }
     </style>
 </head>
@@ -260,7 +278,6 @@
         <div class="brand"><i class="fas fa-crown"></i> Gabriele<span>Admin</span></div>
         <div class="menu-item active"><i class="fas fa-box-open"></i> Produtos</div>
         <div class="menu-item"><i class="fas fa-chart-pie"></i> Vendas</div>
-        <div class="menu-item"><i class="fas fa-cog"></i> Ajustes</div>
         <div class="menu-item btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</div>
     </nav>
 
@@ -268,11 +285,8 @@
         
         <div class="header-panel">
             <div>
-                <h2>Olá, Gabriele! 👋</h2>
-                <p class="date-display">Vamos gerenciar sua loja hoje?</p>
-            </div>
-            <div class="icon-box bg-purple" style="font-size: 1rem; width: 40px; height: 40px;">
-                <i class="fas fa-user"></i>
+                <h2>Painel de Controle 👋</h2>
+                <p class="date-display">Gerencie sua loja de forma simples</p>
             </div>
         </div>
 
@@ -302,9 +316,9 @@
 
         <div class="table-wrapper">
             <div class="table-header">
-                <h3>📦 Seu Estoque</h3>
+                <h3>📦 Estoque</h3>
                 <button class="btn-new" onclick="toggleForm()">
-                    <i class="fas fa-plus"></i> Novo Produto
+                    <i class="fas fa-plus"></i> Novo
                 </button>
             </div>
 
@@ -333,7 +347,7 @@
             <div class="form-group">
                 <div class="upload-area" onclick="document.getElementById('novo-foto').click()">
                     <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: #d1d8e0;"></i>
-                    <p style="font-size: 0.8rem; color: #888; margin-top: 10px;">Clique para enviar uma foto</p>
+                    <p style="font-size: 0.8rem; color: #888; margin-top: 10px;">Toque para enviar foto</p>
                     <img id="preview-img">
                 </div>
                 <input type="file" id="novo-foto" accept="image/*" style="display: none;" onchange="processarImagem(this)">
@@ -388,7 +402,6 @@
             const overlay = document.getElementById('form-overlay');
             if (overlay.style.display === 'flex') {
                 overlay.style.display = 'none';
-                // Limpa form ao fechar
                 document.getElementById('preview-img').style.display = 'none';
                 document.getElementById('novo-nome').value = '';
                 document.getElementById('novo-preco').value = '';
@@ -402,7 +415,7 @@
             window.location.href = 'index.html';
         }
 
-        // --- COMPRESSÃO DE IMAGEM ---
+        // --- COMPRESSÃO DE IMAGEM (Base64) ---
         window.processarImagem = (input) => {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -412,14 +425,13 @@
                     img.onload = function() {
                         const canvas = document.createElement('canvas');
                         const ctx = canvas.getContext('2d');
-                        const maxWidth = 400; // Tamanho ideal
+                        const maxWidth = 400; 
                         const scaleSize = maxWidth / img.width;
                         canvas.width = maxWidth;
                         canvas.height = img.height * scaleSize;
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                         const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
                         
-                        // Atualiza preview
                         const preview = document.getElementById('preview-img');
                         preview.src = dataUrl;
                         preview.style.display = 'block';
@@ -462,17 +474,17 @@
                                 <div class="product-flex">
                                     ${imgHtml}
                                     <div>
-                                        <strong style="color: #2d3436;">${p.nome}</strong><br>
+                                        <strong style="color: #2d3436; font-size:0.9rem;">${p.nome}</strong><br>
                                         <small style="color: #b2bec3;">${p.categoria}</small>
                                     </div>
                                 </div>
                             </td>
                             <td style="font-weight:600; color:#636e72;">R$ ${p.preco}</td>
-                            <td><span style="background:#f1f2f6; padding:5px 10px; border-radius:10px; font-size:0.8rem; font-weight:bold;">${p.vendas || 0}</span></td>
-                            <td class="actions" style="text-align: right;">
-                                <i class="fas ${toggleIcon}" style="${statusColor}" onclick="window.alterarEstoque('${id}', ${!p.ativo})" title="Mudar Estoque"></i>
-                                <i class="fas fa-plus-circle" style="color: #74b9ff;" onclick="window.registrarVenda('${id}', ${(p.vendas || 0)})" title="+1 Venda"></i>
-                                <i class="fas fa-trash" onclick="window.apagarProduto('${id}')" title="Excluir"></i>
+                            <td><span style="background:#f1f2f6; padding:4px 8px; border-radius:10px; font-size:0.8rem; font-weight:bold;">${p.vendas || 0}</span></td>
+                            <td class="actions" style="text-align: right; white-space: nowrap;">
+                                <i class="fas ${toggleIcon}" style="${statusColor}" onclick="window.alterarEstoque('${id}', ${!p.ativo})"></i>
+                                <i class="fas fa-plus-circle" style="color: #74b9ff;" onclick="window.registrarVenda('${id}', ${(p.vendas || 0)})"></i>
+                                <i class="fas fa-trash" onclick="window.apagarProduto('${id}')"></i>
                             </td>
                         </tr>
                     `;
@@ -480,7 +492,6 @@
 
                 tbody.innerHTML = html || '<tr><td colspan="4" style="text-align:center">Nenhum produto encontrado.</td></tr>';
                 
-                // Atualiza Cards
                 document.getElementById('total-vendas').innerText = totalVendas;
                 document.getElementById('total-produtos').innerText = produtosAtivos;
                 document.getElementById('total-esgotados').innerText = produtosEsgotados;
@@ -504,7 +515,7 @@
         }
 
         window.apagarProduto = async (id) => {
-            if(confirm("Tem certeza? Essa ação não tem volta.")) {
+            if(confirm("Tem certeza?")) {
                 await deleteDoc(doc(db, "produtos", id));
                 carregarDados();
             }
