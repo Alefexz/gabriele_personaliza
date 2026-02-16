@@ -82,7 +82,7 @@
                 <p>Entre em contato com o suporte: <a href="mailto:contato.gabriele.personaliza@gmail.com">contato.gabriele.personaliza@gmail.com</a></p>
             </div>
             
-            <div class="copyright" id="area-secreta" style="cursor: help;" title="© 2026">
+            <div class="copyright" id="area-secreta" style="cursor: help;" title="Acesso Restrito © 2026">
                 <p>&copy; 2026 Gabriele Personaliza.</p>
             </div>
         </div>
@@ -108,7 +108,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // 1. CARREGAR PRODUTOS
+        // 1. CARREGAR PRODUTOS DO BANCO
         async function carregarLoja() {
             const container = document.getElementById('container-produtos');
             
@@ -125,26 +125,42 @@
                 querySnapshot.forEach((doc) => {
                     const p = doc.data();
                     
+                    // -- LÓGICA DE ESTOQUE (ATIVO/INATIVO) --
                     let botaoAcao = '';
                     let estiloExtra = '';
                     let etiqueta = '';
 
                     if (p.ativo) {
-                        botaoAcao = `<a href="https://wa.me/559292770409?text=Olá, quero o ${p.nome}!" class="btn-sm" target="_blank">Pedir no WhatsApp</a>`;
+                        botaoAcao = `<a href="https://wa.me/559292770409?text=Olá, quero encomendar o ${p.nome}!" class="btn-sm" target="_blank">Pedir no WhatsApp</a>`;
                     } else {
                         botaoAcao = `<span class="btn-sm" style="color:red; cursor:not-allowed;">Esgotado</span>`;
-                        estiloExtra = 'opacity: 0.6; filter: grayscale(1);';
+                        estiloExtra = 'opacity: 0.6; filter: grayscale(1);'; // Deixa cinza se esgotado
                         etiqueta = '<div class="badge-bestseller" style="background:#F44336;">Esgotado</div>';
                     }
 
-                    // Ícones e Cores
-                    let icone = 'fa-star';
-                    let corBg = '#E1BEE7';
-                    if(p.categoria === 'festa') { icone = 'fa-birthday-cake'; corBg = '#D1C4E9'; }
-                    if(p.categoria === 'cadernos') { icone = 'fa-book-open'; corBg = '#BBDEFB'; }
-                    if(p.categoria === 'mimos') { icone = 'fa-sticky-note'; corBg = '#F8BBD0'; }
+                    // -- LÓGICA DA FOTO (Base64 ou Placeholder) --
+                    let imagemHtml = '';
+                    
+                    // Se tiver foto salva no banco (começa com data:image...), usa ela
+                    if (p.foto && p.foto.startsWith('data:image')) {
+                        imagemHtml = `<img src="${p.foto}" style="width:100%; height:100%; object-fit:cover; ${estiloExtra}">`;
+                    } 
+                    // Se não tiver, usa o ícone colorido padrão
+                    else {
+                        let icone = 'fa-star';
+                        let corBg = '#E1BEE7';
+                        // Define cor baseada na categoria
+                        if(p.categoria === 'festa') { icone = 'fa-birthday-cake'; corBg = '#D1C4E9'; }
+                        if(p.categoria === 'cadernos') { icone = 'fa-book-open'; corBg = '#BBDEFB'; }
+                        if(p.categoria === 'mimos') { icone = 'fa-sticky-note'; corBg = '#F8BBD0'; }
+                        
+                        imagemHtml = `
+                            <div class="placeholder-img" style="background-color: ${corBg}; ${estiloExtra}">
+                                <i class="fas ${icone}"></i>
+                            </div>`;
+                    }
 
-                    // Kit Festa tem lista
+                    // -- DETALHES ESPECIAIS (Só para o Kit Festa) --
                     let detalhesExtra = '';
                     if(p.nome.toLowerCase().includes('kit festa')) {
                         detalhesExtra = `
@@ -154,13 +170,12 @@
                         </ul>`;
                     }
 
+                    // MONTA O CARD DO PRODUTO
                     const html = `
                     <div class="product-card" data-category="${p.categoria}">
-                        <div class="product-img-wrapper">
+                        <div class="product-img-wrapper" style="height: 220px; overflow: hidden; position: relative;">
                             ${etiqueta}
-                            <div class="placeholder-img" style="background-color: ${corBg}; ${estiloExtra}">
-                                <i class="fas ${icone}"></i>
-                            </div>
+                            ${imagemHtml}
                         </div>
                         <div class="product-info">
                             <span class="category-tag">${p.categoria}</span>
@@ -176,10 +191,11 @@
 
             } catch (error) {
                 console.error("Erro na loja:", error);
-                container.innerHTML = '<p style="text-align:center">Erro ao carregar produtos. Verifique sua conexão.</p>';
+                container.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Erro ao carregar produtos. Verifique sua conexão.</p>';
             }
         }
 
+        // Chama a função ao abrir o site
         carregarLoja();
 
         // 2. SISTEMA DE LOGIN SECRETO (DUPLO CLIQUE NO COPYRIGHT)
@@ -188,10 +204,11 @@
         areaSecreta.addEventListener('dblclick', () => {
             const senha = prompt("🔒 Área Restrita da Gabriele.\nDigite a senha de acesso:");
             
-            // DEFINA A SENHA AQUI EMBAIXO (Ex: gabi123)
+            // SENHA DEFINIDA: gabi123
             if(senha === "gabi123") {
-                // Salva que ela logou para não pedir senha de novo
+                // Salva o "crachá" no navegador
                 sessionStorage.setItem('admin_logado', 'sim');
+                // Redireciona para o painel
                 window.location.href = 'admin.html';
             } else if (senha !== null) {
                 alert("Senha incorreta!");
