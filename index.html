@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gabriele Personaliza | Papelaria Afetiva</title>
+    <title>Loja | Gabriele Personaliza</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" href="style.css">
@@ -17,125 +16,52 @@
 
     <header>
         <div class="container">
-            <a href="index.html" class="logo">Gabriele <span>Personaliza</span></a>
+            <a href="#" class="logo">Gabriele <span>Personaliza</span></a>
             <nav>
                 <div class="menu-toggle"><i class="fas fa-bars"></i></div>
                 <ul class="nav-links">
-                    <li><a href="index.html" class="active">Início</a></li>
-                    <li><a href="catalogo.html">Catálogo</a></li>
+                    <li><a href="#loja" class="active">Loja</a></li>
                     <li><a href="#sobre">Sobre</a></li>
-                    <li><a href="#contato" class="btn-nav">Contato</a></li>
+                    <li><a href="https://wa.me/559292770409" target="_blank" class="btn-nav">Falar no WhatsApp</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <section class="hero">
+    <section class="welcome-banner">
         <div class="container">
-            <h1>Papelaria com alma,<br>feita para <span>encantar.</span></h1>
-            <p>Cadernos personalizados, itens para festas e lembrancinhas exclusivas criadas artesanalmente para tornar seus momentos inesquecíveis.</p>
-            <div class="hero-btns">
-                <a href="catalogo.html" class="btn btn-primary">Ver Coleção</a>
-                <a href="https://wa.me/559292770409?text=Olá, vim pelo site e gostaria de um orçamento!" class="btn btn-outline" target="_blank">Personalizar Agora</a>
+            <h1>Seja bem-vindo(a)!</h1>
+            <p>Transforme sua festa com nossa papelaria criativa feita à mão.</p>
+            <div class="arrow-down">
+                <i class="fas fa-chevron-down"></i>
             </div>
         </div>
     </section>
 
-    <section class="features section-padding">
-        <div class="container feature-grid">
-            <div class="feature-card">
-                <i class="fas fa-heart"></i>
-                <h3>Feito à Mão</h3>
-                <p>Cada produto carrega carinho, dedicação e atenção aos detalhes.</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-palette"></i>
-                <h3>100% Personalizado</h3>
-                <p>Cores, temas e nomes do jeitinho que você sempre sonhou.</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-star"></i>
-                <h3>Qualidade Premium</h3>
-                <p>Materiais de alta durabilidade e acabamento fino com toques dourados.</p>
-            </div>
-        </div>
-    </section>
-
-    <section class="section-padding" style="background-color: #fcfcfc;">
+    <section id="loja" class="section-padding store-section">
         <div class="container">
-            <div style="text-align: center; margin-bottom: 50px;">
-                <span class="section-tag">Os Queridinhos</span>
-                <h2 class="section-title">Mais Vendidos da Semana</h2>
-                <div class="title-separator"></div>
-            </div>
             
-            <div class="product-grid">
-                <div class="product-card bestseller-card">
-                    <div class="product-img-wrapper">
-                        <div class="badge-bestseller">Top 1 <i class="fas fa-crown"></i></div>
-                        <div class="placeholder-img" style="background-color: #E1BEE7;">
-                            <i class="fas fa-book-reader"></i>
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <h3>Planner da Noiva</h3>
-                        <p>O guia completo para organizar o casamento dos sonhos.</p>
-                        <a href="catalogo.html" class="btn-link">Ver detalhes <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-
-                <div class="product-card bestseller-card">
-                    <div class="product-img-wrapper">
-                        <div class="badge-bestseller">Top 2</div>
-                        <div class="placeholder-img" style="background-color: #D1C4E9;">
-                            <i class="fas fa-baby"></i>
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <h3>Caderneta de Vacina</h3>
-                        <p>Proteção e durabilidade para o documento do bebê.</p>
-                        <a href="catalogo.html" class="btn-link">Ver detalhes <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-
-                <div class="product-card bestseller-card">
-                    <div class="product-img-wrapper">
-                        <div class="badge-bestseller">Oferta</div>
-                        <div class="placeholder-img" style="background-color: #F8BBD0;">
-                            <i class="fas fa-box-open"></i>
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <h3>Kit Festa "Só um Bolinho"</h3>
-                        <p>Decoração completa e prática para pequenas reuniões.</p>
-                        <a href="catalogo.html" class="btn-link">Ver detalhes <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
+            <div class="filter-container">
+                <button class="filter-btn active" data-filter="todos">Todos</button>
+                <button class="filter-btn" data-filter="festa">Festas</button>
+                <button class="filter-btn" data-filter="cadernos">Cadernos</button>
+                <button class="filter-btn" data-filter="mimos">Mimos</button>
             </div>
 
-            <div class="catalog-cta">
-                <p>Gostou desses? Temos muito mais opções exclusivas esperando por você.</p>
-                <a href="catalogo.html" class="btn btn-primary pulse-effect">
-                    Ver Catálogo Completo
-                </a>
+            <div class="product-grid" id="container-produtos">
+                <p style="text-align:center; width:100%; grid-column: 1 / -1; padding: 40px;">
+                    <i class="fas fa-circle-notch fa-spin"></i> Carregando novidades...
+                </p>
             </div>
         </div>
     </section>
 
-    <section id="sobre" class="section-padding">
+    <section id="sobre" class="section-padding" style="background: #fff;">
         <div class="container about-container">
-           <div class="about-text">
-                <h2 class="section-title" style="text-align: left; margin-bottom: 20px;">Quem é a Gabriele?</h2>
+            <div class="about-text">
+                <h2 class="section-title" style="text-align: left;">Quem faz?</h2>
                 <p>A <strong>Gabriele Personaliza</strong> nasceu do desejo de transformar papel em memórias eternas. O que começou como um hobby criativo, hoje é uma marca dedicada a levar beleza e afeto para os seus momentos especiais.</p>
-                
-                <p style="margin-top: 15px;">Nosso atelier é especializado em <strong>papelaria criativa e personalizados para festas</strong>. Trabalhamos com design exclusivo, cortes precisos e montagem feita 100% à mão, garantindo que cada peça seja única, assim como a sua história.</p>
-                
-                <a href="https://wa.me/559292770409" class="btn btn-outline" target="_blank" style="margin-top: 20px; margin-left: 0;">Fale Comigo</a>
-            </div>
-            <div class="about-img">
-                <div class="about-placeholder">
-                    <i class="fas fa-user-circle" style="font-size: 3rem; color: #fff;"></i>
-                </div> 
+                <p style="margin-top: 15px;">Nosso atelier é especializado em <strong>papelaria criativa e personalizados para festas</strong>. Trabalhamos com design exclusivo, cortes precisos e montagem feita 100% à mão.</p>
             </div>
         </div>
     </section>
@@ -144,35 +70,133 @@
         <div class="container">
             <div class="footer-brand">
                 <h3>Gabriele Personaliza</h3>
-                <p>Transformando ideias em papel e amor.</p>
+                <p>Feito com amor.</p>
             </div>
             
             <div class="socials">
-                <a href="https://www.instagram.com/gabriele_personaliza/" target="_blank">
-                    <i class="fab fa-instagram"></i>
-                </a>
-                
-                <a href="https://wa.me/559292770409" target="_blank">
-                    <i class="fab fa-whatsapp"></i>
-                </a>
-                
-                </div>
+                <a href="https://www.instagram.com/gabriele_personaliza/" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="https://wa.me/559292770409" target="_blank"><i class="fab fa-whatsapp"></i></a>
+            </div>
 
             <div class="footer-support">
                 <p>Entre em contato com o suporte: <a href="mailto:contato.gabriele.personaliza@gmail.com">contato.gabriele.personaliza@gmail.com</a></p>
             </div>
             
-            <div class="footer-cta-box">
-                <p>Precisa de um orçamento especial?</p>
-                <a href="https://wa.me/559292770409" class="btn btn-gold" target="_blank">Chamar no WhatsApp</a>
-            </div>
-
-            <div class="copyright">
-                <p>&copy; 2026 Gabriele Personaliza. Desenvolvido com carinho.</p>
+            <div class="copyright" id="area-secreta" style="cursor: help;" title="© 2026">
+                <p>&copy; 2026 Gabriele Personaliza.</p>
             </div>
         </div>
     </footer>
 
     <script src="script.js"></script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // SUA CONFIGURAÇÃO
+        const firebaseConfig = {
+            apiKey: "AIzaSyBrRLiEFF8dfWHVxhK3popdYgEDQLiKzCM",
+            authDomain: "gabriele-personaliza.firebaseapp.com",
+            projectId: "gabriele-personaliza",
+            storageBucket: "gabriele-personaliza.firebasestorage.app",
+            messagingSenderId: "403724311605",
+            appId: "1:403724311605:web:850e1bb14459a3ec60e57c",
+            measurementId: "G-T24GYM57CT"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // 1. CARREGAR PRODUTOS
+        async function carregarLoja() {
+            const container = document.getElementById('container-produtos');
+            
+            try {
+                const querySnapshot = await getDocs(collection(db, "produtos"));
+                
+                if(querySnapshot.empty) {
+                    container.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Nenhum produto cadastrado ainda. Acesse o painel para adicionar.</p>';
+                    return;
+                }
+
+                container.innerHTML = ''; 
+
+                querySnapshot.forEach((doc) => {
+                    const p = doc.data();
+                    
+                    let botaoAcao = '';
+                    let estiloExtra = '';
+                    let etiqueta = '';
+
+                    if (p.ativo) {
+                        botaoAcao = `<a href="https://wa.me/559292770409?text=Olá, quero o ${p.nome}!" class="btn-sm" target="_blank">Pedir no WhatsApp</a>`;
+                    } else {
+                        botaoAcao = `<span class="btn-sm" style="color:red; cursor:not-allowed;">Esgotado</span>`;
+                        estiloExtra = 'opacity: 0.6; filter: grayscale(1);';
+                        etiqueta = '<div class="badge-bestseller" style="background:#F44336;">Esgotado</div>';
+                    }
+
+                    // Ícones e Cores
+                    let icone = 'fa-star';
+                    let corBg = '#E1BEE7';
+                    if(p.categoria === 'festa') { icone = 'fa-birthday-cake'; corBg = '#D1C4E9'; }
+                    if(p.categoria === 'cadernos') { icone = 'fa-book-open'; corBg = '#BBDEFB'; }
+                    if(p.categoria === 'mimos') { icone = 'fa-sticky-note'; corBg = '#F8BBD0'; }
+
+                    // Kit Festa tem lista
+                    let detalhesExtra = '';
+                    if(p.nome.toLowerCase().includes('kit festa')) {
+                        detalhesExtra = `
+                        <ul class="kit-details">
+                            <li><i class="fas fa-check"></i> Itens personalizados</li>
+                            <li><i class="fas fa-check"></i> Papelaria premium</li>
+                        </ul>`;
+                    }
+
+                    const html = `
+                    <div class="product-card" data-category="${p.categoria}">
+                        <div class="product-img-wrapper">
+                            ${etiqueta}
+                            <div class="placeholder-img" style="background-color: ${corBg}; ${estiloExtra}">
+                                <i class="fas ${icone}"></i>
+                            </div>
+                        </div>
+                        <div class="product-info">
+                            <span class="category-tag">${p.categoria}</span>
+                            <h3>${p.nome}</h3>
+                            <div class="product-price">R$ ${p.preco}</div>
+                            ${detalhesExtra}
+                            ${botaoAcao}
+                        </div>
+                    </div>
+                    `;
+                    container.innerHTML += html;
+                });
+
+            } catch (error) {
+                console.error("Erro na loja:", error);
+                container.innerHTML = '<p style="text-align:center">Erro ao carregar produtos. Verifique sua conexão.</p>';
+            }
+        }
+
+        carregarLoja();
+
+        // 2. SISTEMA DE LOGIN SECRETO (DUPLO CLIQUE NO COPYRIGHT)
+        const areaSecreta = document.getElementById('area-secreta');
+        
+        areaSecreta.addEventListener('dblclick', () => {
+            const senha = prompt("🔒 Área Restrita da Gabriele.\nDigite a senha de acesso:");
+            
+            // DEFINA A SENHA AQUI EMBAIXO (Ex: gabi123)
+            if(senha === "gabi123") {
+                // Salva que ela logou para não pedir senha de novo
+                sessionStorage.setItem('admin_logado', 'sim');
+                window.location.href = 'admin.html';
+            } else if (senha !== null) {
+                alert("Senha incorreta!");
+            }
+        });
+    </script>
 </body>
 </html>

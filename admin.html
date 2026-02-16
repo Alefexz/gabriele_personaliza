@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin | Gabriele Personaliza</title>
+    
+    <script>
+        // Verifica se a pessoa digitou a senha lá na loja (index.html)
+        // Se não tiver o "crachá", manda de volta pra loja.
+        if (sessionStorage.getItem('admin_logado') !== 'sim') {
+            alert("🔒 Acesso Negado! Área restrita da Gabriele.");
+            window.location.href = 'index.html';
+        }
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root { --primary: #B39DDB; --dark: #4A4A4A; --bg: #f3f4f6; --white: #ffffff; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg); margin: 0; display: flex; height: 100vh; }
+        
+        /* Sidebar (Menu Lateral) */
+        .sidebar { width: 250px; background: white; padding: 20px; display: flex; flex-direction: column; border-right: 1px solid #e5e7eb; }
+        .sidebar h2 { color: var(--primary); margin-bottom: 40px; font-size: 1.5rem; text-align: center; }
+        .menu-item { padding: 15px; cursor: pointer; color: var(--dark); border-radius: 10px; margin-bottom: 5px; transition: 0.3s; display: flex; align-items: center; }
+        .menu-item:hover, .menu-item.active { background: var(--primary); color: white; }
+        .menu-item i { margin-right: 10px; width: 20px; text-align: center; }
+        .btn-logout { margin-top: auto; background: #ffebee; color: #c62828; }
+        .btn-logout:hover { background: #ffcdd2; color: #b71c1c; }
+
+        /* Conteúdo Principal */
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; }
+        
+        /* Cards de Estatísticas */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: space-between; }
+        .stat-info h3 { margin: 0; font-size: 2rem; color: var(--dark); }
+        .stat-info p { margin: 0; color: #888; font-size: 0.9rem; }
+        .stat-icon { font-size: 2.5rem; opacity: 0.2; color: var(--primary); }
+
+        /* Tabela de Produtos */
+        .table-container { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .btn-add { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .btn-add:hover { background: #9575CD; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; color: #888; font-weight: 600; padding: 15px 10px; border-bottom: 1px solid #eee; }
+        td { padding: 15px 10px; border-bottom: 1px solid #eee; vertical-align: middle; color: #555; }
+        
+        .status-badge { padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+        .status-active { background: #E8F5E9; color: #2E7D32; }
+        .status-inactive { background: #FFEBEE; color: #C62828; }
+        
+        .action-btn { background: none; border: none; cursor: pointer; font-size: 1.2rem; margin-right: 15px; transition: 0.2s; }
+        .btn-stock { color: #4CAF50; }
+        .btn-stock.off { color: #F44336; } /* Ícone vermelho quando desativado */
+        .btn-sales { color: var(--primary); }
+        .btn-sales:hover { transform: scale(1.2); }
+
+        /* Formulário de Adicionar (Modal) */
+        #form-container { display: none; background: white; padding: 25px; margin-bottom: 25px; border-radius: 12px; border: 2px dashed var(--primary); }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-size: 0.9rem; color: #666; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; outline: none; }
+        .form-group input:focus { border-color: var(--primary); }
+        
+        /* Responsivo */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; flex-direction: row; overflow-x: auto; padding: 10px; }
+            .sidebar h2 { display: none; }
+            .menu-item { padding: 10px; font-size: 0.9rem; white-space: nowrap; }
+            .form-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Gabriele Admin 👑</h2>
+        <div class="menu-item active"><i class="fas fa-box"></i> Produtos</div>
+        <div class="menu-item"><i class="fas fa-chart-line"></i> Relatórios</div>
+        <div class="menu-item btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</div>
+    </div>
+
+    <div class="main-content">
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3 id="total-vendas">0</h3>
+                    <p>Vendas Totais</p>
+                </div>
+                <div class="stat-icon"><i class="fas fa-shopping-bag"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3 id="total-produtos">0</h3>
+                    <p>Produtos Ativos</p>
+                </div>
+                <div class="stat-icon"><i class="fas fa-tags"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3 id="total-esgotados" style="color: #F44336;">0</h3>
+                    <p>Produtos Esgotados</p>
+                </div>
+                <div class="stat-icon" style="color: #F44336;"><i class="fas fa-exclamation-circle"></i></div>
+            </div>
+        </div>
+
+        <div id="form-container">
+            <h3 style="margin-top: 0; color: var(--primary);">✨ Novo Produto</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Nome do Produto</label>
+                    <input type="text" id="novo-nome" placeholder="Ex: Planner 2026">
+                </div>
+                <div class="form-group">
+                    <label>Preço (R$)</label>
+                    <input type="number" id="novo-preco" placeholder="Ex: 85.90" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label>Categoria</label>
+                    <select id="novo-categoria">
+                        <option value="cadernos">Cadernos</option>
+                        <option value="festa">Festa</option>
+                        <option value="mimos">Mimos</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn-add" onclick="adicionarProduto()">Salvar Produto</button>
+            <button class="btn-add" style="background:#ddd; color:#555; margin-left:10px" onclick="toggleForm()">Cancelar</button>
+        </div>
+
+        <div class="table-container">
+            <div class="header-flex">
+                <h3>Gerenciar Estoque</h3>
+                <button class="btn-add" onclick="toggleForm()"><i class="fas fa-plus"></i> Novo Produto</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Preço</th>
+                        <th>Vendas</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="lista-produtos">
+                    <tr><td colspan="5" style="text-align:center">Carregando estoque...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBrRLiEFF8dfWHVxhK3popdYgEDQLiKzCM",
+            authDomain: "gabriele-personaliza.firebaseapp.com",
+            projectId: "gabriele-personaliza",
+            storageBucket: "gabriele-personaliza.firebasestorage.app",
+            messagingSenderId: "403724311605",
+            appId: "1:403724311605:web:850e1bb14459a3ec60e57c",
+            measurementId: "G-T24GYM57CT"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // --- FUNÇÕES GLOBAIS ---
+
+        // Abrir/Fechar formulário
+        window.toggleForm = () => {
+            const form = document.getElementById('form-container');
+            form.style.display = form.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Sair do sistema
+        window.logout = () => {
+            sessionStorage.removeItem('admin_logado');
+            window.location.href = 'index.html';
+        }
+
+        // Carregar dados da tela
+        async function carregarDados() {
+            const tbody = document.getElementById('lista-produtos');
+            // Não limpa tudo para não piscar feio, vamos substituir depois
+            
+            try {
+                const querySnapshot = await getDocs(collection(db, "produtos"));
+                let html = '';
+                let totalVendas = 0;
+                let produtosAtivos = 0;
+                let produtosEsgotados = 0;
+
+                querySnapshot.forEach((docSnap) => {
+                    const p = docSnap.data();
+                    const id = docSnap.id;
+                    
+                    // Contagem para os cards
+                    totalVendas += (p.vendas || 0);
+                    if(p.ativo) produtosAtivos++;
+                    else produtosEsgotados++;
+
+                    // Visual do Status
+                    const statusBadge = p.ativo ? 
+                        '<span class="status-badge status-active">Em Estoque</span>' : 
+                        '<span class="status-badge status-inactive">Esgotado</span>';
+                    
+                    const btnIcon = p.ativo ? 'fa-toggle-on' : 'fa-toggle-off';
+                    const btnClass = p.ativo ? '' : 'off';
+                    const titleStock = p.ativo ? 'Desativar Produto' : 'Ativar Produto';
+
+                    html += `
+                        <tr>
+                            <td>
+                                <strong>${p.nome}</strong><br>
+                                <small style="color:#999; text-transform: uppercase;">${p.categoria}</small>
+                            </td>
+                            <td>R$ ${p.preco}</td>
+                            <td>${p.vendas || 0}</td>
+                            <td>${statusBadge}</td>
+                            <td>
+                                <button class="action-btn btn-stock ${btnClass}" onclick="window.alterarEstoque('${id}', ${!p.ativo})" title="${titleStock}">
+                                    <i class="fas ${btnIcon}"></i>
+                                </button>
+                                <button class="action-btn btn-sales" onclick="window.registrarVenda('${id}', ${(p.vendas || 0)})" title="Adicionar +1 Venda">
+                                    <i class="fas fa-plus-circle"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                if (html === '') html = '<tr><td colspan="5" style="text-align:center">Nenhum produto encontrado. Adicione o primeiro!</td></tr>';
+
+                tbody.innerHTML = html;
+                
+                // Atualiza os Cards
+                document.getElementById('total-vendas').innerText = totalVendas;
+                document.getElementById('total-produtos').innerText = produtosAtivos;
+                document.getElementById('total-esgotados').innerText = produtosEsgotados;
+
+            } catch (error) {
+                console.error(error);
+                tbody.innerHTML = '<tr><td colspan="5" style="color:red; text-align:center">Erro ao conectar com Firebase. Veja o console.</td></tr>';
+            }
+        }
+
+        // Alterar Estoque (Ativo/Inativo)
+        window.alterarEstoque = async (id, novoStatus) => {
+            // Pequeno feedback visual imediato
+            document.body.style.cursor = 'wait';
+            await updateDoc(doc(db, "produtos", id), { ativo: novoStatus });
+            await carregarDados(); // Recarrega a tabela
+            document.body.style.cursor = 'default';
+        }
+
+        // Registrar Venda
+        window.registrarVenda = async (id, vendasAtuais) => {
+            if(confirm("Parabéns pela venda! 🤑\nDeseja adicionar +1 ao contador deste produto?")) {
+                await updateDoc(doc(db, "produtos", id), { vendas: vendasAtuais + 1 });
+                await carregarDados();
+            }
+        }
+
+        // Adicionar Produto
+        window.adicionarProduto = async () => {
+            const nome = document.getElementById('novo-nome').value;
+            const preco = document.getElementById('novo-preco').value;
+            const categoria = document.getElementById('novo-categoria').value;
+
+            if(!nome || !preco) return alert("Por favor, preencha o nome e o preço.");
+
+            const btnSalvar = document.querySelector('.btn-add');
+            btnSalvar.innerText = "Salvando...";
+            btnSalvar.disabled = true;
+
+            try {
+                await addDoc(collection(db, "produtos"), {
+                    nome: nome,
+                    preco: parseFloat(preco), // Garante que é número
+                    categoria: categoria,
+                    ativo: true,
+                    vendas: 0
+                });
+                
+                alert("Produto adicionado com sucesso!");
+                
+                // Limpa campos
+                document.getElementById('novo-nome').value = '';
+                document.getElementById('novo-preco').value = '';
+                
+                toggleForm();
+                carregarDados();
+                
+            } catch (error) {
+                alert("Erro ao salvar: " + error.message);
+            } finally {
+                btnSalvar.innerText = "Salvar Produto";
+                btnSalvar.disabled = false;
+            }
+        }
+
+        // Inicia carregamento
+        carregarDados();
+    </script>
+</body>
+</html>
