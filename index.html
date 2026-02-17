@@ -13,9 +13,36 @@
     <link rel="stylesheet" href="style.css">
     
     <style>
-        /* --- ESTILOS EXTRAS (MODAL E CARROSSEL) --- */
+        /* --- NOVO: ÍCONES SOCIAIS GRANDES NO TOPO --- */
+        .hero-socials {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        .social-big {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-decoration: none;
+        }
+
+        .social-big:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
         
-        /* Modal de Produto */
+        /* Cores Específicas */
+        .insta-bg { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+        .zap-bg { background: #25D366; }
+
+        /* --- ESTILOS DO MODAL E QUANTIDADE (Mantidos) --- */
         .modal-produto-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: end; }
         .modal-content { background: white; width: 100%; max-width: 500px; border-radius: 20px 20px 0 0; padding: 25px; animation: slideUp 0.3s; position: relative; max-height: 90vh; overflow-y: auto; }
         @media(min-width: 768px) { .modal-produto-overlay { align-items: center; } .modal-content { border-radius: 20px; } }
@@ -28,20 +55,21 @@
         .modal-price { font-size: 1.3rem; color: #B39DDB; font-weight: bold; margin-bottom: 15px; }
         .modal-desc { font-size: 0.9rem; color: #666; line-height: 1.6; margin-bottom: 20px; background: #f9f9f9; padding: 10px; border-radius: 8px; }
         
+        .qtd-wrapper { margin-bottom: 20px; background: #f0f0f0; padding: 10px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; }
+        .qtd-controls { display: flex; align-items: center; gap: 10px; }
+        .btn-qtd { width: 35px; height: 35px; background: #B39DDB; color: white; border: none; border-radius: 50%; font-weight: bold; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .qtd-display { font-size: 1.2rem; font-weight: bold; width: 30px; text-align: center; }
+        .total-price { font-weight: bold; color: #333; }
+
         .input-group { margin-bottom: 15px; }
         .input-group label { display: block; font-size: 0.8rem; margin-bottom: 5px; color: #555; }
         .input-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
         
-        /* Botões do Modal */
         .btn-comprar { background: #25D366; color: white; width: 100%; padding: 15px; border: none; border-radius: 50px; font-size: 1rem; font-weight: bold; cursor: pointer; display: flex; justify-content: center; gap: 10px; align-items: center; margin-top: 10px; }
-        .btn-comprar:hover { background: #1ebd56; }
-        
         .btn-cartao { background: #009EE3; color: white; width: 100%; padding: 15px; border: none; border-radius: 50px; font-size: 1rem; font-weight: bold; cursor: pointer; display: none; justify-content: center; gap: 10px; align-items: center; text-decoration: none; margin-bottom: 10px; }
-        .btn-cartao:hover { background: #0081b8; }
-
+        
         .close-modal { position: absolute; top: 15px; right: 15px; font-size: 1.5rem; cursor: pointer; color: #aaa; }
 
-        /* Modal de Sucesso */
         #modal-sucesso { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; justify-content: center; align-items: center; text-align: center; }
         .sucesso-card { background: white; padding: 40px; border-radius: 20px; width: 90%; max-width: 400px; }
         .pedido-id { font-size: 1.5rem; font-weight: bold; color: #B39DDB; margin: 10px 0; letter-spacing: 2px; border: 2px dashed #B39DDB; padding: 10px; border-radius: 10px; display: inline-block; }
@@ -67,6 +95,16 @@
         <div class="container">
             <h1>Seja bem-vindo(a)!</h1>
             <p>Transforme sua festa com nossa papelaria criativa feita à mão.</p>
+            
+            <div class="hero-socials">
+                <a href="https://www.instagram.com/gabriele_personaliza/" target="_blank" class="social-big insta-bg" title="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://wa.me/559292770409" target="_blank" class="social-big zap-bg" title="WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+            </div>
+
             <div class="arrow-down"><i class="fas fa-chevron-down"></i></div>
         </div>
     </section>
@@ -117,7 +155,7 @@
             <div class="copyright">
                 <p>
                     &copy; 2026 Gabriele Personaliza. 
-                    <span id="btn-secreto" style="opacity: 0.3; cursor: pointer; font-weight: bold; margin-left: 5px;" title="Acesso Admin">G</span>
+                    <span id="btn-secreto" style="opacity: 0.3; cursor: pointer; font-weight: bold; margin-left: 5px;" title="Admin">G</span>
                 </p>
             </div>
         </div>
@@ -131,32 +169,36 @@
             
             <h3 id="modal-titulo" class="modal-title">Nome do Produto</h3>
             <div id="modal-preco" class="modal-price">R$ 0,00</div>
-            
             <div id="modal-descricao" class="modal-desc"></div>
             
             <div style="border-top: 1px solid #eee; padding-top: 20px;">
-                <h4 style="margin-bottom: 15px; color: #555;">Finalizar Pedido</h4>
                 
+                <div class="qtd-wrapper">
+                    <div class="qtd-controls">
+                        <button class="btn-qtd" onclick="mudarQtd(-1)">-</button>
+                        <span id="qtd-numero" class="qtd-display">1</span>
+                        <button class="btn-qtd" onclick="mudarQtd(1)">+</button>
+                    </div>
+                    <div id="total-final" class="total-price">Total: R$ 0,00</div>
+                </div>
+
                 <div class="input-group">
                     <label>Seu Nome *</label>
-                    <input type="text" id="cliente-nome" placeholder="Como podemos te chamar?">
+                    <input type="text" id="cliente-nome" placeholder="Seu nome">
                 </div>
                 <div class="input-group">
-                    <label>WhatsApp (DDD + Número) *</label>
-                    <input type="tel" id="cliente-zap" placeholder="Para contato sobre a entrega">
+                    <label>WhatsApp *</label>
+                    <input type="tel" id="cliente-zap" placeholder="Seu número">
                 </div>
 
-                <div style="margin-top: 20px;">
-                    <button id="btn-pagar-link" class="btn-cartao" onclick="pagarComCartao()">
-                        <i class="fas fa-credit-card"></i> Pagar Agora (Cartão/Pix)
-                    </button>
-
-                    <p id="divisor-pagamento" style="text-align:center; font-size:0.8rem; color:#888; margin:5px 0;">- OU -</p>
-                    
-                    <button class="btn-comprar" onclick="finalizarPedidoZap()">
-                        <i class="fab fa-whatsapp"></i> Pedir no WhatsApp
-                    </button>
-                </div>
+                <button id="btn-pagar-link" class="btn-cartao" onclick="pagarComCartao()">
+                    <i class="fas fa-credit-card"></i> Pagar com Cartão
+                </button>
+                <p id="divisor-pagamento" style="text-align:center; font-size:0.8rem; color:#888; margin:5px 0; display:none;">- OU -</p>
+                
+                <button class="btn-comprar" onclick="finalizarPedidoZap()">
+                    <i class="fab fa-whatsapp"></i> Pedir no WhatsApp
+                </button>
             </div>
         </div>
     </div>
@@ -165,11 +207,8 @@
         <div class="sucesso-card">
             <i class="fas fa-check-circle" style="font-size: 3rem; color: #2E7D32; margin-bottom: 20px;"></i>
             <h3>Pedido Iniciado!</h3>
-            <p>Seu código de pedido é:</p>
             <div class="pedido-id" id="sucesso-id">#1234</div>
-            <p style="margin-top:20px; font-size:0.9rem; color:#666">
-                Se você já pagou, envie este código no WhatsApp para confirmarmos seu pedido.
-            </p>
+            <p style="margin-top:20px; font-size:0.9rem; color:#666">Envie este código no WhatsApp para confirmar.</p>
             <button class="btn-comprar" onclick="fecharSucesso()" style="margin-top:20px">
                 <i class="fab fa-whatsapp"></i> Enviar Comprovante
             </button>
@@ -177,56 +216,39 @@
     </div>
 
     <script src="script.js"></script>
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBrRLiEFF8dfWHVxhK3popdYgEDQLiKzCM",
-            authDomain: "gabriele-personaliza.firebaseapp.com",
-            projectId: "gabriele-personaliza",
-            storageBucket: "gabriele-personaliza.firebasestorage.app",
-            messagingSenderId: "403724311605",
-            appId: "1:403724311605:web:850e1bb14459a3ec60e57c",
-            measurementId: "G-T24GYM57CT"
-        };
-
+        const firebaseConfig = { apiKey: "AIzaSyBrRLiEFF8dfWHVxhK3popdYgEDQLiKzCM", authDomain: "gabriele-personaliza.firebaseapp.com", projectId: "gabriele-personaliza", storageBucket: "gabriele-personaliza.firebasestorage.app", messagingSenderId: "403724311605", appId: "1:403724311605:web:850e1bb14459a3ec60e57c", measurementId: "G-T24GYM57CT" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        
         let produtoAtual = {};
+        let qtdAtual = 1;
+        let minimoAtual = 1;
 
-        // 1. CARREGAR LOJA + CARROSSEL
+        // 1. CARREGAR LOJA E CARROSSEL
         window.carregarLoja = async (filtro = 'todos') => {
             const container = document.getElementById('container-produtos');
-            
-            // Botões de filtro
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('active');
-                if(btn.innerText.toLowerCase().includes(filtro) || (filtro === 'todos' && btn.innerText === 'Todos')) {
-                    btn.classList.add('active');
-                }
+                if(btn.innerText.toLowerCase().includes(filtro) || (filtro === 'todos' && btn.innerText === 'Todos')) btn.classList.add('active');
             });
 
             try {
                 const q = await getDocs(collection(db, "produtos"));
                 container.innerHTML = '';
                 
-                let produtosEncontrados = 0;
-
                 q.forEach(doc => {
                     const p = doc.data();
                     if(filtro !== 'todos' && p.categoria !== filtro) return;
-                    produtosEncontrados++;
 
-                    // Carrossel
-                    let listaImagens = [];
-                    if (p.fotos && p.fotos.length > 0) listaImagens = p.fotos;
-                    else if (p.foto) listaImagens = [p.foto];
-
+                    // Lógica Fotos Carrossel
+                    let listaImagens = (p.fotos && p.fotos.length > 0) ? p.fotos : (p.foto ? [p.foto] : []);
                     let imagensHtml = '';
                     let estiloExtra = p.ativo ? '' : 'filter: grayscale(1); opacity: 0.6;';
-
+                    
                     if (listaImagens.length > 0) {
                         listaImagens.forEach((imgUrl, index) => {
                             const classe = index === 0 ? 'carousel-img active' : 'carousel-img';
@@ -237,137 +259,118 @@
                         if(p.categoria === 'festa') corBg = '#D1C4E9';
                         imagensHtml = `<div class="carousel-img active" style="background:${corBg}; width:100%; height:100%; display:flex; align-items:center; justify-content:center; ${estiloExtra}"><i class="fas fa-camera" style="color:white; font-size:2rem"></i></div>`;
                     }
-
-                    // Botão
-                    let btnHtml = p.ativo ? 
-                        `<button class="btn-sm" style="width:100%; border:none; background:#B39DDB; color:white; padding:8px; border-radius:5px; cursor:pointer; margin-top:5px;">Ver Detalhes</button>` : 
-                        `<span style="color:red; font-size:0.8rem">Esgotado</span>`;
                     
+                    const minLabel = (p.minimo && p.minimo > 1) ? `<small style="display:block; color:#666; margin-top:5px">Mínimo: ${p.minimo} un</small>` : '';
+                    let btnHtml = p.ativo ? `<button class="btn-sm" style="width:100%;border:none;background:#B39DDB;color:white;padding:8px;border-radius:5px;cursor:pointer;margin-top:5px;">Ver Detalhes</button>` : `<span style="color:red;font-size:0.8rem">Esgotado</span>`;
                     let etiqueta = p.ativo ? '' : '<div class="badge-bestseller" style="background:#F44336;">Esgotado</div>';
 
-                    // Card HTML
                     const card = document.createElement('div');
                     card.className = 'product-card';
-                    card.innerHTML = `
-                        <div class="product-img-wrapper carousel-container">
-                            ${etiqueta}
-                            ${imagensHtml}
-                        </div>
-                        <div class="product-info">
-                            <span class="category-tag">${p.categoria}</span>
-                            <h3>${p.nome}</h3>
-                            <div class="product-price">R$ ${p.preco}</div>
-                            ${btnHtml}
-                        </div>
-                    `;
+                    card.innerHTML = `<div class="product-img-wrapper carousel-container">${etiqueta}${imagensHtml}</div><div class="product-info"><span class="category-tag">${p.categoria}</span><h3>${p.nome}</h3><div class="product-price">R$ ${p.preco}</div>${minLabel}${btnHtml}</div>`;
                     
-                    if(p.ativo) {
-                        card.onclick = () => abrirModal(p);
-                    }
+                    if(p.ativo) card.onclick = () => abrirModal(p);
                     container.appendChild(card);
                 });
 
-                if(produtosEncontrados === 0) {
-                    container.innerHTML = '<p style="text-align:center; grid-column: 1/-1; padding: 20px;">Nenhum produto nesta categoria.</p>';
-                } else {
-                    iniciarCarrossel();
-                }
-
+                if(container.innerHTML === '') container.innerHTML = '<p style="text-align:center; padding:20px;">Nenhum produto encontrado.</p>';
+                iniciarCarrossel();
             } catch(e) { console.error(e); }
         }
 
-        // 2. LÓGICA DO CARROSSEL
+        // CARROSSEL AUTOMÁTICO
         function iniciarCarrossel() {
             if(window.carrosselInterval) clearInterval(window.carrosselInterval);
             window.carrosselInterval = setInterval(() => {
-                document.querySelectorAll('.carousel-container').forEach(container => {
-                    const imgs = container.querySelectorAll('.carousel-img');
+                document.querySelectorAll('.carousel-container').forEach(c => {
+                    const imgs = c.querySelectorAll('.carousel-img');
                     if (imgs.length <= 1) return;
-                    let activeIndex = 0;
-                    imgs.forEach((img, i) => { if (img.classList.contains('active')) activeIndex = i; img.classList.remove('active'); });
-                    let nextIndex = (activeIndex + 1) % imgs.length;
-                    imgs[nextIndex].classList.add('active');
+                    let active = 0;
+                    imgs.forEach((img, i) => { if(img.classList.contains('active')) active = i; img.classList.remove('active'); });
+                    imgs[(active + 1) % imgs.length].classList.add('active');
                 });
             }, 3000);
         }
 
-        // 3. ABRIR MODAL
+        // MODAL E LÓGICA DE QUANTIDADE
         window.abrirModal = (p) => {
             produtoAtual = p;
+            minimoAtual = p.minimo || 1;
+            qtdAtual = minimoAtual; 
+
             document.getElementById('modal-produto').style.display = 'flex';
             document.getElementById('modal-titulo').innerText = p.nome;
             document.getElementById('modal-preco').innerText = `R$ ${p.preco}`;
-            document.getElementById('modal-descricao').innerText = p.descricao || "Entre em contato para saber mais detalhes.";
+            document.getElementById('modal-descricao').innerText = p.descricao || "";
             
-            const imgContainer = document.getElementById('modal-imagens'); imgContainer.innerHTML = '';
-            const fotos = p.fotos || [p.foto];
-            if(fotos && fotos.length > 0) fotos.forEach(f => { if(f) imgContainer.innerHTML += `<img src="${f}" class="modal-img">`; });
-            else imgContainer.innerHTML = '<div style="background:#eee;width:100%;height:100%"></div>';
+            const imgC = document.getElementById('modal-imagens'); imgC.innerHTML = '';
+            (p.fotos || [p.foto]).forEach(f => { if(f) imgC.innerHTML += `<img src="${f}" class="modal-img">`; });
 
-            // Mostra botão de cartão SÓ SE TIVER LINK
+            atualizarUI();
+        }
+
+        window.mudarQtd = (delta) => {
+            let novaQtd = qtdAtual + delta;
+            if (novaQtd >= minimoAtual) {
+                qtdAtual = novaQtd;
+                atualizarUI();
+            }
+        }
+
+        function atualizarUI() {
+            document.getElementById('qtd-numero').innerText = qtdAtual;
+            let total = (produtoAtual.preco * qtdAtual).toFixed(2);
+            document.getElementById('total-final').innerText = `Total: R$ ${total}`;
+
+            // SÓ LIBERA CARTÃO SE FOR UNIDADE (Qtd=1) E TIVER LINK
             const btnLink = document.getElementById('btn-pagar-link');
-            const divisor = document.getElementById('divisor-pagamento');
+            const div = document.getElementById('divisor-pagamento');
             
-            if(p.link_pagamento && p.link_pagamento.length > 5) {
+            if (produtoAtual.link_pagamento && produtoAtual.link_pagamento.length > 5 && qtdAtual === 1) {
                 btnLink.style.display = 'flex';
-                divisor.style.display = 'block';
+                div.style.display = 'block';
             } else {
                 btnLink.style.display = 'none';
-                divisor.style.display = 'none';
+                div.style.display = 'none';
             }
         }
 
         window.fecharModal = () => document.getElementById('modal-produto').style.display = 'none';
 
-        // 4. SISTEMA DE PEDIDOS (CRIA ID E SALVA)
+        // FINALIZAR PEDIDOS
         async function registrarPedido(origem) {
             const nome = document.getElementById('cliente-nome').value;
             const zap = document.getElementById('cliente-zap').value;
-            
-            if(!nome || !zap) {
-                alert("Por favor, preencha seu Nome e WhatsApp!");
-                return null;
-            }
-
-            const idCurto = '#' + Math.random().toString(36).substr(2, 4).toUpperCase();
-            
+            if(!nome || !zap) { alert("Preencha Nome e WhatsApp!"); return null; }
+            const id = '#' + Math.random().toString(36).substr(2, 4).toUpperCase();
             try {
+                let total = (produtoAtual.preco * qtdAtual).toFixed(2);
                 await addDoc(collection(db, "pedidos"), { 
-                    id_visual: idCurto,
-                    cliente: nome, whatsapp: zap, produto: produtoAtual.nome, total: produtoAtual.preco, 
-                    data: new Date().toISOString(), 
-                    status: origem === 'Cartão' ? 'Aguardando Pagamento' : 'Pendente',
-                    origem: origem 
+                    id_visual: id, cliente: nome, whatsapp: zap, 
+                    produto: `${produtoAtual.nome} (x${qtdAtual})`, total: total, 
+                    data: new Date().toISOString(), status: origem==='Cartão'?'Aguardando Pagamento':'Pendente', origem 
                 });
-                return idCurto;
-            } catch(e) {
-                alert("Erro ao registrar: " + e.message);
-                return null;
-            }
+                return id;
+            } catch(e) { alert("Erro: " + e.message); return null; }
         }
 
         window.pagarComCartao = async () => {
-            const btn = document.getElementById('btn-pagar-link');
-            const txtOriginal = btn.innerHTML;
-            btn.innerHTML = "Gerando Pedido...";
-
-            const idPedido = await registrarPedido('Cartão');
-            if(idPedido) {
-                // Abre MP
-                window.open(produtoAtual.link_pagamento, '_blank');
-                // Mostra sucesso
-                fecharModal();
-                document.getElementById('sucesso-id').innerText = idPedido;
-                document.getElementById('modal-sucesso').style.display = 'flex';
+            const btn = document.getElementById('btn-pagar-link'); btn.innerText = "...";
+            const id = await registrarPedido('Cartão');
+            if(id) { 
+                window.open(produtoAtual.link_pagamento, '_blank'); 
+                fecharModal(); 
+                document.getElementById('sucesso-id').innerText = id; 
+                document.getElementById('modal-sucesso').style.display = 'flex'; 
             }
-            btn.innerHTML = txtOriginal;
+            btn.innerHTML = '<i class="fas fa-credit-card"></i> Pagar com Cartão';
         }
 
         window.finalizarPedidoZap = async () => {
-            const idPedido = await registrarPedido('WhatsApp');
-            if(idPedido) {
+            const id = await registrarPedido('WhatsApp');
+            if(id) {
                 const nome = document.getElementById('cliente-nome').value;
-                const msg = `Olá! Sou *${nome}*.\nFiz o pedido *${idPedido}* (${produtoAtual.nome} - R$ ${produtoAtual.preco}).\nAguardo confirmação!`;
+                const total = (produtoAtual.preco * qtdAtual).toFixed(2);
+                const msg = `Olá! Sou *${nome}*.\nPedido *${id}*: ${qtdAtual}x *${produtoAtual.nome}*.\nTotal: R$ ${total}.\nAguardo confirmação!`;
                 window.open(`https://wa.me/559292770409?text=${encodeURIComponent(msg)}`, '_blank');
                 fecharModal();
             }
@@ -375,21 +378,14 @@
 
         window.fecharSucesso = () => {
             const id = document.getElementById('sucesso-id').innerText;
-            const nome = document.getElementById('cliente-nome').value;
-            const msg = `Olá! Sou *${nome}*.\nAcabei de pagar o pedido *${id}*.\nSegue o comprovante:`;
+            const msg = `Paguei o pedido *${id}*. Segue comprovante:`;
             window.open(`https://wa.me/559292770409?text=${encodeURIComponent(msg)}`, '_blank');
             document.getElementById('modal-sucesso').style.display = 'none';
         }
 
-        // 5. BOTÃO SECRETO "G"
-        document.getElementById('btn-secreto').addEventListener('click', () => {
-            const senha = prompt("🔒 Senha Admin:");
-            if(senha === 'gabi123') {
-                sessionStorage.setItem('admin_logado','sim'); 
-                window.location.href='admin.html';
-            }
-        });
-
+        // BOTÃO G SECRETO
+        document.getElementById('btn-secreto').addEventListener('click', () => { if(prompt("Senha:") === 'gabi123') { sessionStorage.setItem('admin_logado','sim'); window.location.href='admin.html'; } });
+        
         carregarLoja();
     </script>
 </body>
