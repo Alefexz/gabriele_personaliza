@@ -9,10 +9,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <link rel="stylesheet" href="style.css">
     
     <style>
-        /* CSS do Modal e Alertas */
+        /* --- ESTILOS EXTRAS (MODAL E CARROSSEL) --- */
+        
+        /* Modal de Produto */
         .modal-produto-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: end; }
         .modal-content { background: white; width: 100%; max-width: 500px; border-radius: 20px 20px 0 0; padding: 25px; animation: slideUp 0.3s; position: relative; max-height: 90vh; overflow-y: auto; }
         @media(min-width: 768px) { .modal-produto-overlay { align-items: center; } .modal-content { border-radius: 20px; } }
@@ -29,9 +32,13 @@
         .input-group label { display: block; font-size: 0.8rem; margin-bottom: 5px; color: #555; }
         .input-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
         
+        /* Botões do Modal */
         .btn-comprar { background: #25D366; color: white; width: 100%; padding: 15px; border: none; border-radius: 50px; font-size: 1rem; font-weight: bold; cursor: pointer; display: flex; justify-content: center; gap: 10px; align-items: center; margin-top: 10px; }
-        .btn-cartao { background: #009EE3; color: white; width: 100%; padding: 15px; border: none; border-radius: 50px; font-size: 1rem; font-weight: bold; cursor: pointer; display: none; justify-content: center; gap: 10px; align-items: center; margin-bottom: 10px; }
+        .btn-comprar:hover { background: #1ebd56; }
         
+        .btn-cartao { background: #009EE3; color: white; width: 100%; padding: 15px; border: none; border-radius: 50px; font-size: 1rem; font-weight: bold; cursor: pointer; display: none; justify-content: center; gap: 10px; align-items: center; text-decoration: none; margin-bottom: 10px; }
+        .btn-cartao:hover { background: #0081b8; }
+
         .close-modal { position: absolute; top: 15px; right: 15px; font-size: 1.5rem; cursor: pointer; color: #aaa; }
 
         /* Modal de Sucesso */
@@ -50,7 +57,7 @@
                 <ul class="nav-links">
                     <li><a href="#loja" class="active">Loja</a></li>
                     <li><a href="#sobre">Sobre</a></li>
-                    <li><a href="https://wa.me/559292770409" class="btn-nav">Falar no WhatsApp</a></li>
+                    <li><a href="https://wa.me/559292770409" target="_blank" class="btn-nav">Falar no WhatsApp</a></li>
                 </ul>
             </nav>
         </div>
@@ -59,7 +66,7 @@
     <section class="welcome-banner">
         <div class="container">
             <h1>Seja bem-vindo(a)!</h1>
-            <p>Transforme sua festa com nossa papelaria criativa.</p>
+            <p>Transforme sua festa com nossa papelaria criativa feita à mão.</p>
             <div class="arrow-down"><i class="fas fa-chevron-down"></i></div>
         </div>
     </section>
@@ -72,30 +79,46 @@
                 <button class="filter-btn" onclick="carregarLoja('cadernos')">Cadernos</button>
                 <button class="filter-btn" onclick="carregarLoja('mimos')">Mimos</button>
             </div>
+
             <div class="product-grid" id="container-produtos">
-                <p style="text-align:center; width:100%;">Carregando...</p>
+                <p style="text-align:center; width:100%; grid-column: 1 / -1; padding: 40px; color: #888;">
+                    <i class="fas fa-circle-notch fa-spin"></i> Carregando novidades...
+                </p>
             </div>
         </div>
     </section>
 
-    <section id="sobre" class="section-padding" style="background:#fff;">
+    <section id="sobre" class="section-padding" style="background: #fff;">
         <div class="container about-container">
             <div class="about-text">
-                <h2 class="section-title" style="text-align:left;">Quem faz?</h2>
-                <p>A <strong>Gabriele Personaliza</strong> transforma papel em memórias eternas com cortes precisos e montagem à mão.</p>
+                <h2 class="section-title" style="text-align: left;">Quem faz?</h2>
+                <p>A <strong>Gabriele Personaliza</strong> nasceu do desejo de transformar papel em memórias eternas. O que começou como um hobby criativo, hoje é uma marca dedicada a levar beleza e afeto para os seus momentos especiais.</p>
+                <p style="margin-top: 15px;">Nosso atelier é especializado em <strong>papelaria criativa e personalizados para festas</strong>. Trabalhamos com design exclusivo, cortes precisos e montagem feita 100% à mão.</p>
             </div>
         </div>
     </section>
 
     <footer id="contato">
         <div class="container">
-            <div class="footer-brand"><h3>Gabriele Personaliza</h3><p>Feito com amor.</p></div>
-            <div class="socials">
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-whatsapp"></i></a>
+            <div class="footer-brand">
+                <h3>Gabriele Personaliza</h3>
+                <p>Feito com amor.</p>
             </div>
+            
+            <div class="socials">
+                <a href="https://www.instagram.com/gabriele_personaliza/" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="https://wa.me/559292770409" target="_blank"><i class="fab fa-whatsapp"></i></a>
+            </div>
+
+            <div class="footer-support">
+                <p>Entre em contato com o suporte: <a href="mailto:contato.gabriele.personaliza@gmail.com">contato.gabriele.personaliza@gmail.com</a></p>
+            </div>
+            
             <div class="copyright">
-                <p>&copy; 2026. <span id="btn-secreto" style="opacity:0.2;cursor:pointer">G</span></p>
+                <p>
+                    &copy; 2026 Gabriele Personaliza. 
+                    <span id="btn-secreto" style="opacity: 0.3; cursor: pointer; font-weight: bold; margin-left: 5px;" title="Acesso Admin">G</span>
+                </p>
             </div>
         </div>
     </footer>
@@ -108,29 +131,32 @@
             
             <h3 id="modal-titulo" class="modal-title">Nome do Produto</h3>
             <div id="modal-preco" class="modal-price">R$ 0,00</div>
+            
             <div id="modal-descricao" class="modal-desc"></div>
             
             <div style="border-top: 1px solid #eee; padding-top: 20px;">
+                <h4 style="margin-bottom: 15px; color: #555;">Finalizar Pedido</h4>
+                
                 <div class="input-group">
                     <label>Seu Nome *</label>
-                    <input type="text" id="cliente-nome" placeholder="Seu nome">
+                    <input type="text" id="cliente-nome" placeholder="Como podemos te chamar?">
                 </div>
                 <div class="input-group">
-                    <label>WhatsApp *</label>
-                    <input type="tel" id="cliente-zap" placeholder="Seu número">
+                    <label>WhatsApp (DDD + Número) *</label>
+                    <input type="tel" id="cliente-zap" placeholder="Para contato sobre a entrega">
                 </div>
 
-                <h4 style="margin: 15px 0 10px; color: #555;">Como deseja pagar?</h4>
-                
-                <button id="btn-pagar-link" class="btn-cartao" onclick="pagarComCartao()">
-                    <i class="fas fa-credit-card"></i> Pagar com Cartão
-                </button>
+                <div style="margin-top: 20px;">
+                    <button id="btn-pagar-link" class="btn-cartao" onclick="pagarComCartao()">
+                        <i class="fas fa-credit-card"></i> Pagar Agora (Cartão/Pix)
+                    </button>
 
-                <p style="text-align:center; font-size:0.8rem; color:#888; margin:5px 0;">- OU -</p>
-                
-                <button class="btn-comprar" onclick="finalizarPedidoZap()">
-                    <i class="fab fa-whatsapp"></i> Pedir no WhatsApp
-                </button>
+                    <p id="divisor-pagamento" style="text-align:center; font-size:0.8rem; color:#888; margin:5px 0;">- OU -</p>
+                    
+                    <button class="btn-comprar" onclick="finalizarPedidoZap()">
+                        <i class="fab fa-whatsapp"></i> Pedir no WhatsApp
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -142,7 +168,7 @@
             <p>Seu código de pedido é:</p>
             <div class="pedido-id" id="sucesso-id">#1234</div>
             <p style="margin-top:20px; font-size:0.9rem; color:#666">
-                Se você já pagou, envie este código no WhatsApp para confirmarmos.
+                Se você já pagou, envie este código no WhatsApp para confirmarmos seu pedido.
             </p>
             <button class="btn-comprar" onclick="fecharSucesso()" style="margin-top:20px">
                 <i class="fab fa-whatsapp"></i> Enviar Comprovante
@@ -151,112 +177,164 @@
     </div>
 
     <script src="script.js"></script>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        const firebaseConfig = { apiKey: "AIzaSyBrRLiEFF8dfWHVxhK3popdYgEDQLiKzCM", authDomain: "gabriele-personaliza.firebaseapp.com", projectId: "gabriele-personaliza", storageBucket: "gabriele-personaliza.firebasestorage.app", messagingSenderId: "403724311605", appId: "1:403724311605:web:850e1bb14459a3ec60e57c", measurementId: "G-T24GYM57CT" };
+        const firebaseConfig = {
+            apiKey: "AIzaSyBrRLiEFF8dfWHVxhK3popdYgEDQLiKzCM",
+            authDomain: "gabriele-personaliza.firebaseapp.com",
+            projectId: "gabriele-personaliza",
+            storageBucket: "gabriele-personaliza.firebasestorage.app",
+            messagingSenderId: "403724311605",
+            appId: "1:403724311605:web:850e1bb14459a3ec60e57c",
+            measurementId: "G-T24GYM57CT"
+        };
+
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         let produtoAtual = {};
 
-        // 1. CARREGAR LOJA
+        // 1. CARREGAR LOJA + CARROSSEL
         window.carregarLoja = async (filtro = 'todos') => {
             const container = document.getElementById('container-produtos');
-            // Reset filtros
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            // (Lógica simples de filtro visual seria melhor, mas mantendo a sua estrutura:)
             
+            // Botões de filtro
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.innerText.toLowerCase().includes(filtro) || (filtro === 'todos' && btn.innerText === 'Todos')) {
+                    btn.classList.add('active');
+                }
+            });
+
             try {
                 const q = await getDocs(collection(db, "produtos"));
                 container.innerHTML = '';
+                
+                let produtosEncontrados = 0;
+
                 q.forEach(doc => {
                     const p = doc.data();
                     if(filtro !== 'todos' && p.categoria !== filtro) return;
-                    
-                    // Lógica Fotos
-                    let listaImagens = (p.fotos && p.fotos.length > 0) ? p.fotos : (p.foto ? [p.foto] : []);
+                    produtosEncontrados++;
+
+                    // Carrossel
+                    let listaImagens = [];
+                    if (p.fotos && p.fotos.length > 0) listaImagens = p.fotos;
+                    else if (p.foto) listaImagens = [p.foto];
+
                     let imagensHtml = '';
-                    if(listaImagens.length > 0) {
-                        listaImagens.forEach((img, i) => imagensHtml += `<img src="${img}" class="carousel-img ${i===0?'active':''}" style="${p.ativo?'':'filter:grayscale(1);opacity:0.6'}">`);
+                    let estiloExtra = p.ativo ? '' : 'filter: grayscale(1); opacity: 0.6;';
+
+                    if (listaImagens.length > 0) {
+                        listaImagens.forEach((imgUrl, index) => {
+                            const classe = index === 0 ? 'carousel-img active' : 'carousel-img';
+                            imagensHtml += `<img src="${imgUrl}" class="${classe}" style="${estiloExtra}">`;
+                        });
                     } else {
-                        imagensHtml = `<div class="carousel-img active" style="background:#E1BEE7;height:100%"></div>`;
+                        let corBg = '#E1BEE7';
+                        if(p.categoria === 'festa') corBg = '#D1C4E9';
+                        imagensHtml = `<div class="carousel-img active" style="background:${corBg}; width:100%; height:100%; display:flex; align-items:center; justify-content:center; ${estiloExtra}"><i class="fas fa-camera" style="color:white; font-size:2rem"></i></div>`;
                     }
 
                     // Botão
-                    let btnHtml = p.ativo ? `<button class="btn-sm" style="width:100%;border:none;background:#B39DDB;color:white;padding:8px;border-radius:5px;cursor:pointer;margin-top:5px;">Ver Detalhes</button>` : `<span style="color:red;font-size:0.8rem">Esgotado</span>`;
+                    let btnHtml = p.ativo ? 
+                        `<button class="btn-sm" style="width:100%; border:none; background:#B39DDB; color:white; padding:8px; border-radius:5px; cursor:pointer; margin-top:5px;">Ver Detalhes</button>` : 
+                        `<span style="color:red; font-size:0.8rem">Esgotado</span>`;
                     
+                    let etiqueta = p.ativo ? '' : '<div class="badge-bestseller" style="background:#F44336;">Esgotado</div>';
+
+                    // Card HTML
                     const card = document.createElement('div');
                     card.className = 'product-card';
                     card.innerHTML = `
                         <div class="product-img-wrapper carousel-container">
-                            ${!p.ativo ? '<div class="badge-bestseller" style="background:red">Esgotado</div>' : ''}
+                            ${etiqueta}
                             ${imagensHtml}
                         </div>
-                        <div class="product-info"><span class="category-tag">${p.categoria}</span><h3>${p.nome}</h3><div class="product-price">R$ ${p.preco}</div>${btnHtml}</div>`;
+                        <div class="product-info">
+                            <span class="category-tag">${p.categoria}</span>
+                            <h3>${p.nome}</h3>
+                            <div class="product-price">R$ ${p.preco}</div>
+                            ${btnHtml}
+                        </div>
+                    `;
                     
-                    if(p.ativo) card.onclick = () => abrirModal(p);
+                    if(p.ativo) {
+                        card.onclick = () => abrirModal(p);
+                    }
                     container.appendChild(card);
                 });
-                iniciarCarrossel();
+
+                if(produtosEncontrados === 0) {
+                    container.innerHTML = '<p style="text-align:center; grid-column: 1/-1; padding: 20px;">Nenhum produto nesta categoria.</p>';
+                } else {
+                    iniciarCarrossel();
+                }
+
             } catch(e) { console.error(e); }
         }
 
+        // 2. LÓGICA DO CARROSSEL
         function iniciarCarrossel() {
             if(window.carrosselInterval) clearInterval(window.carrosselInterval);
             window.carrosselInterval = setInterval(() => {
-                document.querySelectorAll('.carousel-container').forEach(c => {
-                    const imgs = c.querySelectorAll('.carousel-img');
-                    if(imgs.length <= 1) return;
-                    let active = 0; imgs.forEach((img,i) => { if(img.classList.contains('active')) active=i; img.classList.remove('active'); });
-                    imgs[(active+1)%imgs.length].classList.add('active');
+                document.querySelectorAll('.carousel-container').forEach(container => {
+                    const imgs = container.querySelectorAll('.carousel-img');
+                    if (imgs.length <= 1) return;
+                    let activeIndex = 0;
+                    imgs.forEach((img, i) => { if (img.classList.contains('active')) activeIndex = i; img.classList.remove('active'); });
+                    let nextIndex = (activeIndex + 1) % imgs.length;
+                    imgs[nextIndex].classList.add('active');
                 });
             }, 3000);
         }
 
+        // 3. ABRIR MODAL
         window.abrirModal = (p) => {
             produtoAtual = p;
             document.getElementById('modal-produto').style.display = 'flex';
             document.getElementById('modal-titulo').innerText = p.nome;
             document.getElementById('modal-preco').innerText = `R$ ${p.preco}`;
-            document.getElementById('modal-descricao').innerText = p.descricao || "";
+            document.getElementById('modal-descricao').innerText = p.descricao || "Entre em contato para saber mais detalhes.";
             
-            const imgC = document.getElementById('modal-imagens'); imgC.innerHTML = '';
-            (p.fotos || [p.foto]).forEach(f => { if(f) imgC.innerHTML += `<img src="${f}" class="modal-img">`; });
+            const imgContainer = document.getElementById('modal-imagens'); imgContainer.innerHTML = '';
+            const fotos = p.fotos || [p.foto];
+            if(fotos && fotos.length > 0) fotos.forEach(f => { if(f) imgContainer.innerHTML += `<img src="${f}" class="modal-img">`; });
+            else imgContainer.innerHTML = '<div style="background:#eee;width:100%;height:100%"></div>';
 
+            // Mostra botão de cartão SÓ SE TIVER LINK
             const btnLink = document.getElementById('btn-pagar-link');
+            const divisor = document.getElementById('divisor-pagamento');
+            
             if(p.link_pagamento && p.link_pagamento.length > 5) {
                 btnLink.style.display = 'flex';
-                // Não colocamos o href aqui, pois vamos interceptar o clique
+                divisor.style.display = 'block';
             } else {
                 btnLink.style.display = 'none';
+                divisor.style.display = 'none';
             }
         }
 
         window.fecharModal = () => document.getElementById('modal-produto').style.display = 'none';
 
-        // --- NOVA LÓGICA DE PAGAMENTO COM CHECK-IN ---
-        
+        // 4. SISTEMA DE PEDIDOS (CRIA ID E SALVA)
         async function registrarPedido(origem) {
             const nome = document.getElementById('cliente-nome').value;
             const zap = document.getElementById('cliente-zap').value;
             
             if(!nome || !zap) {
-                alert("Por favor, preencha seu Nome e WhatsApp para continuarmos!");
+                alert("Por favor, preencha seu Nome e WhatsApp!");
                 return null;
             }
 
-            // Gera um código curto aleatório (Ex: #A1B2)
             const idCurto = '#' + Math.random().toString(36).substr(2, 4).toUpperCase();
             
             try {
-                // Salva no banco "Aguardando Pagamento"
                 await addDoc(collection(db, "pedidos"), { 
                     id_visual: idCurto,
-                    cliente: nome, 
-                    whatsapp: zap, 
-                    produto: produtoAtual.nome, 
-                    total: produtoAtual.preco, 
+                    cliente: nome, whatsapp: zap, produto: produtoAtual.nome, total: produtoAtual.preco, 
                     data: new Date().toISOString(), 
                     status: origem === 'Cartão' ? 'Aguardando Pagamento' : 'Pendente',
                     origem: origem 
@@ -270,22 +348,19 @@
 
         window.pagarComCartao = async () => {
             const btn = document.getElementById('btn-pagar-link');
-            const textoOriginal = btn.innerHTML;
+            const txtOriginal = btn.innerHTML;
             btn.innerHTML = "Gerando Pedido...";
 
-            // 1. Registra no sistema antes de deixar sair
             const idPedido = await registrarPedido('Cartão');
-            
             if(idPedido) {
-                // 2. Abre o Mercado Pago em outra aba
+                // Abre MP
                 window.open(produtoAtual.link_pagamento, '_blank');
-                
-                // 3. Mostra tela de sucesso com o código
+                // Mostra sucesso
                 fecharModal();
                 document.getElementById('sucesso-id').innerText = idPedido;
                 document.getElementById('modal-sucesso').style.display = 'flex';
             }
-            btn.innerHTML = textoOriginal;
+            btn.innerHTML = txtOriginal;
         }
 
         window.finalizarPedidoZap = async () => {
@@ -299,15 +374,22 @@
         }
 
         window.fecharSucesso = () => {
-            // Manda msg com o código para o Zap
             const id = document.getElementById('sucesso-id').innerText;
             const nome = document.getElementById('cliente-nome').value;
-            const msg = `Olá! Sou *${nome}*.\nAcabei de pagar o pedido *${id}* no cartão/pix.\nAqui está o comprovante:`;
+            const msg = `Olá! Sou *${nome}*.\nAcabei de pagar o pedido *${id}*.\nSegue o comprovante:`;
             window.open(`https://wa.me/559292770409?text=${encodeURIComponent(msg)}`, '_blank');
             document.getElementById('modal-sucesso').style.display = 'none';
         }
 
-        document.getElementById('btn-secreto').addEventListener('click', () => { if(prompt("Senha:") === 'gabi123') { sessionStorage.setItem('admin_logado','sim'); window.location.href='admin.html'; } });
+        // 5. BOTÃO SECRETO "G"
+        document.getElementById('btn-secreto').addEventListener('click', () => {
+            const senha = prompt("🔒 Senha Admin:");
+            if(senha === 'gabi123') {
+                sessionStorage.setItem('admin_logado','sim'); 
+                window.location.href='admin.html';
+            }
+        });
+
         carregarLoja();
     </script>
 </body>
