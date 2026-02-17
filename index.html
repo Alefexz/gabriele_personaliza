@@ -42,14 +42,14 @@
         <div class="container">
             
             <div class="filter-container">
-                <button class="filter-btn active" data-filter="todos">Todos</button>
-                <button class="filter-btn" data-filter="festa">Festas</button>
-                <button class="filter-btn" data-filter="cadernos">Cadernos</button>
-                <button class="filter-btn" data-filter="mimos">Mimos</button>
+                <button class="filter-btn active" onclick="carregarLoja('todos')">Todos</button>
+                <button class="filter-btn" onclick="carregarLoja('festa')">Festas</button>
+                <button class="filter-btn" onclick="carregarLoja('cadernos')">Cadernos</button>
+                <button class="filter-btn" onclick="carregarLoja('mimos')">Mimos</button>
             </div>
 
             <div class="product-grid" id="container-produtos">
-                <p style="text-align:center; width:100%; grid-column: 1 / -1; padding: 40px;">
+                <p style="text-align:center; width:100%; grid-column: 1 / -1; padding: 40px; color: #888;">
                     <i class="fas fa-circle-notch fa-spin"></i> Carregando novidades...
                 </p>
             </div>
@@ -82,7 +82,7 @@
                 <p>Entre em contato com o suporte: <a href="mailto:contato.gabriele.personaliza@gmail.com">contato.gabriele.personaliza@gmail.com</a></p>
             </div>
             
-            <div class="copyright" id="area-secreta" style="cursor: help;" title="Acesso Restrito © 2026">
+            <div class="copyright" id="area-secreta" style="cursor: help; user-select: none;" title="Acesso Restrito">
                 <p>&copy; 2026 Gabriele Personaliza.</p>
             </div>
         </div>
@@ -94,7 +94,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // SUA CONFIGURAÇÃO
+        // CONFIGURAÇÃO
         const firebaseConfig = {
             apiKey: "AIzaSyBrRLiEFF8dfWHVxhK3popdYgEDQLiKzCM",
             authDomain: "gabriele-personaliza.firebaseapp.com",
@@ -108,15 +108,23 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // 1. CARREGAR PRODUTOS DO BANCO
-        async function carregarLoja() {
+        // FUNÇÃO PRINCIPAL DA LOJA
+        window.carregarLoja = async function(filtro = 'todos') {
             const container = document.getElementById('container-produtos');
             
+            // Atualiza botões de filtro visualmente
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.innerText.toLowerCase().includes(filtro) || (filtro === 'todos' && btn.innerText === 'Todos')) {
+                    btn.classList.add('active');
+                }
+            });
+
             try {
                 const querySnapshot = await getDocs(collection(db, "produtos"));
                 
                 if(querySnapshot.empty) {
-                    container.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Nenhum produto cadastrado ainda. Acesse o painel para adicionar.</p>';
+                    container.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Nenhum produto encontrado.</p>';
                     return;
                 }
 
@@ -125,63 +133,59 @@
                 querySnapshot.forEach((doc) => {
                     const p = doc.data();
                     
-                    // -- LÓGICA DE ESTOQUE (ATIVO/INATIVO) --
+                    if (filtro !== 'todos' && p.categoria !== filtro) return;
+
+                    // 1. CARROSSEL DE IMAGENS
+                    let imagensHtml = '';
+                    let listaImagens = [];
+
+                    // Verifica se é array (novo) ou string (antigo)
+                    if (p.fotos && p.fotos.length > 0) {
+                        listaImagens = p.fotos;
+                    } else if (p.foto) {
+                        listaImagens = [p.foto];
+                    }
+
+                    let estiloExtra = p.ativo ? '' : 'filter: grayscale(1); opacity: 0.6;';
+
+                    if (listaImagens.length > 0) {
+                        // Cria as tags de imagem
+                        listaImagens.forEach((imgUrl, index) => {
+                            const classe = index === 0 ? 'carousel-img active' : 'carousel-img';
+                            imagensHtml += `<img src="${imgUrl}" class="${classe}" style="${estiloExtra}">`;
+                        });
+                    } else {
+                        // Placeholder
+                        let corBg = '#E1BEE7';
+                        if(p.categoria === 'festa') corBg = '#D1C4E9';
+                        if(p.categoria === 'cadernos') corBg = '#BBDEFB';
+                        imagensHtml = `
+                            <div class="carousel-img active" style="background:${corBg}; width:100%; height:100%; display:flex; align-items:center; justify-content:center; ${estiloExtra}">
+                                <i class="fas fa-camera" style="color:white; font-size:2rem"></i>
+                            </div>`;
+                    }
+
+                    // 2. BOTÃO DE AÇÃO
                     let botaoAcao = '';
-                    let estiloExtra = '';
                     let etiqueta = '';
 
                     if (p.ativo) {
                         botaoAcao = `<a href="https://wa.me/559292770409?text=Olá, quero encomendar o ${p.nome}!" class="btn-sm" target="_blank">Pedir no WhatsApp</a>`;
                     } else {
                         botaoAcao = `<span class="btn-sm" style="color:red; cursor:not-allowed;">Esgotado</span>`;
-                        estiloExtra = 'opacity: 0.6; filter: grayscale(1);'; // Deixa cinza se esgotado
                         etiqueta = '<div class="badge-bestseller" style="background:#F44336;">Esgotado</div>';
                     }
 
-                    // -- LÓGICA DA FOTO (Base64 ou Placeholder) --
-                    let imagemHtml = '';
-                    
-                    // Se tiver foto salva no banco (começa com data:image...), usa ela
-                    if (p.foto && p.foto.startsWith('data:image')) {
-                        imagemHtml = `<img src="${p.foto}" style="width:100%; height:100%; object-fit:cover; ${estiloExtra}">`;
-                    } 
-                    // Se não tiver, usa o ícone colorido padrão
-                    else {
-                        let icone = 'fa-star';
-                        let corBg = '#E1BEE7';
-                        // Define cor baseada na categoria
-                        if(p.categoria === 'festa') { icone = 'fa-birthday-cake'; corBg = '#D1C4E9'; }
-                        if(p.categoria === 'cadernos') { icone = 'fa-book-open'; corBg = '#BBDEFB'; }
-                        if(p.categoria === 'mimos') { icone = 'fa-sticky-note'; corBg = '#F8BBD0'; }
-                        
-                        imagemHtml = `
-                            <div class="placeholder-img" style="background-color: ${corBg}; ${estiloExtra}">
-                                <i class="fas ${icone}"></i>
-                            </div>`;
-                    }
-
-                    // -- DETALHES ESPECIAIS (Só para o Kit Festa) --
-                    let detalhesExtra = '';
-                    if(p.nome.toLowerCase().includes('kit festa')) {
-                        detalhesExtra = `
-                        <ul class="kit-details">
-                            <li><i class="fas fa-check"></i> Itens personalizados</li>
-                            <li><i class="fas fa-check"></i> Papelaria premium</li>
-                        </ul>`;
-                    }
-
-                    // MONTA O CARD DO PRODUTO
                     const html = `
-                    <div class="product-card" data-category="${p.categoria}">
-                        <div class="product-img-wrapper" style="height: 220px; overflow: hidden; position: relative;">
+                    <div class="product-card">
+                        <div class="product-img-wrapper carousel-container">
                             ${etiqueta}
-                            ${imagemHtml}
+                            ${imagensHtml}
                         </div>
                         <div class="product-info">
                             <span class="category-tag">${p.categoria}</span>
                             <h3>${p.nome}</h3>
                             <div class="product-price">R$ ${p.preco}</div>
-                            ${detalhesExtra}
                             ${botaoAcao}
                         </div>
                     </div>
@@ -189,45 +193,59 @@
                     container.innerHTML += html;
                 });
 
+                // Inicia animação se tiver mais de 1 foto
+                iniciarCarrossel();
+                
+                if(container.innerHTML === '') {
+                    container.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Nenhum produto nesta categoria.</p>';
+                }
+
             } catch (error) {
                 console.error("Erro na loja:", error);
-                container.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Erro ao carregar produtos. Verifique sua conexão.</p>';
+                container.innerHTML = `<p style="text-align:center; color:red;">Erro: ${error.message}</p>`;
             }
         }
 
-        // Chama a função ao abrir o site
+        // LÓGICA DE TROCAR FOTOS SOZINHA
+        function iniciarCarrossel() {
+            if(window.carrosselInterval) clearInterval(window.carrosselInterval);
+            
+            window.carrosselInterval = setInterval(() => {
+                document.querySelectorAll('.carousel-container').forEach(container => {
+                    const imgs = container.querySelectorAll('.carousel-img');
+                    if (imgs.length <= 1) return;
+
+                    let activeIndex = 0;
+                    imgs.forEach((img, i) => {
+                        if (img.classList.contains('active')) activeIndex = i;
+                        img.classList.remove('active');
+                    });
+
+                    let nextIndex = (activeIndex + 1) % imgs.length;
+                    imgs[nextIndex].classList.add('active');
+                });
+            }, 3000); // 3 Segundos
+        }
+
         carregarLoja();
 
-        // 2. SISTEMA DE LOGIN SECRETO (PRESSIONAR POR 2 SEGUNDOS)
-        const areaSecreta = document.getElementById('area-secreta');
-        let pressTimer;
 
-        // Função que abre a senha
-        const abrirAdmin = () => {
-            const senha = prompt("🔒 Área Restrita da Gabriele.\nDigite a senha de acesso:");
+        // 2. SISTEMA DE LOGIN SECRETO (DUPLO CLIQUE)
+        const areaSecreta = document.getElementById('area-secreta');
+
+        areaSecreta.addEventListener('dblclick', () => {
+            // Vibra no celular pra avisar
+            if (navigator.vibrate) navigator.vibrate(50);
+
+            const senha = prompt("🔒 Área Restrita da Gabriele.\nDigite a senha:");
             if(senha === "gabi123") {
                 sessionStorage.setItem('admin_logado', 'sim');
                 window.location.href = 'admin.html';
             } else if (senha !== null) {
-                alert("Senha incorreta!");
+                alert("Senha Incorreta!");
             }
-        };
-
-        // Para Celular (Touch)
-        areaSecreta.addEventListener('touchstart', (e) => {
-            e.preventDefault(); // Evita zoom ou menu de contexto
-            pressTimer = setTimeout(abrirAdmin, 2000); // Espera 2 segundos
-        });
-        
-        areaSecreta.addEventListener('touchend', () => {
-            clearTimeout(pressTimer); // Se soltar antes, cancela
         });
 
-        // Para Computador (Mouse)
-        areaSecreta.addEventListener('mousedown', () => {
-            pressTimer = setTimeout(abrirAdmin, 2000); // Espera 2 segundos
-        });
-        
-        areaSecreta.addEventListener('mouseup', () => {
-            clearTimeout(pressTimer);
-        });
+    </script>
+</body>
+</html>

@@ -27,7 +27,7 @@ body {
     color: var(--text-dark);
     background-color: #FAFAFA;
     line-height: 1.6;
-    overflow-x: hidden; /* Evita rolagem lateral indesejada */
+    overflow-x: hidden;
 }
 
 a { text-decoration: none; transition: var(--transition); color: inherit; }
@@ -55,15 +55,11 @@ header {
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
-header .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+header .container { display: flex; justify-content: space-between; align-items: center; }
 
 .logo {
     font-family: var(--font-title);
-    font-size: 1.5rem; /* Levemente menor para mobile */
+    font-size: 1.5rem;
     color: var(--primary-dark);
     font-weight: 700;
 }
@@ -164,6 +160,32 @@ header .container {
 }
 .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-color: var(--primary-color); }
 
+/* --- CARROSSEL (FOTOS) --- */
+.carousel-container {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.carousel-img {
+    position: absolute; /* Uma em cima da outra */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0; /* Começa invisível */
+    transition: opacity 1s ease-in-out; /* Fade suave */
+    z-index: 1;
+}
+
+.carousel-img.active {
+    opacity: 1; /* Só a ativa aparece */
+    z-index: 2;
+}
+
+/* Informações do Produto */
 .product-info { padding: 15px; text-align: center; flex-grow: 1; display: flex; flex-direction: column; align-items: center; }
 
 .category-tag {
@@ -191,15 +213,6 @@ header .container {
     color: var(--gold); font-weight: 700; font-size: 0.8rem; 
     border-bottom: 1px solid transparent; display: inline-block; margin-top: auto;
 }
-
-/* Detalhes do Kit */
-.kit-details {
-    text-align: left; background: #fcfcfc; padding: 8px;
-    border-radius: 8px; width: 100%; border: 1px solid #f0f0f0;
-    font-size: 0.75rem; margin-bottom: 8px;
-}
-.kit-details li { display: flex; gap: 5px; margin-bottom: 3px; color: #666; }
-.kit-details li i { color: var(--primary-color); font-size: 0.7rem; }
 
 /* Badge Esgotado/Destaque */
 .badge-bestseller {
@@ -229,28 +242,25 @@ footer { background: #2c2c2c; color: #fff; padding: 40px 0 20px; text-align: cen
 @media (max-width: 768px) {
     .container { padding: 0 15px; }
     
-    .nav-links { display: none; } /* Menu hamburguer simplificado se necessário, ou oculto */
+    .nav-links { display: none; }
     .menu-toggle { display: block; }
     
-    /* MUDANÇA CRUCIAL: 2 COLUNAS NO CELULAR */
+    /* 2 COLUNAS NO CELULAR */
     .product-grid {
-        grid-template-columns: 1fr 1fr; /* Força 2 colunas */
-        gap: 10px; /* Espaço menor entre eles */
+        grid-template-columns: 1fr 1fr; 
+        gap: 10px;
     }
 
-    /* Ajuste dos Cards no Mobile */
     .product-card { border-radius: 8px; }
-    .product-img-wrapper { height: 160px !important; } /* Imagem mais baixa */
+    .carousel-container { height: 160px; } /* Imagem mais baixa */
+    
     .product-info { padding: 10px; }
-    .product-info h3 { font-size: 0.95rem; height: 40px; overflow: hidden; } /* Limita altura do título */
+    .product-info h3 { font-size: 0.95rem; height: 40px; overflow: hidden; }
     .category-tag { font-size: 0.6rem; padding: 2px 8px; }
     .product-price { font-size: 0.9rem; padding: 3px 12px; }
     .btn-sm { font-size: 0.75rem; }
     
-    /* Ajuste do Kit Details no Mobile */
-    .kit-details { display: none; } /* Esconde detalhes longos na vitrine mobile pra não quebrar */
-    
-    /* Filtros mais compactos */
+    /* Filtros compactos */
     .filter-container { top: 60px; padding: 5px 0; overflow-x: auto; justify-content: flex-start; padding-left: 10px; }
     .filter-btn { white-space: nowrap; font-size: 0.8rem; padding: 5px 12px; }
     
