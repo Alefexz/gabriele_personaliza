@@ -11,6 +11,34 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* CSS EXTRA PARA O MODAL E BOTÕES */
+        .modal-produto-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: end; }
+        .modal-content { background: white; width: 100%; max-width: 500px; border-radius: 20px 20px 0 0; padding: 25px; animation: slideUp 0.3s; position: relative; max-height: 90vh; overflow-y: auto; }
+        @media(min-width: 768px) { .modal-produto-overlay { align-items: center; } .modal-content { border-radius: 20px; } }
+        @keyframes slideUp { from {transform: translateY(100%)} to {transform: translateY(0)} }
+        
+        .modal-img-container { height: 250px; overflow: hidden; border-radius: 10px; margin-bottom: 15px; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; }
+        .modal-img { width: 100%; height: 100%; object-fit: cover; flex-shrink: 0; scroll-snap-align: center; }
+        
+        .modal-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #333; margin-bottom: 5px; }
+        .modal-price { font-size: 1.3rem; color: #B39DDB; font-weight: bold; margin-bottom: 15px; }
+        .modal-desc { font-size: 0.9rem; color: #666; line-height: 1.6; margin-bottom: 20px; background: #f9f9f9; padding: 10px; border-radius: 8px; }
+        
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-size: 0.8rem; margin-bottom: 5px; color: #555; }
+        .input-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+        
+        /* Botões do Modal */
+        .btn-comprar { background: #25D366; color: white; width: 100%; padding: 15px; border: none; border-radius: 50px; font-size: 1rem; font-weight: bold; cursor: pointer; display: flex; justify-content: center; gap: 10px; align-items: center; margin-top: 10px; }
+        .btn-comprar:hover { background: #1ebd56; }
+        
+        .btn-cartao { background: #009EE3; color: white; width: 100%; padding: 15px; border: none; border-radius: 50px; font-size: 1rem; font-weight: bold; cursor: pointer; display: none; /* Escondido por padrão */ justify-content: center; gap: 10px; align-items: center; text-decoration: none; margin-bottom: 10px; }
+        .btn-cartao:hover { background: #0081b8; }
+
+        .close-modal { position: absolute; top: 15px; right: 15px; font-size: 1.5rem; cursor: pointer; color: #aaa; }
+    </style>
 </head>
 <body>
 
@@ -88,11 +116,48 @@
         </div>
     </footer>
 
+    <div id="modal-produto" class="modal-produto-overlay">
+        <div class="modal-content">
+            <i class="fas fa-times close-modal" onclick="fecharModal()"></i>
+            
+            <div id="modal-imagens" class="modal-img-container"></div>
+            
+            <h3 id="modal-titulo" class="modal-title">Nome do Produto</h3>
+            <div id="modal-preco" class="modal-price">R$ 0,00</div>
+            
+            <div id="modal-descricao" class="modal-desc"></div>
+            
+            <div style="border-top: 1px solid #eee; padding-top: 20px;">
+                <h4 style="margin-bottom: 10px; color: #555;">Como deseja pagar?</h4>
+                
+                <a id="btn-pagar-link" class="btn-cartao" target="_blank">
+                    <i class="fas fa-credit-card"></i> Pagar com Cartão/Pix
+                </a>
+
+                <p style="text-align:center; font-size:0.8rem; color:#888; margin:10px 0;">- OU -</p>
+
+                <h4 style="margin-bottom: 10px; color: #555;">Pedir pelo WhatsApp</h4>
+                <div class="input-group">
+                    <label>Seu Nome</label>
+                    <input type="text" id="cliente-nome" placeholder="Seu nome">
+                </div>
+                <div class="input-group">
+                    <label>WhatsApp</label>
+                    <input type="tel" id="cliente-zap" placeholder="Seu número">
+                </div>
+                
+                <button class="btn-comprar" onclick="finalizarPedido()">
+                    <i class="fab fa-whatsapp"></i> Enviar Pedido
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBrRLiEFF8dfWHVxhK3popdYgEDQLiKzCM",
@@ -106,10 +171,13 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        let produtoAtual = {};
 
-        window.carregarLoja = async function(filtro = 'todos') {
+        // 1. CARREGAR LOJA E CARROSSEL
+        window.carregarLoja = async (filtro = 'todos') => {
             const container = document.getElementById('container-produtos');
             
+            // Filtros visuais
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if(btn.innerText.toLowerCase().includes(filtro) || (filtro === 'todos' && btn.innerText === 'Todos')) {
@@ -118,16 +186,14 @@
             });
 
             try {
-                const querySnapshot = await getDocs(collection(db, "produtos"));
+                const q = await getDocs(collection(db, "produtos"));
+                container.innerHTML = '';
                 
-                if(querySnapshot.empty) { container.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Nenhum produto encontrado.</p>'; return; }
-
-                container.innerHTML = ''; 
-
-                querySnapshot.forEach((doc) => {
+                q.forEach(doc => {
                     const p = doc.data();
-                    if (filtro !== 'todos' && p.categoria !== filtro) return;
-
+                    if(filtro !== 'todos' && p.categoria !== filtro) return;
+                    
+                    // Lógica das Fotos (Carrossel Automático)
                     let imagensHtml = '';
                     let listaImagens = [];
                     if (p.fotos && p.fotos.length > 0) listaImagens = p.fotos;
@@ -141,20 +207,23 @@
                             imagensHtml += `<img src="${imgUrl}" class="${classe}" style="${estiloExtra}">`;
                         });
                     } else {
+                        // Placeholder
                         let corBg = '#E1BEE7';
                         if(p.categoria === 'festa') corBg = '#D1C4E9';
-                        if(p.categoria === 'cadernos') corBg = '#BBDEFB';
                         imagensHtml = `<div class="carousel-img active" style="background:${corBg}; width:100%; height:100%; display:flex; align-items:center; justify-content:center; ${estiloExtra}"><i class="fas fa-camera" style="color:white; font-size:2rem"></i></div>`;
                     }
-
-                    let botaoAcao = p.ativo ? 
-                        `<a href="https://wa.me/559292770409?text=Olá, quero encomendar o ${p.nome}!" class="btn-sm" target="_blank">Pedir no WhatsApp</a>` : 
-                        `<span class="btn-sm" style="color:red; cursor:not-allowed;">Esgotado</span>`;
+                    
+                    // Botão Esgotado ou Detalhes
+                    let btnHtml = p.ativo ? 
+                        `<button class="btn-sm" style="width:100%; border:none; background:#B39DDB; color:white; padding:8px; border-radius:5px; cursor:pointer; margin-top:5px;">Ver Detalhes</button>` : 
+                        `<span style="color:red; font-size:0.8rem">Esgotado</span>`;
                     
                     let etiqueta = p.ativo ? '' : '<div class="badge-bestseller" style="background:#F44336;">Esgotado</div>';
 
-                    const html = `
-                    <div class="product-card">
+                    // HTML do Card
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    card.innerHTML = `
                         <div class="product-img-wrapper carousel-container">
                             ${etiqueta}
                             ${imagensHtml}
@@ -163,20 +232,25 @@
                             <span class="category-tag">${p.categoria}</span>
                             <h3>${p.nome}</h3>
                             <div class="product-price">R$ ${p.preco}</div>
-                            ${botaoAcao}
+                            ${btnHtml}
                         </div>
-                    </div>`;
-                    container.innerHTML += html;
+                    `;
+                    
+                    if(p.ativo) {
+                        card.onclick = () => abrirModal(p);
+                    }
+                    container.appendChild(card);
                 });
-                iniciarCarrossel();
-                if(container.innerHTML === '') container.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Nenhum produto nesta categoria.</p>';
 
-            } catch (error) {
-                console.error("Erro na loja:", error);
-                container.innerHTML = `<p style="text-align:center; color:red;">Erro: ${error.message}</p>`;
-            }
+                // REATIVA O CARROSSEL AUTOMÁTICO
+                iniciarCarrossel();
+                
+                if(container.innerHTML === '') container.innerHTML = '<p style="text-align:center; padding:20px;">Nenhum produto encontrado.</p>';
+
+            } catch(e) { console.error(e); }
         }
 
+        // 2. FUNÇÃO DO CARROSSEL (RODA AS FOTOS SOZINHA)
         function iniciarCarrossel() {
             if(window.carrosselInterval) clearInterval(window.carrosselInterval);
             window.carrosselInterval = setInterval(() => {
@@ -188,21 +262,68 @@
                     let nextIndex = (activeIndex + 1) % imgs.length;
                     imgs[nextIndex].classList.add('active');
                 });
-            }, 3000);
+            }, 3000); // 3 Segundos
         }
 
-        carregarLoja();
+        // 3. MODAL DE DETALHES
+        window.abrirModal = (p) => {
+            produtoAtual = p;
+            document.getElementById('modal-produto').style.display = 'flex';
+            document.getElementById('modal-titulo').innerText = p.nome;
+            document.getElementById('modal-preco').innerText = `R$ ${p.preco}`;
+            document.getElementById('modal-descricao').innerText = p.descricao || "Entre em contato para saber mais detalhes sobre a personalização.";
+            
+            // Fotos no Modal
+            const imgContainer = document.getElementById('modal-imagens'); 
+            imgContainer.innerHTML = '';
+            const fotos = p.fotos || [p.foto];
+            if(fotos && fotos.length > 0) fotos.forEach(f => { if(f) imgContainer.innerHTML += `<img src="${f}" class="modal-img">`; });
+            else imgContainer.innerHTML = '<div style="background:#eee;width:100%;height:100%"></div>';
 
-        // 2. SISTEMA DE LOGIN SECRETO (CLIQUE NO G)
-        const btnSecreto = document.getElementById('btn-secreto');
-        btnSecreto.addEventListener('click', () => {
-            const senha = prompt("🔒 Digite a senha:");
-            if(senha === "gabi123") {
-                sessionStorage.setItem('admin_logado', 'sim');
-                window.location.href = 'admin.html';
+            // LÓGICA DO BOTÃO CARTÃO DE CRÉDITO
+            const btnLink = document.getElementById('btn-pagar-link');
+            // Se tiver link salvo no banco, mostra o botão. Se não, esconde.
+            if(p.link_pagamento && p.link_pagamento.length > 5) {
+                btnLink.href = p.link_pagamento;
+                btnLink.style.display = 'flex';
+            } else {
+                btnLink.style.display = 'none';
+            }
+        }
+
+        window.fecharModal = () => document.getElementById('modal-produto').style.display = 'none';
+
+        // 4. FINALIZAR PEDIDO NO WHATSAPP
+        window.finalizarPedido = async () => {
+            const nome = document.getElementById('cliente-nome').value;
+            const zap = document.getElementById('cliente-zap').value;
+            if(!nome || !zap) return alert("Preencha nome e WhatsApp!");
+            
+            const btn = document.querySelector('.btn-comprar'); btn.innerText = 'Enviando...';
+            try {
+                // Salva no banco de Vendas
+                await addDoc(collection(db, "pedidos"), { 
+                    cliente: nome, whatsapp: zap, produto: produtoAtual.nome, total: produtoAtual.preco, data: new Date().toISOString(), status: 'Pendente' 
+                });
+                
+                // Manda pro Zap
+                const msg = `Olá! Sou *${nome}*.\nGostaria de encomendar: *${produtoAtual.nome}* (R$ ${produtoAtual.preco}).\nAguardo confirmação!`;
+                window.open(`https://wa.me/559292770409?text=${encodeURIComponent(msg)}`, '_blank');
+                fecharModal();
+            } catch(e) { alert("Erro: " + e.message); }
+            btn.innerHTML = '<i class="fab fa-whatsapp"></i> Enviar Pedido';
+        }
+
+        // 5. BOTÃO SECRETO "G" (CLIQUE)
+        document.getElementById('btn-secreto').addEventListener('click', () => {
+            const senha = prompt("🔒 Senha Admin:");
+            if(senha === 'gabi123') {
+                sessionStorage.setItem('admin_logado','sim'); 
+                window.location.href='admin.html';
             }
         });
 
+        carregarLoja();
     </script>
 </body>
 </html>
