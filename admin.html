@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* MANTIDO SEU ESTILO ORIGINAL, SÓ CÓDIGO JS MUDOU */
         body { font-family: 'Poppins', sans-serif; background: #F0F2F5; margin: 0; display: flex; height: 100vh; overflow: hidden; }
         .sidebar { width: 250px; background: white; padding: 20px; display: flex; flex-direction: column; border-right: 1px solid #ddd; }
         .sidebar h2 { color: #B39DDB; margin-bottom: 30px; }
@@ -22,9 +23,9 @@
         th { color: #888; font-weight: 600; text-transform: uppercase; font-size: 0.8rem; }
         .btn-new { background: #B39DDB; color: white; border: none; padding: 10px 20px; border-radius: 30px; cursor: pointer; float: right; font-weight: 600; }
         .btn-status { padding: 5px 12px; border-radius: 15px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
-        .status-pendente { background: #FFF3E0; color: #EF6C00; }
-        .status-aguardando { background: #E3F2FD; color: #1976D2; }
-        .status-concluido { background: #E8F5E9; color: #2E7D32; }
+        .status-pendente { background: #FFF3E0; color: #EF6C00; } 
+        .status-aguardando { background: #E3F2FD; color: #1976D2; } 
+        .status-concluido { background: #E8F5E9; color: #2E7D32; } 
         #form-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; }
         .form-card { background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; position: relative; }
         input, select, textarea { width: 100%; padding: 10px; margin: 5px 0 15px; border: 1px solid #ddd; border-radius: 5px; font-family: inherit; }
@@ -103,6 +104,11 @@
         const db = getFirestore(app);
         let listaFotosBase64 = [], produtoEmEdicaoId = null, produtosCache = {};
 
+        // FORMATAÇÃO DE MOEDA NO ADMIN
+        const formatarMoeda = (valor) => {
+            return parseFloat(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
         window.mudarAba = (aba) => {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
@@ -122,9 +128,13 @@
                     const img = thumb ? `<img src="${thumb}" class="mini-foto">` : '<div class="mini-foto"></div>';
                     const color = p.ativo ? '#4CAF50' : '#F44336';
                     const minDisplay = p.minimo > 1 ? `<span style="background:#E3F2FD; padding:2px 5px; border-radius:5px; font-weight:bold; font-size:0.8rem">Mín: ${p.minimo}</span>` : '1 un';
+                    
+                    // FORMATANDO PREÇO AQUI
+                    const preco = formatarMoeda(p.preco);
+
                     html += `<tr>
                         <td><div style="display:flex; gap:10px; align-items:center;">${img} <strong>${p.nome}</strong></div></td>
-                        <td>R$ ${p.preco}</td>
+                        <td>${preco}</td>
                         <td>${minDisplay}</td>
                         <td><span style="color:${color}; font-weight:bold">${p.ativo ? 'Ativo' : 'Esgotado'}</span></td>
                         <td>
@@ -151,22 +161,24 @@
                     if(p.status==='Concluído') statusClass='status-concluido';
                     if(p.status==='Aguardando Pagamento') statusClass='status-aguardando';
                     
+                    // FORMATANDO PREÇO AQUI TAMBÉM
+                    const total = formatarMoeda(p.total);
+
                     html += `<tr>
                         <td style="font-weight:bold; color:#B39DDB">${p.id_visual||'-'}</td>
                         <td>${dataF}</td>
                         <td>${p.cliente}<br><small>${p.whatsapp}</small></td>
                         <td>${p.produto}</td>
-                        <td>R$ ${p.total}</td>
+                        <td>${total}</td>
                         <td><span class="btn-status ${statusClass}" onclick="mudarStatusPedido('${doc.id}','${p.status}')" style="cursor:pointer">${p.status}</span></td>
-                        <td>
-                            <i class="fas fa-trash action-icon icon-trash" onclick="apagarPedido('${doc.id}')" title="Excluir Pedido"></i>
-                        </td>
+                        <td><i class="fas fa-trash action-icon icon-trash" onclick="apagarPedido('${doc.id}')" title="Excluir Pedido"></i></td>
                     </tr>`;
                 });
                 tbody.innerHTML = html || '<tr><td colspan="7">Nenhum pedido.</td></tr>';
             } catch(e) { console.error(e); }
         }
 
+        // EDITA, SALVA E CRIA
         window.editarProduto = (id) => {
             const p = produtosCache[id]; if (!p) return;
             produtoEmEdicaoId = id;
@@ -215,17 +227,8 @@
         window.fecharFormulario = () => document.getElementById('form-overlay').style.display = 'none';
         window.processarImagens = (input) => { const files = input.files; const area = document.getElementById('preview-area'); area.innerHTML = ''; listaFotosBase64 = []; if(files.length>3) return alert("Máx 3"); Array.from(files).forEach(f => { const r = new FileReader(); r.onload=e=>{ const i=new Image(); i.src=e.target.result; i.onload=()=>{ const c=document.createElement('canvas'); const x=c.getContext('2d'); const s=400/i.width; c.width=400; c.height=i.height*s; x.drawImage(i,0,0,c.width,c.height); const u=c.toDataURL('image/jpeg',0.6); listaFotosBase64.push(u); area.innerHTML+=`<img src="${u}" class="preview-thumb">`;}}; r.readAsDataURL(f); }); }
         
-        // FUNÇÕES DE AÇÃO
         window.mudarStatusPedido = async (id,s) => { const n = s==='Concluído'?'Pendente':'Concluído'; if(confirm(`Mudar para ${n}?`)){ await updateDoc(doc(db,"pedidos",id),{status:n}); carregarVendas(); }}
-        
-        // NOVA FUNÇÃO: APAGAR PEDIDO
-        window.apagarPedido = async (id) => {
-            if(confirm("Tem certeza que deseja apagar este pedido? Isso não pode ser desfeito.")) {
-                await deleteDoc(doc(db, "pedidos", id));
-                carregarVendas();
-            }
-        }
-
+        window.apagarPedido = async (id) => { if(confirm("Tem certeza que deseja apagar este pedido? Isso não pode ser desfeito.")) { await deleteDoc(doc(db, "pedidos", id)); carregarVendas(); } }
         window.apagarProduto = async (id) => { if(confirm("Apagar produto?")) { await deleteDoc(doc(db,"produtos",id)); carregarDados(); } }
         window.alterarEstoque = async (id, s) => { await updateDoc(doc(db,"produtos",id), {ativo:s}); carregarDados(); }
         document.getElementById('btn-sair').addEventListener('click', () => { if(confirm("Sair?")){sessionStorage.removeItem('admin_logado'); window.location.href='index.html'} });
