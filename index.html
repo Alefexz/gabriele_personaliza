@@ -32,15 +32,12 @@
         <div class="container">
             <h1>Seja bem-vindo(a)!</h1>
             <p>Transforme sua festa com nossa papelaria criativa feita à mão.</p>
-            <div class="arrow-down">
-                <i class="fas fa-chevron-down"></i>
-            </div>
+            <div class="arrow-down"><i class="fas fa-chevron-down"></i></div>
         </div>
     </section>
 
     <section id="loja" class="section-padding store-section">
         <div class="container">
-            
             <div class="filter-container">
                 <button class="filter-btn active" onclick="carregarLoja('todos')">Todos</button>
                 <button class="filter-btn" onclick="carregarLoja('festa')">Festas</button>
@@ -82,8 +79,11 @@
                 <p>Entre em contato com o suporte: <a href="mailto:contato.gabriele.personaliza@gmail.com">contato.gabriele.personaliza@gmail.com</a></p>
             </div>
             
-            <div class="copyright" id="area-secreta" style="cursor: help; user-select: none;" title="Acesso Restrito">
-                <p>&copy; 2026 Gabriele Personaliza.</p>
+            <div class="copyright">
+                <p>
+                    &copy; 2026 Gabriele Personaliza. 
+                    <span id="btn-secreto" style="opacity: 0.3; cursor: pointer; font-weight: bold; margin-left: 5px;" title="Admin">G</span>
+                </p>
             </div>
         </div>
     </footer>
@@ -94,7 +94,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // CONFIGURAÇÃO
         const firebaseConfig = {
             apiKey: "AIzaSyBrRLiEFF8dfWHVxhK3popdYgEDQLiKzCM",
             authDomain: "gabriele-personaliza.firebaseapp.com",
@@ -108,11 +107,9 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // FUNÇÃO PRINCIPAL DA LOJA
         window.carregarLoja = async function(filtro = 'todos') {
             const container = document.getElementById('container-produtos');
             
-            // Atualiza botões de filtro visualmente
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if(btn.innerText.toLowerCase().includes(filtro) || (filtro === 'todos' && btn.innerText === 'Todos')) {
@@ -123,58 +120,38 @@
             try {
                 const querySnapshot = await getDocs(collection(db, "produtos"));
                 
-                if(querySnapshot.empty) {
-                    container.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Nenhum produto encontrado.</p>';
-                    return;
-                }
+                if(querySnapshot.empty) { container.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Nenhum produto encontrado.</p>'; return; }
 
                 container.innerHTML = ''; 
 
                 querySnapshot.forEach((doc) => {
                     const p = doc.data();
-                    
                     if (filtro !== 'todos' && p.categoria !== filtro) return;
 
-                    // 1. CARROSSEL DE IMAGENS
                     let imagensHtml = '';
                     let listaImagens = [];
-
-                    // Verifica se é array (novo) ou string (antigo)
-                    if (p.fotos && p.fotos.length > 0) {
-                        listaImagens = p.fotos;
-                    } else if (p.foto) {
-                        listaImagens = [p.foto];
-                    }
+                    if (p.fotos && p.fotos.length > 0) listaImagens = p.fotos;
+                    else if (p.foto) listaImagens = [p.foto];
 
                     let estiloExtra = p.ativo ? '' : 'filter: grayscale(1); opacity: 0.6;';
 
                     if (listaImagens.length > 0) {
-                        // Cria as tags de imagem
                         listaImagens.forEach((imgUrl, index) => {
                             const classe = index === 0 ? 'carousel-img active' : 'carousel-img';
                             imagensHtml += `<img src="${imgUrl}" class="${classe}" style="${estiloExtra}">`;
                         });
                     } else {
-                        // Placeholder
                         let corBg = '#E1BEE7';
                         if(p.categoria === 'festa') corBg = '#D1C4E9';
                         if(p.categoria === 'cadernos') corBg = '#BBDEFB';
-                        imagensHtml = `
-                            <div class="carousel-img active" style="background:${corBg}; width:100%; height:100%; display:flex; align-items:center; justify-content:center; ${estiloExtra}">
-                                <i class="fas fa-camera" style="color:white; font-size:2rem"></i>
-                            </div>`;
+                        imagensHtml = `<div class="carousel-img active" style="background:${corBg}; width:100%; height:100%; display:flex; align-items:center; justify-content:center; ${estiloExtra}"><i class="fas fa-camera" style="color:white; font-size:2rem"></i></div>`;
                     }
 
-                    // 2. BOTÃO DE AÇÃO
-                    let botaoAcao = '';
-                    let etiqueta = '';
-
-                    if (p.ativo) {
-                        botaoAcao = `<a href="https://wa.me/559292770409?text=Olá, quero encomendar o ${p.nome}!" class="btn-sm" target="_blank">Pedir no WhatsApp</a>`;
-                    } else {
-                        botaoAcao = `<span class="btn-sm" style="color:red; cursor:not-allowed;">Esgotado</span>`;
-                        etiqueta = '<div class="badge-bestseller" style="background:#F44336;">Esgotado</div>';
-                    }
+                    let botaoAcao = p.ativo ? 
+                        `<a href="https://wa.me/559292770409?text=Olá, quero encomendar o ${p.nome}!" class="btn-sm" target="_blank">Pedir no WhatsApp</a>` : 
+                        `<span class="btn-sm" style="color:red; cursor:not-allowed;">Esgotado</span>`;
+                    
+                    let etiqueta = p.ativo ? '' : '<div class="badge-bestseller" style="background:#F44336;">Esgotado</div>';
 
                     const html = `
                     <div class="product-card">
@@ -188,17 +165,11 @@
                             <div class="product-price">R$ ${p.preco}</div>
                             ${botaoAcao}
                         </div>
-                    </div>
-                    `;
+                    </div>`;
                     container.innerHTML += html;
                 });
-
-                // Inicia animação se tiver mais de 1 foto
                 iniciarCarrossel();
-                
-                if(container.innerHTML === '') {
-                    container.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Nenhum produto nesta categoria.</p>';
-                }
+                if(container.innerHTML === '') container.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Nenhum produto nesta categoria.</p>';
 
             } catch (error) {
                 console.error("Erro na loja:", error);
@@ -206,43 +177,29 @@
             }
         }
 
-        // LÓGICA DE TROCAR FOTOS SOZINHA
         function iniciarCarrossel() {
             if(window.carrosselInterval) clearInterval(window.carrosselInterval);
-            
             window.carrosselInterval = setInterval(() => {
                 document.querySelectorAll('.carousel-container').forEach(container => {
                     const imgs = container.querySelectorAll('.carousel-img');
                     if (imgs.length <= 1) return;
-
                     let activeIndex = 0;
-                    imgs.forEach((img, i) => {
-                        if (img.classList.contains('active')) activeIndex = i;
-                        img.classList.remove('active');
-                    });
-
+                    imgs.forEach((img, i) => { if (img.classList.contains('active')) activeIndex = i; img.classList.remove('active'); });
                     let nextIndex = (activeIndex + 1) % imgs.length;
                     imgs[nextIndex].classList.add('active');
                 });
-            }, 3000); // 3 Segundos
+            }, 3000);
         }
 
         carregarLoja();
 
-
-        // 2. SISTEMA DE LOGIN SECRETO (DUPLO CLIQUE)
-        const areaSecreta = document.getElementById('area-secreta');
-
-        areaSecreta.addEventListener('dblclick', () => {
-            // Vibra no celular pra avisar
-            if (navigator.vibrate) navigator.vibrate(50);
-
-            const senha = prompt("🔒 Área Restrita da Gabriele.\nDigite a senha:");
+        // 2. SISTEMA DE LOGIN SECRETO (CLIQUE NO G)
+        const btnSecreto = document.getElementById('btn-secreto');
+        btnSecreto.addEventListener('click', () => {
+            const senha = prompt("🔒 Digite a senha:");
             if(senha === "gabi123") {
                 sessionStorage.setItem('admin_logado', 'sim');
                 window.location.href = 'admin.html';
-            } else if (senha !== null) {
-                alert("Senha Incorreta!");
             }
         });
 
