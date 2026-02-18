@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     // --- MENU MOBILE ---
     const menuToggle = document.querySelector('.menu-toggle');
     const navLinks = document.querySelector('.nav-links');
 
-    if (menuToggle) {
+    if(menuToggle) {
         menuToggle.addEventListener('click', () => {
             navLinks.classList.toggle('active-menu');
         });
@@ -24,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 productCards.forEach(card => {
                     const cardCategory = card.getAttribute('data-category');
-
                     if (filterValue === 'todos' || filterValue === cardCategory) {
                         card.classList.remove('hide');
                         card.classList.add('show');
@@ -36,5 +35,19 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+
+    // --- CORREÇÃO DEFINITIVA INSTAGRAM ---
+    const instaLinks = document.querySelectorAll('a[href*="instagram.com"]');
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    instaLinks.forEach(link => {
+        if (isMobile) {
+            // Abre direto no app no perfil correto
+            link.href = "instagram://user?username=gabriele_personaliza";
+        } else {
+            // Desktop abre normal
+            link.href = "https://www.instagram.com/gabriele_personaliza/";
+        }
+    });
 
 });
