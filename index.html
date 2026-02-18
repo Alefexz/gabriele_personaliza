@@ -4,19 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loja | Gabriele Personaliza</title>
+    <meta property="og:title" content="Gabriele Personaliza | Papelaria Criativa">
+    <meta property="og:description" content="Transforme sua festa com mimos e personalizados feitos à mão. Confira nosso catálogo!">
+    <meta property="og:image" content="https://i.ibb.co/h7XN8kG/logo.png"> 
+    <meta property="og:url" content="https://gabriele-personaliza.web.app">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#B39DDB">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=3">
     <style>
-        /* CSS INLINE PARA MODAIS (Mantido do original para garantir funcionamento) */
+        /* CSS MANTIDO IGUAL */
+        .politicas-lista { text-align: left; margin-top: 15px; }
+        .politicas-lista li { margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; color: #555; font-size: 0.9rem; }
+        .politicas-lista i { color: #B39DDB; margin-right: 10px; width: 20px; text-align: center; }
+
+        @media (max-width: 768px) {
+            .nav-links.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 70px; left: 0; width: 100%;
+                background: white; box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+                padding: 20px 0; animation: slideDown 0.3s ease forwards;
+            }
+            .nav-links.active li { width: 100%; text-align: center; padding: 15px 0; border-bottom: 1px solid #f0f0f0; }
+            .nav-links.active li a { display: block; font-size: 1.1rem; }
+            .nav-links.active .btn-nav { display: inline-block; margin-top: 10px; }
+            @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        }
+
         .modal-produto-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: end; }
         .modal-content { background: white; width: 100%; max-width: 500px; border-radius: 20px 20px 0 0; padding: 25px; animation: slideUp 0.3s; position: relative; max-height: 90vh; overflow-y: auto; }
         @media(min-width: 768px) { .modal-produto-overlay { align-items: center; } .modal-content { border-radius: 20px; } }
         @keyframes slideUp { from {transform: translateY(100%)} to {transform: translateY(0)} }
-        .modal-img-container { height: 250px; overflow: hidden; border-radius: 10px; margin-bottom: 15px; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; }
-        .modal-img { width: 100%; height: 100%; object-fit: cover; flex-shrink: 0; scroll-snap-align: center; }
+        .modal-img-container { height: 300px; overflow: hidden; border-radius: 10px; margin-bottom: 15px; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; background-color: #f0f0f0; }
+        /* Adicionei cursor pointer para indicar clique */
+        .modal-img { width: 100%; height: 100%; object-fit: contain; flex-shrink: 0; scroll-snap-align: center; cursor: zoom-in; }
         .modal-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #333; margin-bottom: 5px; }
         .modal-price { font-size: 1.3rem; color: #B39DDB; font-weight: bold; margin-bottom: 15px; }
         .modal-desc { font-size: 0.9rem; color: #666; line-height: 1.6; margin-bottom: 20px; background: #f9f9f9; padding: 10px; border-radius: 8px; }
@@ -48,6 +74,29 @@
         .pedido-id { font-size: 1.5rem; font-weight: bold; color: #B39DDB; margin: 10px 0; letter-spacing: 2px; border: 2px dashed #B39DDB; padding: 10px; border-radius: 10px; display: inline-block; }
         .filter-btn[onclick*="promocao"] { background-color: #FCE4EC; color: #E91E63; border: 1px solid #F8BBD0; }
         .filter-btn[onclick*="promocao"].active { background-color: #E91E63; color: white; }
+
+        /* --- NOVO CSS PARA O ZOOM (FULLSCREEN) --- */
+        #fullscreen-overlay {
+            display: none;
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); /* Fundo bem escuro */
+            z-index: 9999;
+            justify-content: center; align-items: center;
+            cursor: zoom-out; /* Ícone de diminuir */
+            animation: fadeIn 0.3s;
+        }
+        #fullscreen-img {
+            max-width: 95%; max-height: 95%;
+            object-fit: contain;
+            border-radius: 5px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        .close-fullscreen {
+            position: absolute; top: 20px; right: 20px;
+            color: white; font-size: 40px; cursor: pointer;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
     </style>
 </head>
 <body>
@@ -55,10 +104,11 @@
         <div class="container">
             <a href="#" class="logo">Gabriele <span>Personaliza</span></a>
             <nav>
-                <div class="menu-toggle"><i class="fas fa-bars"></i></div>
-                <ul class="nav-links">
-                    <li><a href="#loja" class="active">Loja</a></li>
-                    <li><a href="#sobre">Sobre</a></li>
+                <div class="menu-toggle" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
+                <ul class="nav-links" id="nav-lista">
+                    <li><a href="#loja" class="active" onclick="toggleMenu()">Loja</a></li>
+                    <li><a href="#sobre" onclick="toggleMenu()">Sobre</a></li>
+                    <li><a href="#" onclick="abrirPoliticas(); toggleMenu()">Como Funciona?</a></li>
                     <li><a href="https://wa.me/559292770409" target="_blank" class="btn-nav">Falar no WhatsApp</a></li>
                 </ul>
             </nav>
@@ -117,7 +167,7 @@
                 <a href="https://wa.me/559292770409" target="_blank"><i class="fab fa-whatsapp"></i></a>
             </div>
             <div class="copyright">
-                <p>&copy; 2026. <span id="btn-secreto" style="opacity: 0.3; cursor: pointer; font-weight: bold; margin-left: 5px;">G</span></p>
+                <p>&copy; <span id="ano-atual"></span>. <span id="btn-secreto" style="opacity: 0.3; cursor: pointer; font-weight: bold; margin-left: 5px;">G</span></p>
             </div>
         </div>
     </footer>
@@ -130,7 +180,14 @@
         <div class="modal-content">
             <i class="fas fa-times close-modal" onclick="fecharModal()"></i>
             <div id="modal-imagens" class="modal-img-container"></div>
-            <h3 id="modal-titulo" class="modal-title">Nome</h3>
+            
+            <div style="display:flex; justify-content:space-between; align-items:start;">
+                <h3 id="modal-titulo" class="modal-title">Nome</h3>
+                <button onclick="compartilharProduto()" style="background:none; border:none; color:#B39DDB; font-size:1.5rem; cursor:pointer; padding:0 10px;">
+                    <i class="fas fa-share-alt"></i>
+                </button>
+            </div>
+
             <div id="modal-preco-container" class="modal-price">R$ 0,00</div>
             <div id="modal-descricao" class="modal-desc"></div>
             
@@ -160,6 +217,23 @@
         </div>
     </div>
 
+    <div id="modal-politicas" class="modal-produto-overlay">
+        <div class="modal-content" style="max-height: 80vh;">
+            <i class="fas fa-times close-modal" onclick="fecharPoliticas()"></i>
+            <h3 class="modal-title" style="text-align:center; margin-bottom:20px;">Como Funciona?</h3>
+            
+            <ul class="politicas-lista">
+                <li><i class="fas fa-calendar-alt"></i> <strong>Prazos:</strong> Pedimos antecedência mínima de 7 a 15 dias, dependendo do produto.</li>
+                <li><i class="fas fa-hand-holding-usd"></i> <strong>Pagamento:</strong> Solicitamos 50% do valor no ato do pedido para iniciar a produção.</li>
+                <li><i class="fas fa-exclamation-triangle"></i> <strong>Cancelamento:</strong> Em caso de desistência, o valor da entrada não é reembolsado (cobre custos de material).</li>
+                <li><i class="fas fa-paint-brush"></i> <strong>Arte:</strong> Enviamos a arte para aprovação antes da impressão final.</li>
+                <li><i class="fas fa-shipping-fast"></i> <strong>Entrega:</strong> Retirada no local ou entrega via Uber Flash (custo do cliente).</li>
+            </ul>
+
+            <button class="alert-btn" onclick="fecharPoliticas()" style="margin-top:20px;">Entendi!</button>
+        </div>
+    </div>
+
     <div id="custom-alert">
         <div class="alert-box">
             <i class="fas fa-exclamation-circle alert-icon"></i>
@@ -179,7 +253,12 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <div id="fullscreen-overlay" onclick="fecharImagemCheia()">
+        <span class="close-fullscreen">&times;</span>
+        <img id="fullscreen-img" src="">
+    </div>
+
+    <script src="script.js?v=5"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -187,107 +266,96 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         
-        // VARIÁVEL GLOBAL PARA GUARDAR PRODUTOS (Para busca rápida)
         let todosProdutos = [];
         let produtoAtual = {}, qtdAtual = 1, minimoAtual = 1;
+
+        window.toggleMenu = () => { const nav = document.getElementById('nav-lista'); nav.classList.toggle('active'); }
+        window.abrirPoliticas = () => document.getElementById('modal-politicas').style.display = 'flex';
+        window.fecharPoliticas = () => document.getElementById('modal-politicas').style.display = 'none';
+
+        // --- FUNÇÕES DE ZOOM (TELA CHEIA) ---
+        window.abrirImagemCheia = (src) => {
+            document.getElementById('fullscreen-img').src = src;
+            document.getElementById('fullscreen-overlay').style.display = 'flex';
+        }
+        window.fecharImagemCheia = () => {
+            document.getElementById('fullscreen-overlay').style.display = 'none';
+            document.getElementById('fullscreen-img').src = '';
+        }
 
         const formatarMoeda = (valor) => parseFloat(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         window.mostrarAlerta = (msg) => { document.getElementById('msg-alerta').innerText = msg; document.getElementById('custom-alert').style.display = 'flex'; }
         window.fecharAlerta = () => document.getElementById('custom-alert').style.display = 'none';
 
-        // --- FUNÇÃO PARA MOSTRAR O SKELETON (Carregamento Bonito) ---
         function mostrarSkeleton() {
             const container = document.getElementById('container-produtos');
             container.innerHTML = '';
-            // Cria 6 cartões falsos
             for(let i=0; i<6; i++) {
-                container.innerHTML += `
-                <div class="skeleton-card">
-                    <div class="skeleton skeleton-img"></div>
-                    <div class="skeleton skeleton-title"></div>
-                    <div class="skeleton skeleton-title" style="width: 60%"></div>
-                    <div class="skeleton skeleton-price"></div>
-                </div>`;
+                container.innerHTML += `<div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-title" style="width: 60%"></div><div class="skeleton skeleton-price"></div></div>`;
             }
         }
 
-        // --- FUNÇÃO PRINCIPAL: CARREGA UMA VEZ DO BANCO ---
         window.carregarLoja = async (filtroInicial = 'todos') => {
-            mostrarSkeleton(); // Inicia o efeito
-            
+            mostrarSkeleton();
             try {
                 const q = await getDocs(collection(db, "produtos"));
-                todosProdutos = []; // Limpa
-                q.forEach(doc => {
-                    let p = doc.data();
-                    p.id = doc.id;
-                    todosProdutos.push(p);
-                });
-                
-                // Aplica o filtro inicial
+                todosProdutos = [];
+                q.forEach(doc => { let p = doc.data(); p.id = doc.id; todosProdutos.push(p); });
                 aplicarFiltros(filtroInicial);
-                
-            } catch(e) { 
-                console.error(e);
-                document.getElementById('container-produtos').innerHTML = '<p style="grid-column:1/-1; text-align:center">Erro ao carregar produtos. Verifique sua internet.</p>';
-            }
+            } catch(e) { console.error(e); document.getElementById('container-produtos').innerHTML = '<p style="grid-column:1/-1; text-align:center">Erro ao carregar produtos. Verifique sua internet.</p>'; }
         }
 
-        // --- FUNÇÃO DE FILTRAGEM (CATEGORIAS) ---
         window.aplicarFiltros = (categoria) => {
-            // Atualiza botões
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if(btn.innerText.toLowerCase().includes(categoria.replace('promocao','promoçõe')) || (categoria === 'todos' && btn.innerText === 'Todos')) btn.classList.add('active');
             });
-
-            // Filtra o array local (muito rápido)
             const filtrados = todosProdutos.filter(p => {
                 if (categoria === 'todos') return true;
                 if (categoria === 'promocao') return p.em_promocao && p.ativo;
                 return p.categoria === categoria;
             });
-
             renderizarCards(filtrados);
         }
 
-        // --- FUNÇÃO DE BUSCA (BARRA DE PESQUISA) ---
         window.filtrarPorNome = () => {
             const termo = document.getElementById('campo-busca').value.toLowerCase();
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); // Remove seleção dos botões
-            
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             const filtrados = todosProdutos.filter(p => p.nome.toLowerCase().includes(termo));
             renderizarCards(filtrados, termo !== "" ? "Nenhum produto encontrado com esse nome." : "Nenhum produto encontrado.");
         }
 
-        // --- RENDERIZAR CARDS NA TELA ---
         function renderizarCards(lista, msgVazio = "Nenhum produto encontrado.") {
             const container = document.getElementById('container-produtos');
             container.innerHTML = '';
-
-            if (lista.length === 0) {
-                container.innerHTML = `<p style="text-align:center; width:100%; grid-column: 1 / -1; padding: 40px; color: #888;">${msgVazio}</p>`;
-                return;
-            }
+            if (lista.length === 0) { container.innerHTML = `<p style="text-align:center; width:100%; grid-column: 1 / -1; padding: 40px; color: #888;">${msgVazio}</p>`; return; }
+            
+            const timestamp = new Date().getTime();
 
             lista.forEach(p => {
                 let listaImagens = (p.fotos && p.fotos.length > 0) ? p.fotos : (p.foto ? [p.foto] : []);
                 let imagensHtml = '';
                 let estiloExtra = p.ativo ? '' : 'filter: grayscale(1); opacity: 0.6;';
                 
-                if (listaImagens.length > 0) listaImagens.forEach((imgUrl, index) => imagensHtml += `<img src="${imgUrl}" class="carousel-img ${index===0?'active':''}" style="${estiloExtra}">`);
-                else imagensHtml = `<div class="carousel-img active" style="background:#E1BEE7;height:100%"></div>`;
+                if (listaImagens.length > 0) {
+                    listaImagens.forEach((imgUrl, index) => {
+                        let finalUrl = imgUrl;
+                        if (imgUrl.startsWith('http')) {
+                            finalUrl = `${imgUrl}?t=${timestamp}`;
+                        }
+                        imagensHtml += `<img src="${finalUrl}" class="carousel-img ${index===0?'active':''}" style="${estiloExtra}">`;
+                    });
+                } else {
+                    imagensHtml = `<div class="carousel-img active" style="background:#E1BEE7;height:100%"></div>`;
+                }
                 
                 const minLabel = (p.minimo && p.minimo > 1) ? `<small style="display:block; color:#666; margin-top:5px">Mínimo: ${p.minimo} un</small>` : '';
                 let btnHtml = p.ativo ? `<button class="btn-sm" style="width:100%;border:none;background:#B39DDB;color:white;padding:8px;border-radius:5px;cursor:pointer;margin-top:5px;">Ver Detalhes</button>` : `<span style="color:red;font-size:0.8rem">Esgotado</span>`;
-                
                 let etiqueta = '';
                 if (!p.ativo) etiqueta = '<div class="badge-bestseller" style="background:#F44336;">Esgotado</div>';
                 else if (p.em_promocao && p.preco_promocional > 0) etiqueta = '<div class="badge-promo"><i class="fas fa-tag"></i> Oferta!</div>';
-
                 let priceHtml = formatarMoeda(p.preco);
                 if (p.ativo && p.em_promocao && p.preco_promocional > 0) priceHtml = `<span class="original-price">${formatarMoeda(p.preco)}</span> <span class="promo-price">${formatarMoeda(p.preco_promocional)}</span>`;
-
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 card.innerHTML = `<div class="product-img-wrapper carousel-container">${etiqueta}${imagensHtml}</div><div class="product-info"><span class="category-tag">${p.categoria.toUpperCase()}</span><h3>${p.nome}</h3><div class="product-price">${priceHtml}</div>${minLabel}${btnHtml}</div>`;
@@ -310,7 +378,6 @@
             }, 3000);
         }
 
-        // --- LÓGICA DO MODAL (MANTIDA IGUAL) ---
         window.abrirModal = (p) => {
             produtoAtual = p; minimoAtual = p.minimo || 1; qtdAtual = minimoAtual; 
             document.getElementById('modal-produto').style.display = 'flex';
@@ -321,8 +388,22 @@
             document.getElementById('modal-descricao').innerText = p.descricao || "";
             document.getElementById('check-termos').checked = false; 
             document.getElementById('box-termos').style.border = "1px solid #FFCC80"; 
+            
             const imgC = document.getElementById('modal-imagens'); imgC.innerHTML = '';
-            (p.fotos || [p.foto]).forEach(f => { if(f) imgC.innerHTML += `<img src="${f}" class="modal-img">`; });
+            const timestamp = new Date().getTime();
+            
+            // --- ATUALIZAÇÃO: AGORA O CLIQUE CHAMA O ZOOM ---
+            (p.fotos || [p.foto]).forEach(f => { 
+                if(f) {
+                    let finalUrl = f;
+                    if (f.startsWith('http')) {
+                        finalUrl = `${f}?t=${timestamp}`;
+                    }
+                    // Adicionei onclick="abrirImagemCheia(this.src)"
+                    imgC.innerHTML += `<img src="${finalUrl}" class="modal-img" onclick="abrirImagemCheia(this.src)">`; 
+                }
+            });
+            
             atualizarUI();
         }
 
@@ -345,12 +426,7 @@
 
         function validarTermos() {
             const check = document.getElementById('check-termos');
-            if(!check.checked) {
-                mostrarAlerta("Para continuar, você precisa confirmar que concorda com a regra de 50% de entrada.");
-                const box = document.getElementById('box-termos');
-                box.style.border = "2px solid #F44336"; box.style.animation = "shake 0.5s";
-                setTimeout(() => box.style.animation = "none", 500); return false;
-            } return true;
+            if(!check.checked) { mostrarAlerta("Para continuar, você precisa confirmar que concorda com a regra de 50% de entrada."); const box = document.getElementById('box-termos'); box.style.border = "2px solid #F44336"; box.style.animation = "shake 0.5s"; setTimeout(() => box.style.animation = "none", 500); return false; } return true;
         }
 
         async function registrarPedido(origem) {
@@ -394,9 +470,15 @@
             document.getElementById('modal-sucesso').style.display = 'none';
         }
 
+        window.compartilharProduto = async () => {
+            if (navigator.share) {
+                try { await navigator.share({ title: `Olha que lindo: ${produtoAtual.nome}`, text: `Achei esse ${produtoAtual.nome} na Gabriele Personaliza!`, url: window.location.href }); } 
+                catch (err) { console.log('Cancelou compartilhamento'); }
+            } else { mostrarAlerta("Link da loja copiado para a área de transferência!"); navigator.clipboard.writeText(window.location.href); }
+        }
+
         document.getElementById('btn-secreto').addEventListener('click', () => { window.location.href = 'admin.html'; });
-        
-        // Inicia
+        document.getElementById('ano-atual').innerText = new Date().getFullYear();
         carregarLoja();
     </script>
 </body>
