@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const menuToggle = document.querySelector('.menu-toggle');
     const navLinks = document.querySelector('.nav-links');
 
-    if(menuToggle) {
+    if (menuToggle) {
         menuToggle.addEventListener('click', () => {
             navLinks.classList.toggle('active-menu');
         });
@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 productCards.forEach(card => {
                     const cardCategory = card.getAttribute('data-category');
+
                     if (filterValue === 'todos' || filterValue === cardCategory) {
                         card.classList.remove('hide');
                         card.classList.add('show');
@@ -36,18 +37,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- CORREÇÃO DO LINK DO INSTAGRAM (MÉTODO UNIVERSAL) ---
-    // Verifica se é celular
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    
-    if (isMobile) {
-        // Seleciona todos os links do Instagram
-        const instaLinks = document.querySelectorAll('a[href*="instagram.com"]');
-        
-        instaLinks.forEach(link => {
-            // O segredo: usar "/_u/" na URL força o app a abrir o perfil
-            // E removemos aquele lixo "?igsh=..." para limpar o link
-            link.href = "https://www.instagram.com/_u/gabriele_personaliza/";
-        });
-    }
 });
