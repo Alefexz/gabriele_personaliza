@@ -40,4 +40,19 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+
+    // --- NOVO: CORREÇÃO DO LINK DO INSTAGRAM (DEEP LINK) ---
+    // Verifica se o usuário está acessando por um celular
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+        // Procura todos os links que apontam para o Instagram da Gabriele
+        const instaLinks = document.querySelectorAll('a[href*="instagram.com/gabriele_personaliza"]');
+        
+        instaLinks.forEach(link => {
+            // Muda para o protocolo do App (instagram://)
+            // Isso força o celular a abrir o perfil direto, sem parar no feed
+            link.href = "instagram://user?username=gabriele_personaliza";
+        });
+    }
 });
