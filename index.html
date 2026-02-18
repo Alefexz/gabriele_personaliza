@@ -10,14 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* ... COPIE O CSS DO INDEX ANTERIOR AQUI (OU MANTENHA NO ARQUIVO) ... */
-        /* Para encurtar a resposta, estou assumindo que você já tem o CSS do index.html anterior. */
-        /* Se precisar, me avise que mando o CSS completo de novo */
-        .hero-socials { display: flex; justify-content: center; gap: 20px; margin-top: 25px; margin-bottom: 10px; }
-        .social-big { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; transition: transform 0.3s ease, box-shadow 0.3s ease; box-shadow: 0 5px 15px rgba(0,0,0,0.1); text-decoration: none; }
-        .social-big:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
-        .insta-bg { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
-        .zap-bg { background: #25D366; }
+        /* CSS INLINE PARA MODAIS (Mantido do original para garantir funcionamento) */
         .modal-produto-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: end; }
         .modal-content { background: white; width: 100%; max-width: 500px; border-radius: 20px 20px 0 0; padding: 25px; animation: slideUp 0.3s; position: relative; max-height: 90vh; overflow-y: auto; }
         @media(min-width: 768px) { .modal-produto-overlay { align-items: center; } .modal-content { border-radius: 20px; } }
@@ -53,10 +46,6 @@
         #modal-sucesso { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; justify-content: center; align-items: center; text-align: center; }
         .sucesso-card { background: white; padding: 40px; border-radius: 20px; width: 90%; max-width: 400px; }
         .pedido-id { font-size: 1.5rem; font-weight: bold; color: #B39DDB; margin: 10px 0; letter-spacing: 2px; border: 2px dashed #B39DDB; padding: 10px; border-radius: 10px; display: inline-block; }
-        .badge-promo { position: absolute; top: 10px; left: 10px; background: #E91E63; color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.2); animation: pulse 2s infinite; }
-        .original-price { text-decoration: line-through; color: #999; font-size: 0.9rem; margin-right: 5px; }
-        .promo-price { color: #E91E63; font-weight: bold; font-size: 1.2rem; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         .filter-btn[onclick*="promocao"] { background-color: #FCE4EC; color: #E91E63; border: 1px solid #F8BBD0; }
         .filter-btn[onclick*="promocao"].active { background-color: #E91E63; color: white; }
     </style>
@@ -90,20 +79,23 @@
 
     <section id="loja" class="section-padding store-section">
         <div class="container">
-            <div class="filter-container" style="flex-wrap: wrap; justify-content: center;">
-                <button class="filter-btn active" onclick="carregarLoja('todos')">Todos</button>
-                <button class="filter-btn" onclick="carregarLoja('promocao')"><i class="fas fa-tag"></i> Promoções</button>
-                <button class="filter-btn" onclick="carregarLoja('festa')">Festas</button>
-                <button class="filter-btn" onclick="carregarLoja('cadernos')">Cadernos</button>
-                <button class="filter-btn" onclick="carregarLoja('mimos')">Mimos</button>
-                <button class="filter-btn" onclick="carregarLoja('simples')">Simples</button>
-                <button class="filter-btn" onclick="carregarLoja('semiluxo')">Semi Luxo</button>
+            <div class="search-container">
+                <input type="text" id="campo-busca" class="search-input" placeholder="O que você procura hoje?" onkeyup="filtrarPorNome()">
+                <i class="fas fa-search search-icon"></i>
             </div>
+
+            <div class="filter-container">
+                <button class="filter-btn active" onclick="aplicarFiltros('todos')">Todos</button>
+                <button class="filter-btn" onclick="aplicarFiltros('promocao')"><i class="fas fa-tag"></i> Promoções</button>
+                <button class="filter-btn" onclick="aplicarFiltros('festa')">Festas</button>
+                <button class="filter-btn" onclick="aplicarFiltros('cadernos')">Cadernos</button>
+                <button class="filter-btn" onclick="aplicarFiltros('mimos')">Mimos</button>
+                <button class="filter-btn" onclick="aplicarFiltros('simples')">Simples</button>
+                <button class="filter-btn" onclick="aplicarFiltros('semiluxo')">Semi Luxo</button>
+            </div>
+            
             <div class="product-grid" id="container-produtos">
-                <p style="text-align:center; width:100%; grid-column: 1 / -1; padding: 40px; color: #888;">
-                    <i class="fas fa-circle-notch fa-spin"></i> Carregando novidades...
-                </p>
-            </div>
+                </div>
         </div>
     </section>
 
@@ -129,6 +121,10 @@
             </div>
         </div>
     </footer>
+
+    <a href="https://wa.me/559292770409" class="floating-whatsapp" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
 
     <div id="modal-produto" class="modal-produto-overlay">
         <div class="modal-content">
@@ -191,51 +187,114 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         
+        // VARIÁVEL GLOBAL PARA GUARDAR PRODUTOS (Para busca rápida)
+        let todosProdutos = [];
         let produtoAtual = {}, qtdAtual = 1, minimoAtual = 1;
+
         const formatarMoeda = (valor) => parseFloat(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         window.mostrarAlerta = (msg) => { document.getElementById('msg-alerta').innerText = msg; document.getElementById('custom-alert').style.display = 'flex'; }
         window.fecharAlerta = () => document.getElementById('custom-alert').style.display = 'none';
 
-        window.carregarLoja = async (filtro = 'todos') => {
+        // --- FUNÇÃO PARA MOSTRAR O SKELETON (Carregamento Bonito) ---
+        function mostrarSkeleton() {
             const container = document.getElementById('container-produtos');
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if(btn.innerText.toLowerCase().includes(filtro.replace('promocao','promoçõe')) || (filtro === 'todos' && btn.innerText === 'Todos')) btn.classList.add('active');
-            });
+            container.innerHTML = '';
+            // Cria 6 cartões falsos
+            for(let i=0; i<6; i++) {
+                container.innerHTML += `
+                <div class="skeleton-card">
+                    <div class="skeleton skeleton-img"></div>
+                    <div class="skeleton skeleton-title"></div>
+                    <div class="skeleton skeleton-title" style="width: 60%"></div>
+                    <div class="skeleton skeleton-price"></div>
+                </div>`;
+            }
+        }
 
+        // --- FUNÇÃO PRINCIPAL: CARREGA UMA VEZ DO BANCO ---
+        window.carregarLoja = async (filtroInicial = 'todos') => {
+            mostrarSkeleton(); // Inicia o efeito
+            
             try {
                 const q = await getDocs(collection(db, "produtos"));
-                container.innerHTML = '';
+                todosProdutos = []; // Limpa
                 q.forEach(doc => {
-                    const p = doc.data();
-                    if (filtro === 'promocao') { if (!p.em_promocao || !p.ativo) return; } 
-                    else if (filtro !== 'todos' && p.categoria !== filtro) { return; }
-                    
-                    let listaImagens = (p.fotos && p.fotos.length > 0) ? p.fotos : (p.foto ? [p.foto] : []);
-                    let imagensHtml = '';
-                    let estiloExtra = p.ativo ? '' : 'filter: grayscale(1); opacity: 0.6;';
-                    if (listaImagens.length > 0) listaImagens.forEach((imgUrl, index) => imagensHtml += `<img src="${imgUrl}" class="carousel-img ${index===0?'active':''}" style="${estiloExtra}">`);
-                    else imagensHtml = `<div class="carousel-img active" style="background:#E1BEE7;height:100%"></div>`;
-                    
-                    const minLabel = (p.minimo && p.minimo > 1) ? `<small style="display:block; color:#666; margin-top:5px">Mínimo: ${p.minimo} un</small>` : '';
-                    let btnHtml = p.ativo ? `<button class="btn-sm" style="width:100%;border:none;background:#B39DDB;color:white;padding:8px;border-radius:5px;cursor:pointer;margin-top:5px;">Ver Detalhes</button>` : `<span style="color:red;font-size:0.8rem">Esgotado</span>`;
-                    
-                    let etiqueta = '';
-                    if (!p.ativo) etiqueta = '<div class="badge-bestseller" style="background:#F44336;">Esgotado</div>';
-                    else if (p.em_promocao && p.preco_promocional > 0) etiqueta = '<div class="badge-promo"><i class="fas fa-tag"></i> Oferta!</div>';
-
-                    let priceHtml = formatarMoeda(p.preco);
-                    if (p.ativo && p.em_promocao && p.preco_promocional > 0) priceHtml = `<span class="original-price">${formatarMoeda(p.preco)}</span> <span class="promo-price">${formatarMoeda(p.preco_promocional)}</span>`;
-
-                    const card = document.createElement('div');
-                    card.className = 'product-card';
-                    card.innerHTML = `<div class="product-img-wrapper carousel-container">${etiqueta}${imagensHtml}</div><div class="product-info"><span class="category-tag">${p.categoria.toUpperCase()}</span><h3>${p.nome}</h3><div class="product-price">${priceHtml}</div>${minLabel}${btnHtml}</div>`;
-                    if(p.ativo) card.onclick = () => abrirModal(p);
-                    container.appendChild(card);
+                    let p = doc.data();
+                    p.id = doc.id;
+                    todosProdutos.push(p);
                 });
-                if(container.innerHTML === '') container.innerHTML = '<p style="text-align:center; padding:20px;">Nenhum produto encontrado.</p>';
-                iniciarCarrossel();
-            } catch(e) { console.error(e); }
+                
+                // Aplica o filtro inicial
+                aplicarFiltros(filtroInicial);
+                
+            } catch(e) { 
+                console.error(e);
+                document.getElementById('container-produtos').innerHTML = '<p style="grid-column:1/-1; text-align:center">Erro ao carregar produtos. Verifique sua internet.</p>';
+            }
+        }
+
+        // --- FUNÇÃO DE FILTRAGEM (CATEGORIAS) ---
+        window.aplicarFiltros = (categoria) => {
+            // Atualiza botões
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.innerText.toLowerCase().includes(categoria.replace('promocao','promoçõe')) || (categoria === 'todos' && btn.innerText === 'Todos')) btn.classList.add('active');
+            });
+
+            // Filtra o array local (muito rápido)
+            const filtrados = todosProdutos.filter(p => {
+                if (categoria === 'todos') return true;
+                if (categoria === 'promocao') return p.em_promocao && p.ativo;
+                return p.categoria === categoria;
+            });
+
+            renderizarCards(filtrados);
+        }
+
+        // --- FUNÇÃO DE BUSCA (BARRA DE PESQUISA) ---
+        window.filtrarPorNome = () => {
+            const termo = document.getElementById('campo-busca').value.toLowerCase();
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); // Remove seleção dos botões
+            
+            const filtrados = todosProdutos.filter(p => p.nome.toLowerCase().includes(termo));
+            renderizarCards(filtrados, termo !== "" ? "Nenhum produto encontrado com esse nome." : "Nenhum produto encontrado.");
+        }
+
+        // --- RENDERIZAR CARDS NA TELA ---
+        function renderizarCards(lista, msgVazio = "Nenhum produto encontrado.") {
+            const container = document.getElementById('container-produtos');
+            container.innerHTML = '';
+
+            if (lista.length === 0) {
+                container.innerHTML = `<p style="text-align:center; width:100%; grid-column: 1 / -1; padding: 40px; color: #888;">${msgVazio}</p>`;
+                return;
+            }
+
+            lista.forEach(p => {
+                let listaImagens = (p.fotos && p.fotos.length > 0) ? p.fotos : (p.foto ? [p.foto] : []);
+                let imagensHtml = '';
+                let estiloExtra = p.ativo ? '' : 'filter: grayscale(1); opacity: 0.6;';
+                
+                if (listaImagens.length > 0) listaImagens.forEach((imgUrl, index) => imagensHtml += `<img src="${imgUrl}" class="carousel-img ${index===0?'active':''}" style="${estiloExtra}">`);
+                else imagensHtml = `<div class="carousel-img active" style="background:#E1BEE7;height:100%"></div>`;
+                
+                const minLabel = (p.minimo && p.minimo > 1) ? `<small style="display:block; color:#666; margin-top:5px">Mínimo: ${p.minimo} un</small>` : '';
+                let btnHtml = p.ativo ? `<button class="btn-sm" style="width:100%;border:none;background:#B39DDB;color:white;padding:8px;border-radius:5px;cursor:pointer;margin-top:5px;">Ver Detalhes</button>` : `<span style="color:red;font-size:0.8rem">Esgotado</span>`;
+                
+                let etiqueta = '';
+                if (!p.ativo) etiqueta = '<div class="badge-bestseller" style="background:#F44336;">Esgotado</div>';
+                else if (p.em_promocao && p.preco_promocional > 0) etiqueta = '<div class="badge-promo"><i class="fas fa-tag"></i> Oferta!</div>';
+
+                let priceHtml = formatarMoeda(p.preco);
+                if (p.ativo && p.em_promocao && p.preco_promocional > 0) priceHtml = `<span class="original-price">${formatarMoeda(p.preco)}</span> <span class="promo-price">${formatarMoeda(p.preco_promocional)}</span>`;
+
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `<div class="product-img-wrapper carousel-container">${etiqueta}${imagensHtml}</div><div class="product-info"><span class="category-tag">${p.categoria.toUpperCase()}</span><h3>${p.nome}</h3><div class="product-price">${priceHtml}</div>${minLabel}${btnHtml}</div>`;
+                if(p.ativo) card.onclick = () => abrirModal(p);
+                container.appendChild(card);
+            });
+            iniciarCarrossel();
         }
 
         function iniciarCarrossel() {
@@ -251,6 +310,7 @@
             }, 3000);
         }
 
+        // --- LÓGICA DO MODAL (MANTIDA IGUAL) ---
         window.abrirModal = (p) => {
             produtoAtual = p; minimoAtual = p.minimo || 1; qtdAtual = minimoAtual; 
             document.getElementById('modal-produto').style.display = 'flex';
@@ -334,11 +394,9 @@
             document.getElementById('modal-sucesso').style.display = 'none';
         }
 
-        // --- BOTÃO G SEM PROMPT (DIRETO PARA O ADMIN) ---
-        document.getElementById('btn-secreto').addEventListener('click', () => { 
-            window.location.href = 'admin.html';
-        });
+        document.getElementById('btn-secreto').addEventListener('click', () => { window.location.href = 'admin.html'; });
         
+        // Inicia
         carregarLoja();
     </script>
 </body>
