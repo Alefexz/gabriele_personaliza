@@ -8,14 +8,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* CSS MANTIDO IGUAL */
+        /* --- CSS GERAL --- */
         body { font-family: 'Poppins', sans-serif; background: #F0F2F5; margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* LOGIN */
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #2c3e50; z-index: 9999; display: flex; justify-content: center; align-items: center; }
         .login-card { background: white; padding: 40px; border-radius: 15px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .login-input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box; }
         .btn-entrar { background: #B39DDB; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; margin-top: 10px; }
         .btn-entrar:hover { background: #9575CD; }
         .error-msg { color: red; font-size: 0.8rem; margin-top: 15px; display: none; background: #FFEBEE; padding: 10px; border-radius: 5px; border: 1px solid #FFCDD2; }
+
+        /* LAYOUT */
         #painel-app { display: none; width: 100%; height: 100%; }
         .sidebar { width: 250px; background: white; padding: 20px; display: flex; flex-direction: column; border-right: 1px solid #ddd; }
         .sidebar h2 { color: #B39DDB; margin-bottom: 30px; }
@@ -24,6 +28,8 @@
         .main-content { flex: 1; padding: 30px; overflow-y: auto; background: #F0F2F5; }
         .view-section { display: none; animation: fadeIn 0.4s; }
         .view-section.active { display: block; }
+
+        /* TABELA */
         .table-box { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 15px; border-bottom: 1px solid #eee; text-align: left; vertical-align: middle; font-size: 0.9rem; }
@@ -33,31 +39,41 @@
         .status-pendente { background: #FFF3E0; color: #EF6C00; } 
         .status-aguardando { background: #E3F2FD; color: #1976D2; } 
         .status-concluido { background: #E8F5E9; color: #2E7D32; } 
+        .action-icon { cursor: pointer; margin-left: 10px; font-size: 1.2rem; transition: 0.2s; padding: 5px; }
+        .icon-edit { color: #2196F3; } .icon-trash { color: #ccc; } .icon-trash:hover { color: #F44336; } .icon-toggle { color: #4CAF50; }
+        .mini-foto { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; background: #eee; border: 1px solid #ddd; }
+
+        /* MODAL FORM */
         #form-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; }
         .form-card { background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; position: relative; }
         input, select, textarea { width: 100%; padding: 10px; margin: 5px 0 15px; border: 1px solid #ddd; border-radius: 5px; font-family: inherit; }
         textarea { height: 80px; resize: vertical; }
-        .mini-foto { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; background: #eee; border: 1px solid #ddd; }
-        .action-icon { cursor: pointer; margin-left: 10px; font-size: 1.2rem; transition: 0.2s; padding: 5px; }
-        .icon-edit { color: #2196F3; } .icon-trash { color: #ccc; } .icon-trash:hover { color: #F44336; } .icon-toggle { color: #4CAF50; }
         .promo-box { background: #FCE4EC; padding: 15px; border-radius: 8px; border: 1px solid #F8BBD0; margin: 15px 0; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* PREVIEW COM X */
+        
+        /* PREVIEW FOTOS */
         .preview-container { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
         .thumb-wrapper { position: relative; width: 70px; height: 70px; }
         .thumb-img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; }
-        .btn-remove-foto { 
-            position: absolute; top: -8px; right: -8px; 
-            background: #F44336; color: white; 
-            border-radius: 50%; width: 22px; height: 22px; 
-            display: flex; justify-content: center; align-items: center; 
-            cursor: pointer; font-size: 12px; font-weight: bold; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2); 
-            border: 2px solid white;
-        }
+        .btn-remove-foto { position: absolute; top: -8px; right: -8px; background: #F44336; color: white; border-radius: 50%; width: 22px; height: 22px; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 12px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2); border: 2px solid white; }
         .btn-remove-foto:hover { transform: scale(1.1); }
 
+        /* --- NOVIDADES VISUAIS (TOAST & LOADING) --- */
+        
+        /* 1. Container das Notificações */
+        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background: white; padding: 15px 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 12px; animation: slideIn 0.3s ease; min-width: 250px; border-left: 5px solid #ccc; }
+        .toast-success { border-left-color: #4CAF50; } .toast-success i { color: #4CAF50; }
+        .toast-error { border-left-color: #F44336; } .toast-error i { color: #F44336; }
+        .toast-info { border-left-color: #2196F3; } .toast-info i { color: #2196F3; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        /* 2. Tela de Carregamento Bonita */
+        #loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 20000; justify-content: center; align-items: center; flex-direction: column; }
+        .spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #B39DDB; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+        .loading-text { font-size: 1.1rem; color: #555; font-weight: 500; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* MOBILE */
         @media (max-width: 768px) {
             body { flex-direction: column; height: auto; overflow: auto; }
             #painel-app { flex-direction: column; height: auto; }
@@ -81,6 +97,13 @@
     </style>
 </head>
 <body>
+
+    <div id="toast-container"></div>
+
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loading-msg">Processando...</div>
+    </div>
 
     <div id="login-screen">
         <div class="login-card">
@@ -136,7 +159,6 @@
                 <label for="novo-fotos" style="background:#B39DDB; color:white; padding:8px 15px; border-radius:20px; cursor:pointer; font-size:0.9rem; display:inline-block;"><i class="fas fa-camera"></i> Adicionar Foto</label>
                 <input type="file" id="novo-fotos" accept="image/*" multiple style="display:none" onchange="adicionarFotos(this)">
             </div>
-            
             <div id="preview-area" class="preview-container"></div>
             
             <label>Nome</label><input type="text" id="novo-nome">
@@ -189,20 +211,74 @@
         let produtoEmEdicaoId = null;
         let produtosCache = {};
 
+        // --- SISTEMA DE NOTIFICAÇÕES (TOAST) ---
+        window.showToast = (message, type = 'success') => {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            
+            let icon = type === 'success' ? 'check-circle' : 'exclamation-circle';
+            if(type === 'info') icon = 'info-circle';
+
+            toast.innerHTML = `<i class="fas fa-${icon}"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+
+            // Remove após 4 segundos
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // --- SISTEMA DE LOADING ---
+        window.showLoading = (msg) => {
+            document.getElementById('loading-msg').innerText = msg;
+            document.getElementById('loading-overlay').style.display = 'flex';
+        }
+        window.hideLoading = () => {
+            document.getElementById('loading-overlay').style.display = 'none';
+        }
+
+        // LOGIN
         onAuthStateChanged(auth, (user) => {
-            if (user) { document.getElementById('login-screen').style.display = 'none'; document.getElementById('painel-app').style.display = 'flex'; carregarDados(); carregarVendas(); } 
-            else { document.getElementById('login-screen').style.display = 'flex'; document.getElementById('painel-app').style.display = 'none'; }
+            if (user) { 
+                document.getElementById('login-screen').style.display = 'none'; 
+                document.getElementById('painel-app').style.display = 'flex'; 
+                carregarDados(); carregarVendas(); 
+            } else { 
+                document.getElementById('login-screen').style.display = 'flex'; 
+                document.getElementById('painel-app').style.display = 'none'; 
+            }
         });
 
         window.login = async () => {
-            const email = document.getElementById('email-admin').value; const senha = document.getElementById('senha-admin').value;
-            const btn = document.querySelector('.btn-entrar'); const erro = document.getElementById('login-erro');
-            btn.innerText = "Verificando..."; erro.style.display = 'none';
-            try { await signInWithEmailAndPassword(auth, email, senha); } 
-            catch (error) { erro.innerText = "Senha incorreta."; erro.style.display = 'block'; btn.innerText = "Acessar Painel"; }
+            const email = document.getElementById('email-admin').value; 
+            const senha = document.getElementById('senha-admin').value;
+            const btn = document.querySelector('.btn-entrar'); 
+            const erro = document.getElementById('login-erro');
+            
+            btn.innerText = "Verificando..."; 
+            erro.style.display = 'none';
+            
+            try { 
+                await signInWithEmailAndPassword(auth, email, senha); 
+                showToast("Bem-vindo de volta!", "success");
+            } catch (error) { 
+                erro.innerText = "Senha incorreta."; 
+                erro.style.display = 'block'; 
+                btn.innerText = "Acessar Painel"; 
+                showToast("Senha incorreta", "error");
+            }
         }
-        document.getElementById('btn-sair').addEventListener('click', () => { if(confirm("Sair?")){ signOut(auth); window.location.href = 'index.html'; } });
+        
+        document.getElementById('btn-sair').addEventListener('click', () => { 
+            if(confirm("Deseja realmente sair?")){ 
+                signOut(auth); 
+                window.location.href = 'index.html'; 
+            } 
+        });
 
+        // UTILITÁRIOS
         const formatarMoeda = (v) => parseFloat(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         window.togglePromoField = () => { document.getElementById('promo-field-container').style.display = document.getElementById('cb-promocao').checked ? 'block' : 'none'; }
         window.mudarAba = (aba) => { document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active')); document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active')); document.getElementById(`view-${aba}`).classList.add('active'); event.currentTarget.classList.add('active'); }
@@ -217,7 +293,6 @@
                     produtosCache[docSnap.id] = p;
                     let thumb = (p.fotos && p.fotos.length > 0) ? p.fotos[0] : (p.foto || '');
                     
-                    // --- MUDANÇA: Adicionado ?t=timestamp para forçar carregamento no admin ---
                     const timestamp = new Date().getTime();
                     let finalThumb = thumb;
                     if(thumb.startsWith('http')) finalThumb = `${thumb}?t=${timestamp}`;
@@ -268,7 +343,10 @@
 
         window.adicionarFotos = (input) => {
             const files = Array.from(input.files);
-            if((listaFotosEdicao.length + files.length) > 3) return alert("Máximo de 3 fotos permitidas.");
+            if((listaFotosEdicao.length + files.length) > 3) {
+                showToast("Máximo de 3 fotos permitidas", "error");
+                return;
+            }
             listaFotosEdicao = [...listaFotosEdicao, ...files];
             renderizarPreview();
             input.value = ''; 
@@ -295,7 +373,6 @@
             });
         }
 
-        // --- COMPRESSÃO AUTOMÁTICA ---
         const comprimirImagem = async (arquivo) => {
             return new Promise((resolve) => {
                 const reader = new FileReader();
@@ -308,23 +385,12 @@
                         const MAX_WIDTH = 1920; 
                         let width = img.width;
                         let height = img.height;
-
-                        if (width > MAX_WIDTH) {
-                            height *= MAX_WIDTH / width;
-                            width = MAX_WIDTH;
-                        }
-
-                        canvas.width = width;
-                        canvas.height = height;
-                        
+                        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                        canvas.width = width; canvas.height = height;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
-                        
                         canvas.toBlob((blob) => {
-                            const fileReduzido = new File([blob], arquivo.name, {
-                                type: 'image/jpeg',
-                                lastModified: Date.now(),
-                            });
+                            const fileReduzido = new File([blob], arquivo.name, { type: 'image/jpeg', lastModified: Date.now() });
                             resolve(fileReduzido);
                         }, 'image/jpeg', 0.8); 
                     };
@@ -342,19 +408,18 @@
             const emPromocao = document.getElementById('cb-promocao').checked;
             const precoPromo = document.getElementById('novo-preco-promo').value;
             
-            if(!nome || !preco) return alert("Preencha campos obrigatórios");
-
-            const btn = document.getElementById('btn-salvar');
-            const textoOriginal = btn.innerText;
-            btn.disabled = true;
+            if(!nome || !preco) {
+                showToast("Preencha os campos obrigatórios!", "error");
+                return;
+            }
 
             try {
+                showLoading("Iniciando...");
+                
                 let listaFinaisUrls = [];
                 let contadorNovas = 0;
                 let arquivosParaEnviar = listaFotosEdicao.filter(item => typeof item !== 'string');
                 
-                btn.innerText = "Processando...";
-
                 for (let i = 0; i < listaFotosEdicao.length; i++) {
                     const item = listaFotosEdicao[i];
 
@@ -362,7 +427,7 @@
                         listaFinaisUrls.push(item);
                     } else {
                         contadorNovas++;
-                        btn.innerText = `Otimizando e enviando (${contadorNovas}/${arquivosParaEnviar.length})...`;
+                        showLoading(`Otimizando e enviando foto ${contadorNovas}/${arquivosParaEnviar.length}...`);
                         
                         const arquivoLeve = await comprimirImagem(item);
                         const formData = new FormData();
@@ -373,13 +438,13 @@
                             body: formData
                         });
 
-                        if (!response.ok) throw new Error("Erro de conexão com ImgBB");
+                        if (!response.ok) throw new Error("Erro ImgBB");
                         
                         const result = await response.json();
                         if(result.success) {
                             listaFinaisUrls.push(result.data.url);
                         } else {
-                            throw new Error("Erro ImgBB: " + (result.error ? result.error.message : "Desconhecido"));
+                            throw new Error("Erro ImgBB: " + result.error.message);
                         }
                     }
                 }
@@ -391,16 +456,16 @@
                     fotos: listaFinaisUrls
                 };
 
-                btn.innerText = "Salvando dados...";
+                showLoading("Salvando dados...");
 
                 if(produtoEmEdicaoId){
                     await updateDoc(doc(db,"produtos",produtoEmEdicaoId), dados);
-                    alert("Produto atualizado!");
+                    showToast("Produto atualizado com sucesso!", "success");
                 } else {
                     dados.ativo = true;
                     dados.vendas = 0;
                     await addDoc(collection(db,"produtos"), dados);
-                    alert("Produto criado!");
+                    showToast("Produto criado com sucesso!", "success");
                 }
 
                 fecharFormulario();
@@ -408,10 +473,9 @@
 
             } catch(e) {
                 console.error(e);
-                alert("Ops! " + e.message);
+                showToast("Erro: " + e.message, "error");
             } finally {
-                btn.innerText = textoOriginal;
-                btn.disabled = false;
+                hideLoading();
             }
         }
 
@@ -449,10 +513,45 @@
             document.getElementById('form-overlay').style.display='flex';
         }
         window.fecharFormulario=()=>document.getElementById('form-overlay').style.display='none';
-        window.mudarStatusPedido=async(id,s)=>{const n=s==='Concluído'?'Pendente':'Concluído';if(confirm(`Mudar para ${n}?`)){await updateDoc(doc(db,"pedidos",id),{status:n});carregarVendas();}}
-        window.apagarPedido=async(id)=>{if(confirm("Apagar pedido?")){await deleteDoc(doc(db,"pedidos",id));carregarVendas();}}
-        window.apagarProduto=async(id)=>{if(confirm("Apagar produto?")){await deleteDoc(doc(db,"produtos",id));carregarDados();}}
-        window.alterarEstoque=async(id,s)=>{await updateDoc(doc(db,"produtos",id),{ativo:s});carregarDados();}
+        
+        window.mudarStatusPedido=async(id,s)=>{
+            const n=s==='Concluído'?'Pendente':'Concluído';
+            if(confirm(`Mudar status para ${n}?`)){
+                try {
+                    await updateDoc(doc(db,"pedidos",id),{status:n});
+                    showToast("Status atualizado!", "info");
+                    carregarVendas();
+                } catch(e) { showToast("Erro ao atualizar", "error"); }
+            }
+        }
+        
+        window.apagarPedido=async(id)=>{
+            if(confirm("Tem certeza que deseja apagar este pedido?")){
+                try {
+                    await deleteDoc(doc(db,"pedidos",id));
+                    showToast("Pedido removido!", "success");
+                    carregarVendas();
+                } catch(e) { showToast("Erro ao apagar", "error"); }
+            }
+        }
+        
+        window.apagarProduto=async(id)=>{
+            if(confirm("Tem certeza que deseja apagar este produto?")){
+                try {
+                    await deleteDoc(doc(db,"produtos",id));
+                    showToast("Produto removido!", "success");
+                    carregarDados();
+                } catch(e) { showToast("Erro ao apagar", "error"); }
+            }
+        }
+        
+        window.alterarEstoque=async(id,s)=>{
+            try {
+                await updateDoc(doc(db,"produtos",id),{ativo:s});
+                showToast(s ? "Produto ativado!" : "Produto pausado", "info");
+                carregarDados();
+            } catch(e) { showToast("Erro ao alterar estoque", "error"); }
+        }
     </script>
 </body>
 </html>
