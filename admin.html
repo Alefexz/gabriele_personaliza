@@ -3,13 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | Gabriele Personaliza</title>
+    <title>Admin Seguro | Gabriele</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* Estilos mantidos */
         body { font-family: 'Poppins', sans-serif; background: #F0F2F5; margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* TELA DE LOGIN */
+        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #2c3e50; z-index: 9999; display: flex; justify-content: center; align-items: center; }
+        .login-card { background: white; padding: 40px; border-radius: 15px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .login-input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box; }
+        .btn-entrar { background: #B39DDB; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; margin-top: 10px; }
+        .btn-entrar:hover { background: #9575CD; }
+        .error-msg { color: red; font-size: 0.8rem; margin-top: 15px; display: none; background: #FFEBEE; padding: 10px; border-radius: 5px; border: 1px solid #FFCDD2; }
+
+        /* PAINEL */
+        #painel-app { display: none; width: 100%; height: 100%; }
+        
+        /* ESTILOS DO PAINEL */
         .sidebar { width: 250px; background: white; padding: 20px; display: flex; flex-direction: column; border-right: 1px solid #ddd; }
         .sidebar h2 { color: #B39DDB; margin-bottom: 30px; }
         .menu-item { padding: 12px; margin-bottom: 8px; cursor: pointer; border-radius: 8px; color: #555; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
@@ -35,48 +47,64 @@
         .preview-thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; border: 1px solid #ddd; }
         .action-icon { cursor: pointer; margin-left: 10px; font-size: 1.1rem; transition: 0.2s; }
         .icon-edit { color: #2196F3; } .icon-trash { color: #ccc; } .icon-trash:hover { color: #F44336; } .icon-toggle { color: #4CAF50; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* ESTILOS NOVOS PARA PROMOÇÃO */
         .promo-box { background: #FCE4EC; padding: 15px; border-radius: 8px; border: 1px solid #F8BBD0; margin: 15px 0; }
         .price-tag-admin { display: flex; flex-direction: column; }
         .old-price-admin { text-decoration: line-through; color: #999; font-size: 0.8rem; }
         .new-price-admin { color: #E91E63; font-weight: bold; }
-
-        @media (max-width: 768px) { body { flex-direction: column; } .sidebar { width: 100%; flex-direction: row; height: auto; padding: 10px; overflow-x: auto; } .sidebar h2 { display:none; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 768px) { body { flex-direction: column; } .sidebar { width: 100%; flex-direction: row; height: auto; padding: 10px; overflow-x: auto; } .sidebar h2 { display:none; } #painel-app { flex-direction: column; } }
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <h2>Gabriele Admin</h2>
-        <div class="menu-item active" onclick="mudarAba('produtos')"><i class="fas fa-box"></i> Produtos</div>
-        <div class="menu-item" onclick="mudarAba('vendas')"><i class="fas fa-shopping-bag"></i> Vendas</div>
-        <div class="menu-item" id="btn-sair"><i class="fas fa-sign-out-alt"></i> Sair</div>
-    </div>
-    <div class="main-content">
-        <div id="view-produtos" class="view-section active">
-            <div style="margin-bottom: 20px; overflow: hidden;">
-                <h2 style="float: left; margin: 0;">Estoque 📦</h2>
-                <button class="btn-new" onclick="abrirFormulario()">+ Novo Produto</button>
-            </div>
-            <div class="table-box">
-                <table>
-                    <thead><tr><th>Produto</th><th>Preço</th><th>Mínimo</th><th>Status</th><th>Ações</th></tr></thead>
-                    <tbody id="lista-produtos"><tr><td colspan="5">Carregando...</td></tr></tbody>
-                </table>
-            </div>
-        </div>
-        <div id="view-vendas" class="view-section">
-            <h2 style="margin-bottom: 20px;">Pedidos Realizados 🛒</h2>
-            <div class="table-box">
-                <table>
-                    <thead><tr><th>ID</th><th>Data/Hora</th><th>Cliente</th><th>Produto</th><th>Total</th><th>Status</th><th>Ações</th></tr></thead>
-                    <tbody id="lista-vendas"><tr><td colspan="7">Carregando pedidos...</td></tr></tbody>
-                </table>
-            </div>
+
+    <div id="login-screen">
+        <div class="login-card">
+            <i class="fas fa-user-shield" style="font-size: 3rem; color: #B39DDB; margin-bottom: 10px;"></i>
+            <h3>Acesso Restrito</h3>
+            <p style="color:#666; font-size:0.8rem; margin-bottom:20px;">Entre com suas credenciais</p>
+            
+            <input type="email" id="email-admin" class="login-input" value="gabyguedes534@gmail.com" readonly style="background:#f0f0f0; color:#555">
+            <input type="password" id="senha-admin" class="login-input" placeholder="Sua senha">
+            
+            <button class="btn-entrar" onclick="login()">Acessar Painel</button>
+            <p id="login-erro" class="error-msg">Dados incorretos!</p>
         </div>
     </div>
-    
+
+    <div id="painel-app">
+        <div class="sidebar">
+            <h2>Gabriele Admin</h2>
+            <div class="menu-item active" onclick="mudarAba('produtos')"><i class="fas fa-box"></i> Produtos</div>
+            <div class="menu-item" onclick="mudarAba('vendas')"><i class="fas fa-shopping-bag"></i> Vendas</div>
+            <div class="menu-item" id="btn-sair"><i class="fas fa-sign-out-alt"></i> Sair</div>
+        </div>
+
+        <div class="main-content">
+            <div id="view-produtos" class="view-section active">
+                <div style="margin-bottom: 20px; overflow: hidden;">
+                    <h2 style="float: left; margin: 0;">Estoque 📦</h2>
+                    <button class="btn-new" onclick="abrirFormulario()">+ Novo Produto</button>
+                </div>
+                <div class="table-box">
+                    <table>
+                        <thead><tr><th>Produto</th><th>Preço</th><th>Mínimo</th><th>Status</th><th>Ações</th></tr></thead>
+                        <tbody id="lista-produtos"><tr><td colspan="5">Carregando...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="view-vendas" class="view-section">
+                <h2 style="margin-bottom: 20px;">Pedidos Realizados 🛒</h2>
+                <div class="table-box">
+                    <table>
+                        <thead><tr><th>ID</th><th>Data/Hora</th><th>Cliente</th><th>Produto</th><th>Total</th><th>Status</th><th>Ações</th></tr></thead>
+                        <tbody id="lista-vendas"><tr><td colspan="7">Carregando pedidos...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="form-overlay">
         <div class="form-card">
             <h3 id="titulo-modal">Novo Produto</h3>
@@ -85,25 +113,22 @@
             <div id="preview-area" class="preview-container"></div>
             <label>Nome</label><input type="text" id="novo-nome">
             <label>Descrição</label><textarea id="novo-desc" placeholder="Detalhes..."></textarea>
-            
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div><label>Preço Original (R$)</label><input type="number" id="novo-preco" step="0.01"></div>
+                <div><label>Preço (R$)</label><input type="number" id="novo-preco" step="0.01"></div>
                 <div><label>Qtd. Mínima</label><input type="number" id="novo-minimo" value="1" min="1"></div>
             </div>
-
+            
             <div class="promo-box">
                 <label style="display:flex; align-items:center; gap:10px; font-weight:bold; color:#E91E63; cursor:pointer">
-                    <input type="checkbox" id="cb-promocao" onchange="togglePromoField()"> 
-                    Produto em Promoção?
+                    <input type="checkbox" id="cb-promocao" onchange="togglePromoField()"> Produto em Promoção?
                 </label>
                 <div id="promo-field-container" style="display:none; margin-top:10px;">
                     <label>Preço Promocional (R$)</label>
-                    <input type="number" id="novo-preco-promo" step="0.01" placeholder="Valor com desconto">
+                    <input type="number" id="novo-preco-promo" step="0.01">
                 </div>
             </div>
 
             <label>Link de Pagamento (Opcional)</label><input type="text" id="novo-link" placeholder="Mercado Pago/Pix">
-            
             <label>Categoria</label>
             <select id="novo-categoria">
                 <option value="festa">Festa</option>
@@ -112,38 +137,63 @@
                 <option value="simples">Simples</option>
                 <option value="semiluxo">Semi Luxo</option>
             </select>
-            
             <button id="btn-salvar" class="btn-new" onclick="salvarProduto()" style="width: 100%;">Salvar</button>
             <button onclick="fecharFormulario()" style="background: none; border: none; width: 100%; margin-top: 10px; cursor: pointer;">Cancelar</button>
         </div>
     </div>
+
     <script type="module">
-        if (sessionStorage.getItem('admin_logado') !== 'sim') {
-            if (prompt("🔒 Senha Admin:") === 'gabi123') sessionStorage.setItem('admin_logado', 'sim');
-            else window.location.href = 'index.html';
-        }
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, doc, updateDoc, addDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
         const firebaseConfig = { apiKey: "AIzaSyBrRLiEFF8dfWHVxhK3popdYgEDQLiKzCM", authDomain: "gabriele-personaliza.firebaseapp.com", projectId: "gabriele-personaliza", storageBucket: "gabriele-personaliza.firebasestorage.app", messagingSenderId: "403724311605", appId: "1:403724311605:web:850e1bb14459a3ec60e57c", measurementId: "G-T24GYM57CT" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // --- SISTEMA DE LOGIN ---
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('painel-app').style.display = 'flex';
+                carregarDados(); carregarVendas();
+            } else {
+                document.getElementById('login-screen').style.display = 'flex';
+                document.getElementById('painel-app').style.display = 'none';
+            }
+        });
+
+        window.login = async () => {
+            // PEGA O EMAIL QUE JÁ ESTÁ ESCRITO NO CAMPO
+            const email = document.getElementById('email-admin').value;
+            const senha = document.getElementById('senha-admin').value;
+            const btn = document.querySelector('.btn-entrar');
+            const erro = document.getElementById('login-erro');
+            
+            btn.innerText = "Verificando...";
+            erro.style.display = 'none';
+
+            try {
+                await signInWithEmailAndPassword(auth, email, senha);
+            } catch (error) {
+                console.error(error);
+                erro.innerText = "Senha incorreta (ou usuário não criado no Firebase).";
+                erro.style.display = 'block';
+                btn.innerText = "Acessar Painel";
+            }
+        }
+
+        document.getElementById('btn-sair').addEventListener('click', () => {
+            if(confirm("Sair do sistema?")){ signOut(auth); window.location.href = 'index.html'; } 
+        });
+
+        // --- LÓGICA DO PAINEL ---
         let listaFotosBase64 = [], produtoEmEdicaoId = null, produtosCache = {};
+        const formatarMoeda = (v) => parseFloat(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-        const formatarMoeda = (valor) => parseFloat(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-
-        // FUNÇÃO PARA MOSTRAR/ESCONDER CAMPO DE PROMOÇÃO
-        window.togglePromoField = () => {
-            const cb = document.getElementById('cb-promocao');
-            const field = document.getElementById('promo-field-container');
-            field.style.display = cb.checked ? 'block' : 'none';
-        }
-
-        window.mudarAba = (aba) => {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
-            document.getElementById(`view-${aba}`).classList.add('active');
-            event.currentTarget.classList.add('active');
-        }
+        window.togglePromoField = () => { document.getElementById('promo-field-container').style.display = document.getElementById('cb-promocao').checked ? 'block' : 'none'; }
+        window.mudarAba = (aba) => { document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active')); document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active')); document.getElementById(`view-${aba}`).classList.add('active'); event.currentTarget.classList.add('active'); }
 
         async function carregarDados() {
             const tbody = document.getElementById('lista-produtos');
@@ -157,28 +207,9 @@
                     const img = thumb ? `<img src="${thumb}" class="mini-foto">` : '<div class="mini-foto"></div>';
                     const color = p.ativo ? '#4CAF50' : '#F44336';
                     const minDisplay = p.minimo > 1 ? `<span style="background:#E3F2FD; padding:2px 5px; border-radius:5px; font-weight:bold; font-size:0.8rem">Mín: ${p.minimo}</span>` : '1 un';
-                    
-                    // LÓGICA DE EXIBIÇÃO DE PREÇO NA TABELA
                     let priceDisplay = formatarMoeda(p.preco);
-                    if(p.em_promocao && p.preco_promocional > 0) {
-                        priceDisplay = `
-                            <div class="price-tag-admin">
-                                <span class="old-price-admin">${formatarMoeda(p.preco)}</span>
-                                <span class="new-price-admin">${formatarMoeda(p.preco_promocional)}</span>
-                            </div>`;
-                    }
-
-                    html += `<tr>
-                        <td><div style="display:flex; gap:10px; align-items:center;">${img} <strong>${p.nome}</strong></div></td>
-                        <td>${priceDisplay}</td>
-                        <td>${minDisplay}</td>
-                        <td><span style="color:${color}; font-weight:bold">${p.ativo ? 'Ativo' : 'Esgotado'}</span></td>
-                        <td>
-                            <i class="fas fa-pencil-alt action-icon icon-edit" onclick="editarProduto('${docSnap.id}')"></i>
-                            <i class="fas fa-trash action-icon icon-trash" onclick="apagarProduto('${docSnap.id}')"></i>
-                            <i class="fas fa-toggle-on action-icon icon-toggle" style="color:${color}" onclick="alterarEstoque('${docSnap.id}', ${!p.ativo})"></i>
-                        </td>
-                    </tr>`;
+                    if(p.em_promocao && p.preco_promocional > 0) priceDisplay = `<div class="price-tag-admin"><span class="old-price-admin">${formatarMoeda(p.preco)}</span><span class="new-price-admin">${formatarMoeda(p.preco_promocional)}</span></div>`;
+                    html += `<tr><td><div style="display:flex; gap:10px; align-items:center;">${img} <strong>${p.nome}</strong></div></td><td>${priceDisplay}</td><td>${minDisplay}</td><td><span style="color:${color}; font-weight:bold">${p.ativo ? 'Ativo' : 'Esgotado'}</span></td><td><i class="fas fa-pencil-alt action-icon icon-edit" onclick="editarProduto('${docSnap.id}')"></i><i class="fas fa-trash action-icon icon-trash" onclick="apagarProduto('${docSnap.id}')"></i><i class="fas fa-toggle-on action-icon icon-toggle" style="color:${color}" onclick="alterarEstoque('${docSnap.id}', ${!p.ativo})"></i></td></tr>`;
                 });
                 tbody.innerHTML = html;
             } catch (e) { console.error(e); }
@@ -191,22 +222,9 @@
                 const qs = await getDocs(q); let html = '';
                 qs.forEach(doc => {
                     const p = doc.data();
-                    const dataObj = p.data ? new Date(p.data) : null;
-                    const dataF = dataObj ? dataObj.toLocaleString('pt-BR', {day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}) : '-';
-                    let statusClass = 'status-pendente';
-                    if(p.status==='Concluído') statusClass='status-concluido';
-                    if(p.status==='Aguardando Pagamento') statusClass='status-aguardando';
-                    const total = formatarMoeda(p.total);
-
-                    html += `<tr>
-                        <td style="font-weight:bold; color:#B39DDB">${p.id_visual||'-'}</td>
-                        <td>${dataF}</td>
-                        <td>${p.cliente}<br><small>${p.whatsapp}</small></td>
-                        <td>${p.produto}</td>
-                        <td>${total}</td>
-                        <td><span class="btn-status ${statusClass}" onclick="mudarStatusPedido('${doc.id}','${p.status}')" style="cursor:pointer">${p.status}</span></td>
-                        <td><i class="fas fa-trash action-icon icon-trash" onclick="apagarPedido('${doc.id}')" title="Excluir Pedido"></i></td>
-                    </tr>`;
+                    const dataF = p.data ? new Date(p.data).toLocaleString('pt-BR', {day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}) : '-';
+                    let statusClass = p.status==='Concluído'?'status-concluido':(p.status==='Aguardando Pagamento'?'status-aguardando':'status-pendente');
+                    html += `<tr><td style="font-weight:bold; color:#B39DDB">${p.id_visual||'-'}</td><td>${dataF}</td><td>${p.cliente}<br><small>${p.whatsapp}</small></td><td>${p.produto}</td><td>${formatarMoeda(p.total)}</td><td><span class="btn-status ${statusClass}" onclick="mudarStatusPedido('${doc.id}','${p.status}')" style="cursor:pointer">${p.status}</span></td><td><i class="fas fa-trash action-icon icon-trash" onclick="apagarPedido('${doc.id}')"></i></td></tr>`;
                 });
                 tbody.innerHTML = html || '<tr><td colspan="7">Nenhum pedido.</td></tr>';
             } catch(e) { console.error(e); }
@@ -218,15 +236,12 @@
             document.getElementById('novo-nome').value = p.nome;
             document.getElementById('novo-desc').value = p.descricao || '';
             document.getElementById('novo-preco').value = p.preco;
-            document.getElementById('novo-minimo').value = p.minimo || 1; 
+            document.getElementById('novo-minimo').value = p.minimo || 1;
             document.getElementById('novo-link').value = p.link_pagamento || '';
             document.getElementById('novo-categoria').value = p.categoria;
-            
-            // CARREGA DADOS DE PROMOÇÃO
             document.getElementById('cb-promocao').checked = p.em_promocao || false;
             document.getElementById('novo-preco-promo').value = p.preco_promocional || '';
-            togglePromoField(); // Atualiza visibilidade
-
+            togglePromoField();
             const area = document.getElementById('preview-area'); area.innerHTML = '';
             (p.fotos || (p.foto ? [p.foto] : [])).forEach(f => area.innerHTML += `<img src="${f}" class="preview-thumb">`);
             document.getElementById('titulo-modal').innerText = "Editar Produto";
@@ -241,23 +256,12 @@
             const minimo = document.getElementById('novo-minimo').value;
             const link = document.getElementById('novo-link').value;
             const cat = document.getElementById('novo-categoria').value;
-            
-            // PEGA DADOS DE PROMOÇÃO
             const emPromocao = document.getElementById('cb-promocao').checked;
             const precoPromo = document.getElementById('novo-preco-promo').value;
-
-            if(!nome || !preco) return alert("Preencha campos obrigatórios");
-            
-            // Validação de Promoção
-            if(emPromocao && !precoPromo) return alert("Se está em promoção, informe o preço promocional.");
-
+            if(!nome || !preco) return alert("Preencha campos");
             const btn = document.getElementById('btn-salvar'); btn.innerText = "...";
             try {
-                let dados = { 
-                    nome, descricao: desc, preco: parseFloat(preco), minimo: parseInt(minimo)||1, link_pagamento: link, categoria: cat,
-                    em_promocao: emPromocao,
-                    preco_promocional: emPromocao ? parseFloat(precoPromo) : null // Só salva se tiver marcado
-                };
+                let dados = { nome, descricao: desc, preco: parseFloat(preco), minimo: parseInt(minimo)||1, link_pagamento: link, categoria: cat, em_promocao: emPromocao, preco_promocional: emPromocao ? parseFloat(precoPromo) : null };
                 if (listaFotosBase64.length > 0) dados.fotos = listaFotosBase64;
                 else if (!produtoEmEdicaoId) dados.fotos = null;
                 if (produtoEmEdicaoId) { await updateDoc(doc(db, "produtos", produtoEmEdicaoId), dados); alert("Atualizado!"); }
@@ -267,26 +271,13 @@
             btn.innerText = "Salvar";
         }
         
-        window.abrirFormulario = () => {
-            produtoEmEdicaoId = null;
-            document.getElementById('titulo-modal').innerText = "Novo Produto";
-            document.getElementById('btn-salvar').innerText = "Salvar";
-            document.querySelectorAll('#form-overlay input, #form-overlay textarea, #form-overlay select').forEach(i => i.value = '');
-            document.getElementById('novo-minimo').value = '1'; 
-            document.getElementById('cb-promocao').checked = false; // Reset checkbox
-            togglePromoField(); // Reset visibilidade
-            document.getElementById('preview-area').innerHTML = ''; listaFotosBase64 = [];
-            document.getElementById('form-overlay').style.display = 'flex';
-        }
+        window.abrirFormulario = () => { produtoEmEdicaoId = null; document.getElementById('titulo-modal').innerText = "Novo Produto"; document.getElementById('btn-salvar').innerText = "Salvar"; document.querySelectorAll('#form-overlay input, #form-overlay textarea').forEach(i => i.value = ''); document.getElementById('novo-minimo').value = '1'; document.getElementById('cb-promocao').checked = false; togglePromoField(); document.getElementById('preview-area').innerHTML = ''; listaFotosBase64 = []; document.getElementById('form-overlay').style.display = 'flex'; }
         window.fecharFormulario = () => document.getElementById('form-overlay').style.display = 'none';
         window.processarImagens = (input) => { const files = input.files; const area = document.getElementById('preview-area'); area.innerHTML = ''; listaFotosBase64 = []; if(files.length>3) return alert("Máx 3"); Array.from(files).forEach(f => { const r = new FileReader(); r.onload=e=>{ const i=new Image(); i.src=e.target.result; i.onload=()=>{ const c=document.createElement('canvas'); const x=c.getContext('2d'); const s=400/i.width; c.width=400; c.height=i.height*s; x.drawImage(i,0,0,c.width,c.height); const u=c.toDataURL('image/jpeg',0.6); listaFotosBase64.push(u); area.innerHTML+=`<img src="${u}" class="preview-thumb">`;}}; r.readAsDataURL(f); }); }
-        
         window.mudarStatusPedido = async (id,s) => { const n = s==='Concluído'?'Pendente':'Concluído'; if(confirm(`Mudar para ${n}?`)){ await updateDoc(doc(db,"pedidos",id),{status:n}); carregarVendas(); }}
-        window.apagarPedido = async (id) => { if(confirm("Tem certeza que deseja apagar este pedido? Isso não pode ser desfeito.")) { await deleteDoc(doc(db, "pedidos", id)); carregarVendas(); } }
+        window.apagarPedido = async (id) => { if(confirm("Apagar pedido?")) { await deleteDoc(doc(db, "pedidos", id)); carregarVendas(); } }
         window.apagarProduto = async (id) => { if(confirm("Apagar produto?")) { await deleteDoc(doc(db,"produtos",id)); carregarDados(); } }
         window.alterarEstoque = async (id, s) => { await updateDoc(doc(db,"produtos",id), {ativo:s}); carregarDados(); }
-        document.getElementById('btn-sair').addEventListener('click', () => { if(confirm("Sair?")){sessionStorage.removeItem('admin_logado'); window.location.href='index.html'} });
-        carregarDados(); carregarVendas();
     </script>
 </body>
 </html>
