@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-
+    
     // --- MENU MOBILE ---
     const menuToggle = document.querySelector('.menu-toggle');
     const navLinks = document.querySelector('.nav-links');
@@ -36,18 +36,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- CORREÇÃO DEFINITIVA INSTAGRAM ---
+    // --- SOLUÇÃO DEFINITIVA DO INSTAGRAM ---
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     const instaLinks = document.querySelectorAll('a[href*="instagram.com"]');
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
     instaLinks.forEach(link => {
+        // 1. Link 100% limpo, sem o rastreador (?igsh) que quebra o aplicativo
+        link.href = "https://www.instagram.com/gabriele_personaliza/";
+
+        // 2. Se for celular, tira o bloqueio de nova aba
         if (isMobile) {
-            // Abre direto no app no perfil correto
-            link.href = "instagram://user?username=gabriele_personaliza";
+            link.removeAttribute('target');
         } else {
-            // Desktop abre normal
-            link.href = "https://www.instagram.com/gabriele_personaliza/";
+            // Se for PC, garante que vai abrir em nova aba
+            link.setAttribute('target', '_blank');
         }
     });
-
 });
