@@ -1,13 +1,6 @@
+<!DOCTYPE html>
+<html lang="pt-br">
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T24GYM57CT"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-T24GYM57CT');
-    </script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loja | Gabriele Personaliza</title>
@@ -23,6 +16,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T24GYM57CT"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-T24GYM57CT');
+    </script>
+
     <link rel="stylesheet" href="style.css?v=4">
     
     <style>
@@ -113,9 +116,9 @@
 
     <section class="welcome-banner">
         <div class="container">
-            <h1>Seja bem-vindo(a)!</h1>
-            <p>Transforme sua festa com nossa papelaria criativa feita à mão.</p>
-            <div class="hero-socials">
+            <h1 data-aos="fade-down" data-aos-duration="1000">Seja bem-vindo(a)!</h1>
+            <p data-aos="fade-up" data-aos-delay="200" data-aos-duration="1000">Transforme sua festa com nossa papelaria criativa feita à mão.</p>
+            <div class="hero-socials" data-aos="zoom-in" data-aos-delay="400">
                 <a href="https://www.instagram.com/gabriele_personaliza/" target="_blank" class="social-big insta-bg"><i class="fab fa-instagram"></i></a>
                 <a href="https://wa.me/559292770409" target="_blank" class="social-big zap-bg"><i class="fab fa-whatsapp"></i></a>
             </div>
@@ -125,12 +128,12 @@
 
     <section id="loja" class="section-padding store-section">
         <div class="container">
-            <div class="search-container">
+            <div class="search-container" data-aos="fade-up">
                 <input type="text" id="campo-busca" class="search-input" placeholder="O que você procura hoje?" onkeyup="filtrarPorNome()">
                 <i class="fas fa-search search-icon"></i>
             </div>
 
-            <div class="filter-container">
+            <div class="filter-container" data-aos="fade-up" data-aos-delay="100">
                 <button class="filter-btn active" onclick="aplicarFiltros('todos')" data-filter="todos">Todos</button>
                 <button class="filter-btn" onclick="aplicarFiltros('promocao')" data-filter="promocao"><i class="fas fa-tag"></i> Promoções</button>
                 <button class="filter-btn" onclick="aplicarFiltros('festa')" data-filter="festa">Festas</button>
@@ -146,7 +149,7 @@
     </section>
 
     <section id="sobre" class="section-padding" style="background: #fff;">
-        <div class="container about-container">
+        <div class="container about-container" data-aos="zoom-in" data-aos-duration="800">
             <div class="about-text">
                 <h2 class="section-title" style="text-align: left;">Quem faz?</h2>
                 <p>A <strong>Gabriele Personaliza</strong> nasceu do desejo de transformar papel em memórias eternas. O que começou como um hobby criativo, hoje é uma marca dedicada a levar beleza e afeto para os seus momentos especiais.</p>
@@ -155,7 +158,7 @@
         </div>
     </section>
 
-    <footer id="contato">
+    <footer id="contato" data-aos="fade-up">
         <div class="container">
             <div class="footer-brand"><h3>Gabriele Personaliza</h3><p>Feito com amor.</p></div>
             <div class="socials">
@@ -168,7 +171,7 @@
         </div>
     </footer>
 
-    <a href="https://wa.me/559292770409" class="floating-whatsapp" target="_blank">
+    <a href="https://wa.me/559292770409" class="floating-whatsapp" target="_blank" data-aos="zoom-in" data-aos-delay="500">
         <i class="fab fa-whatsapp"></i>
     </a>
 
@@ -222,8 +225,7 @@
                 <li><i class="fas fa-hand-holding-usd"></i> <strong>Pagamento:</strong> Solicitamos 50% do valor no ato do pedido para iniciar a produção.</li>
                 <li><i class="fas fa-exclamation-triangle"></i> <strong>Cancelamento:</strong> Em caso de desistência, o valor da entrada não é reembolsado.</li>
                 <li><i class="fas fa-paint-brush"></i> <strong>Arte:</strong> Enviamos a arte para aprovação antes da impressão final.</li>
-                <li><i class="fas fa-shipping-fast"></i> <strong>Entrega:</strong> Retirada no local ou entrega (sua escolha).</li>
-                
+                <li><i class="fas fa-shipping-fast"></i> <strong>Entrega:</strong> Retirada no local ou entrega com taxa.</li>
             </ul>
             <button class="alert-btn" onclick="fecharPoliticas()" style="margin-top:20px;">Entendi!</button>
         </div>
@@ -253,7 +255,16 @@
         <img id="fullscreen-img" src="">
     </div>
 
-    <script src="script.js?v=8"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Inicializa as animações de rolagem
+        AOS.init({
+            duration: 800, // Tempo da animação (0.8s)
+            once: true, // Anima só na primeira vez que rolar pra baixo
+            offset: 50 // Inicia a animação quando faltar 50px pro elemento aparecer
+        });
+    </script>
+    <script src="script.js?v=9"></script>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -261,11 +272,11 @@
             const instaLinks = document.querySelectorAll('a[href*="instagram.com"]');
             
             instaLinks.forEach(link => {
-                link.href = "https://www.instagram.com/gabriele_personaliza/"; // Força a URL estar 100% limpa
+                link.href = "https://www.instagram.com/gabriele_personaliza/"; 
                 if (isMobile) {
-                    link.removeAttribute('target'); // Tira a nova aba para permitir que o celular abra no app
+                    link.removeAttribute('target'); 
                 } else {
-                    link.setAttribute('target', '_blank'); // Mantém nova aba no computador
+                    link.setAttribute('target', '_blank'); 
                 }
             });
         });
@@ -281,7 +292,6 @@
         let todosProdutos = [];
         let produtoAtual = {}, qtdAtual = 1, minimoAtual = 1;
 
-        // Funções Globais para acesso via HTML
         window.abrirPoliticas = () => document.getElementById('modal-politicas').style.display = 'flex';
         window.fecharPoliticas = () => document.getElementById('modal-politicas').style.display = 'none';
 
@@ -342,16 +352,16 @@
             
             const timestamp = new Date().getTime();
 
-            lista.forEach(p => {
+            lista.forEach((p, index) => {
                 let listaImagens = (p.fotos && p.fotos.length > 0) ? p.fotos : (p.foto ? [p.foto] : []);
                 let imagensHtml = '';
                 let estiloExtra = p.ativo ? '' : 'filter: grayscale(1); opacity: 0.6;';
                 
                 if (listaImagens.length > 0) {
-                    listaImagens.forEach((imgUrl, index) => {
+                    listaImagens.forEach((imgUrl, i) => {
                         let finalUrl = imgUrl;
                         if (imgUrl.startsWith('http')) finalUrl = `${imgUrl}?t=${timestamp}`;
-                        imagensHtml += `<img src="${finalUrl}" class="carousel-img ${index===0?'active':''}" style="${estiloExtra}">`;
+                        imagensHtml += `<img src="${finalUrl}" class="carousel-img ${i===0?'active':''}" style="${estiloExtra}">`;
                     });
                 } else {
                     imagensHtml = `<div class="carousel-img active" style="background:#E1BEE7;height:100%"></div>`;
@@ -367,6 +377,10 @@
                 
                 const card = document.createElement('div');
                 card.className = 'product-card';
+                // AQUI ACONTECE A MÁGICA DE ANIMAR OS CARDS DOS PRODUTOS
+                card.setAttribute('data-aos', 'fade-up');
+                card.setAttribute('data-aos-delay', (index % 4) * 100); // Cria um efeito "cascata" no delay
+
                 card.innerHTML = `<div class="product-img-wrapper carousel-container">${etiqueta}${imagensHtml}</div><div class="product-info"><span class="category-tag">${p.categoria.toUpperCase()}</span><h3>${p.nome}</h3><div class="product-price">${priceHtml}</div>${minLabel}${btnHtml}</div>`;
                 if(p.ativo) card.onclick = () => abrirModal(p);
                 container.appendChild(card);
