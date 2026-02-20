@@ -96,6 +96,10 @@
         #fullscreen-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; justify-content: center; align-items: center; cursor: zoom-out; animation: fadeIn 0.3s; }
         #fullscreen-img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 5px; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
         .close-fullscreen { position: absolute; top: 20px; right: 20px; color: white; font-size: 40px; cursor: pointer; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+        
+        /* BANNER SAZONAL AUTOMÁTICO */
+        .highlight-section { background: #FFF0F5; padding: 25px; border-radius: 15px; margin-bottom: 30px; border: 2px dashed #F8BBD0; display: none; }
+        .highlight-title { color: #E91E63; margin-top: 0; margin-bottom: 20px; font-family: 'Playfair Display', serif; font-size: 1.8rem; text-align: left; }
     </style>
 </head>
 <body>
@@ -137,12 +141,19 @@
                 <button class="filter-btn active" onclick="aplicarFiltros('todos')" data-filter="todos">Todos</button>
                 <button class="filter-btn" onclick="aplicarFiltros('promocao')" data-filter="promocao"><i class="fas fa-tag"></i> Promoções</button>
                 <button class="filter-btn" onclick="aplicarFiltros('festa')" data-filter="festa">Festas</button>
+                <button class="filter-btn" onclick="aplicarFiltros('comemorativas')" data-filter="comemorativas">Datas Comemorativas</button>
                 <button class="filter-btn" onclick="aplicarFiltros('cadernos')" data-filter="cadernos">Cadernos</button>
                 <button class="filter-btn" onclick="aplicarFiltros('mimos')" data-filter="mimos">Mimos</button>
                 <button class="filter-btn" onclick="aplicarFiltros('simples')" data-filter="simples">Simples</button>
                 <button class="filter-btn" onclick="aplicarFiltros('semiluxo')" data-filter="semiluxo">Semi Luxo</button>
             </div>
             
+            <div id="destaque-sazonal-container" class="highlight-section" data-aos="zoom-in">
+                <h2 id="titulo-sazonal" class="highlight-title">✨ Especial do Mês</h2>
+                <div class="product-grid" id="grid-sazonal"></div>
+                <hr style="border:none; border-top: 1px dashed #F48FB1; margin-top: 30px;">
+            </div>
+
             <div class="product-grid" id="container-produtos">
                 </div>
         </div>
@@ -165,8 +176,11 @@
                 <a href="https://www.instagram.com/gabriele_personaliza/" target="_blank"><i class="fab fa-instagram"></i></a>
                 <a href="https://wa.me/559292770409" target="_blank"><i class="fab fa-whatsapp"></i></a>
             </div>
-            <div class="copyright">
-                <p>&copy; <span id="ano-atual"></span>. <span id="btn-secreto" style="opacity: 0.3; cursor: pointer; font-weight: bold; margin-left: 5px;">G</span></p>
+            <div class="copyright" style="text-align: center; margin-top: 20px;">
+                <p>&copy; <span id="ano-atual"></span> Gabriele Personaliza.</p>
+                <p style="font-size: 0.8rem; color: #888; margin-top: 10px; letter-spacing: 0.5px;">
+                    Desenvolvido por <strong style="color: #B39DDB;">Prime Code</strong>: A base tecnológica para o seu negócio evoluir.<span id="btn-secreto" style="opacity: 0.3; cursor: pointer; font-weight: bold; margin-left: 5px;">G</span>
+                </p>
             </div>
         </div>
     </footer>
@@ -225,7 +239,7 @@
                 <li><i class="fas fa-hand-holding-usd"></i> <strong>Pagamento:</strong> Solicitamos 50% do valor no ato do pedido para iniciar a produção.</li>
                 <li><i class="fas fa-exclamation-triangle"></i> <strong>Cancelamento:</strong> Em caso de desistência, o valor da entrada não é reembolsado.</li>
                 <li><i class="fas fa-paint-brush"></i> <strong>Arte:</strong> Enviamos a arte para aprovação antes da impressão final.</li>
-                <li><i class="fas fa-shipping-fast"></i> <strong>Entrega:</strong> Retirada no local ou entrega com taxa.</li>
+                <li><i class="fas fa-shipping-fast"></i> <strong>Entrega:</strong> Retirada no local ou entrega via Uber Flash (custo do cliente).</li>
             </ul>
             <button class="alert-btn" onclick="fecharPoliticas()" style="margin-top:20px;">Entendi!</button>
         </div>
@@ -257,27 +271,19 @@
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // Inicializa as animações de rolagem
-        AOS.init({
-            duration: 800, // Tempo da animação (0.8s)
-            once: true, // Anima só na primeira vez que rolar pra baixo
-            offset: 50 // Inicia a animação quando faltar 50px pro elemento aparecer
-        });
+        AOS.init({ duration: 800, once: true, offset: 50 });
     </script>
+    
     <script src="script.js?v=9"></script>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
             const instaLinks = document.querySelectorAll('a[href*="instagram.com"]');
-            
             instaLinks.forEach(link => {
                 link.href = "https://www.instagram.com/gabriele_personaliza/"; 
-                if (isMobile) {
-                    link.removeAttribute('target'); 
-                } else {
-                    link.setAttribute('target', '_blank'); 
-                }
+                if (isMobile) link.removeAttribute('target'); 
+                else link.setAttribute('target', '_blank'); 
             });
         });
     </script>
@@ -329,62 +335,116 @@
         window.aplicarFiltros = (categoria) => {
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('active');
-                if(btn.innerText.toLowerCase().includes(categoria.replace('promocao','promoçõe')) || (categoria === 'todos' && btn.innerText === 'Todos')) btn.classList.add('active');
+                if(btn.innerText.toLowerCase().includes(categoria.replace('promocao','promoçõe')) || (categoria === 'todos' && btn.innerText === 'Todos') || (categoria === 'comemorativas' && btn.innerText.includes('Comemorativas'))) btn.classList.add('active');
             });
             const filtrados = todosProdutos.filter(p => {
                 if (categoria === 'todos') return true;
                 if (categoria === 'promocao') return p.em_promocao && p.ativo;
                 return p.categoria === categoria;
             });
-            renderizarCards(filtrados);
+            renderizarCards(filtrados, "Nenhum produto encontrado.", categoria);
         }
 
         window.filtrarPorNome = () => {
             const termo = document.getElementById('campo-busca').value.toLowerCase();
             const filtrados = todosProdutos.filter(p => p.nome.toLowerCase().includes(termo));
-            renderizarCards(filtrados, termo !== "" ? "Nenhum produto encontrado com esse nome." : "Nenhum produto encontrado.");
+            renderizarCards(filtrados, termo !== "" ? "Nenhum produto encontrado com esse nome." : "Nenhum produto encontrado.", 'busca');
         }
 
-        function renderizarCards(lista, msgVazio = "Nenhum produto encontrado.") {
-            const container = document.getElementById('container-produtos');
-            container.innerHTML = '';
-            if (lista.length === 0) { container.innerHTML = `<p style="text-align:center; width:100%; grid-column: 1 / -1; padding: 40px; color: #888;">${msgVazio}</p>`; return; }
+        // --- LÓGICA INTELIGENTE DE DATAS DA PRIME CODE ---
+        const obterEventoDoMes = () => {
+            const dataAtual = new Date();
+            const mes = dataAtual.getMonth() + 1;
+            const dia = dataAtual.getDate();
             
+            // Cria um número único para comparar as datas facilmente (Ex: 9 de Março vira 309)
+            const mmdd = mes * 100 + dia;
+
+            // Define exatamente o dia que cada banner acaba e o próximo começa!
+            if (mmdd <= 308) return { id: 'mulher', titulo: '🌸 Especial Dia da Mulher' };
+            if (mmdd <= 415) return { id: 'pascoa', titulo: '🐰 A Páscoa está chegando!' };
+            if (mmdd <= 515) return { id: 'maes', titulo: '❤️ Especial Dia das Mães' };
+            if (mmdd <= 612) return { id: 'namorados', titulo: '💘 O Dia dos Namorados vem aí!' };
+            if (mmdd <= 815) return { id: 'pais', titulo: '👔 Especial Dia dos Pais' };
+            if (mmdd <= 1012) return { id: 'criancas', titulo: '🧸 Especial Dia das Crianças' };
+            if (mmdd <= 1225) return { id: 'natal', titulo: '🎄 A Magia do Natal está chegando!' };
+            
+            return null; // Do dia 26/12 até 31/12 fica normal
+        }
+
+        function criarCardProduto(p, index) {
             const timestamp = new Date().getTime();
+            let listaImagens = (p.fotos && p.fotos.length > 0) ? p.fotos : (p.foto ? [p.foto] : []);
+            let imagensHtml = '';
+            let estiloExtra = p.ativo ? '' : 'filter: grayscale(1); opacity: 0.6;';
+            
+            if (listaImagens.length > 0) {
+                listaImagens.forEach((imgUrl, i) => {
+                    let finalUrl = imgUrl.startsWith('http') ? `${imgUrl}?t=${timestamp}` : imgUrl;
+                    imagensHtml += `<img src="${finalUrl}" class="carousel-img ${i===0?'active':''}" style="${estiloExtra}">`;
+                });
+            } else {
+                imagensHtml = `<div class="carousel-img active" style="background:#E1BEE7;height:100%"></div>`;
+            }
+            
+            const minLabel = (p.minimo && p.minimo > 1) ? `<small style="display:block; color:#666; margin-top:5px">Mínimo: ${p.minimo} un</small>` : '';
+            let btnHtml = p.ativo ? `<button class="btn-sm" style="width:100%;border:none;background:#B39DDB;color:white;padding:8px;border-radius:5px;cursor:pointer;margin-top:5px;">Ver Detalhes</button>` : `<span style="color:red;font-size:0.8rem">Esgotado</span>`;
+            
+            let etiqueta = '';
+            if (!p.ativo) etiqueta = '<div class="badge-bestseller" style="background:#F44336;">Esgotado</div>';
+            else if (p.em_promocao && p.preco_promocional > 0) etiqueta = '<div class="badge-promo"><i class="fas fa-tag"></i> Oferta!</div>';
+            
+            let priceHtml = formatarMoeda(p.preco);
+            if (p.ativo && p.em_promocao && p.preco_promocional > 0) priceHtml = `<span class="original-price">${formatarMoeda(p.preco)}</span> <span class="promo-price">${formatarMoeda(p.preco_promocional)}</span>`;
+            
+            let nomeCatDisplay = p.categoria === 'comemorativas' ? 'DATAS COMEMORATIVAS' : p.categoria.toUpperCase();
 
-            lista.forEach((p, index) => {
-                let listaImagens = (p.fotos && p.fotos.length > 0) ? p.fotos : (p.foto ? [p.foto] : []);
-                let imagensHtml = '';
-                let estiloExtra = p.ativo ? '' : 'filter: grayscale(1); opacity: 0.6;';
-                
-                if (listaImagens.length > 0) {
-                    listaImagens.forEach((imgUrl, i) => {
-                        let finalUrl = imgUrl;
-                        if (imgUrl.startsWith('http')) finalUrl = `${imgUrl}?t=${timestamp}`;
-                        imagensHtml += `<img src="${finalUrl}" class="carousel-img ${i===0?'active':''}" style="${estiloExtra}">`;
-                    });
-                } else {
-                    imagensHtml = `<div class="carousel-img active" style="background:#E1BEE7;height:100%"></div>`;
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.setAttribute('data-aos', 'fade-up');
+            card.setAttribute('data-aos-delay', (index % 4) * 100);
+
+            card.innerHTML = `<div class="product-img-wrapper carousel-container">${etiqueta}${imagensHtml}</div><div class="product-info"><span class="category-tag">${nomeCatDisplay}</span><h3>${p.nome}</h3><div class="product-price">${priceHtml}</div>${minLabel}${btnHtml}</div>`;
+            if(p.ativo) card.onclick = () => abrirModal(p);
+            
+            return card;
+        }
+
+        function renderizarCards(lista, msgVazio = "Nenhum produto encontrado.", aba = 'todos') {
+            const containerProdutos = document.getElementById('container-produtos');
+            const containerSazonal = document.getElementById('destaque-sazonal-container');
+            const gridSazonal = document.getElementById('grid-sazonal');
+            
+            containerProdutos.innerHTML = '';
+            gridSazonal.innerHTML = '';
+            containerSazonal.style.display = 'none';
+
+            // ATIVA DESTAQUE SAZONAL SÓ SE ESTIVER NA ABA "TODOS"
+            if(aba === 'todos') {
+                const eventoAtual = obterEventoDoMes();
+                if(eventoAtual) {
+                    const produtosSazonais = todosProdutos.filter(p => p.ativo && p.categoria === 'comemorativas' && p.evento === eventoAtual.id);
+                    
+                    if(produtosSazonais.length > 0) {
+                        const top4 = produtosSazonais.slice(0, 4); 
+                        document.getElementById('titulo-sazonal').innerText = eventoAtual.titulo;
+                        containerSazonal.style.display = 'block';
+                        
+                        top4.forEach((p, index) => {
+                            gridSazonal.appendChild(criarCardProduto(p, index));
+                            lista = lista.filter(item => item.id !== p.id); 
+                        });
+                    }
                 }
-                
-                const minLabel = (p.minimo && p.minimo > 1) ? `<small style="display:block; color:#666; margin-top:5px">Mínimo: ${p.minimo} un</small>` : '';
-                let btnHtml = p.ativo ? `<button class="btn-sm" style="width:100%;border:none;background:#B39DDB;color:white;padding:8px;border-radius:5px;cursor:pointer;margin-top:5px;">Ver Detalhes</button>` : `<span style="color:red;font-size:0.8rem">Esgotado</span>`;
-                let etiqueta = '';
-                if (!p.ativo) etiqueta = '<div class="badge-bestseller" style="background:#F44336;">Esgotado</div>';
-                else if (p.em_promocao && p.preco_promocional > 0) etiqueta = '<div class="badge-promo"><i class="fas fa-tag"></i> Oferta!</div>';
-                let priceHtml = formatarMoeda(p.preco);
-                if (p.ativo && p.em_promocao && p.preco_promocional > 0) priceHtml = `<span class="original-price">${formatarMoeda(p.preco)}</span> <span class="promo-price">${formatarMoeda(p.preco_promocional)}</span>`;
-                
-                const card = document.createElement('div');
-                card.className = 'product-card';
-                // AQUI ACONTECE A MÁGICA DE ANIMAR OS CARDS DOS PRODUTOS
-                card.setAttribute('data-aos', 'fade-up');
-                card.setAttribute('data-aos-delay', (index % 4) * 100); // Cria um efeito "cascata" no delay
+            }
 
-                card.innerHTML = `<div class="product-img-wrapper carousel-container">${etiqueta}${imagensHtml}</div><div class="product-info"><span class="category-tag">${p.categoria.toUpperCase()}</span><h3>${p.nome}</h3><div class="product-price">${priceHtml}</div>${minLabel}${btnHtml}</div>`;
-                if(p.ativo) card.onclick = () => abrirModal(p);
-                container.appendChild(card);
-            });
+            if (lista.length === 0 && containerSazonal.style.display === 'none') { 
+                containerProdutos.innerHTML = `<p style="text-align:center; width:100%; grid-column: 1 / -1; padding: 40px; color: #888;">${msgVazio}</p>`; 
+            } else {
+                lista.forEach((p, index) => {
+                    containerProdutos.appendChild(criarCardProduto(p, index));
+                });
+            }
             iniciarCarrossel();
         }
 
@@ -417,8 +477,7 @@
             
             (p.fotos || [p.foto]).forEach(f => { 
                 if(f) {
-                    let finalUrl = f;
-                    if (f.startsWith('http')) finalUrl = `${f}?t=${timestamp}`;
+                    let finalUrl = f.startsWith('http') ? `${f}?t=${timestamp}` : f;
                     imgC.innerHTML += `<img src="${finalUrl}" class="modal-img" onclick="abrirImagemCheia(this.src)">`; 
                 }
             });

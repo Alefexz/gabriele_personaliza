@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Seguro | Gabriele</title>
+    <title>Admin Prime | Gabriele</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- CSS GERAL --- */
+        /* CSS GERAL */
         body { font-family: 'Poppins', sans-serif; background: #F0F2F5; margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
         /* LOGIN */
@@ -57,21 +57,28 @@
         .btn-remove-foto { position: absolute; top: -8px; right: -8px; background: #F44336; color: white; border-radius: 50%; width: 22px; height: 22px; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 12px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2); border: 2px solid white; }
         .btn-remove-foto:hover { transform: scale(1.1); }
 
-        /* --- NOVIDADES VISUAIS (TOAST & LOADING) --- */
-        
-        /* 1. Container das Notificações */
+        /* TOAST E LOADING */
         #toast-container { position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; }
-        .toast { background: white; padding: 15px 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 12px; animation: slideIn 0.3s ease; min-width: 250px; border-left: 5px solid #ccc; }
+        .toast { background: white; padding: 15px 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 12px; animation: slideIn 0.3s ease; min-width: 250px; border-left: 5px solid #ccc; font-weight: 500; }
         .toast-success { border-left-color: #4CAF50; } .toast-success i { color: #4CAF50; }
         .toast-error { border-left-color: #F44336; } .toast-error i { color: #F44336; }
         .toast-info { border-left-color: #2196F3; } .toast-info i { color: #2196F3; }
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-        /* 2. Tela de Carregamento Bonita */
         #loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 20000; justify-content: center; align-items: center; flex-direction: column; }
         .spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #B39DDB; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
         .loading-text { font-size: 1.1rem; color: #555; font-weight: 500; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* MODAL DE CONFIRMAÇÃO PREMIUM */
+        #confirm-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 30000; justify-content: center; align-items: center; animation: fadeIn 0.2s; }
+        .confirm-box { background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .confirm-box h3 { margin: 0 0 10px 0; color: #333; }
+        .confirm-box p { color: #666; font-size: 0.95rem; margin-bottom: 20px; }
+        .confirm-btns { display: flex; gap: 10px; }
+        .btn-cancel { flex: 1; padding: 12px; border: none; border-radius: 8px; background: #eee; color: #555; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-cancel:hover { background: #e0e0e0; }
+        .btn-action { flex: 1; padding: 12px; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; transition: 0.2s; }
 
         /* MOBILE */
         @media (max-width: 768px) {
@@ -92,7 +99,6 @@
             td:first-child::before { display: none; }
             .mini-foto { width: 60px; height: 60px; }
             .btn-new { float: none; width: 100%; margin-top: 10px; }
-            h2 { text-align: center; }
         }
     </style>
 </head>
@@ -103,6 +109,18 @@
     <div id="loading-overlay">
         <div class="spinner"></div>
         <div class="loading-text" id="loading-msg">Processando...</div>
+    </div>
+
+    <div id="confirm-modal">
+        <div class="confirm-box">
+            <i id="confirm-icon" class="fas fa-question-circle" style="font-size: 3rem; color: #B39DDB; margin-bottom: 15px;"></i>
+            <h3 id="confirm-title">Atenção</h3>
+            <p id="confirm-msg">Deseja continuar?</p>
+            <div class="confirm-btns">
+                <button class="btn-cancel" onclick="fecharConfirm()">Cancelar</button>
+                <button id="btn-confirm-yes" class="btn-action">Sim</button>
+            </div>
+        </div>
     </div>
 
     <div id="login-screen">
@@ -119,7 +137,7 @@
 
     <div id="painel-app">
         <div class="sidebar">
-            <h2>Gabriele Admin</h2>
+            <h2>Admin Prime</h2>
             <div class="menu-item active" onclick="mudarAba('produtos')"><i class="fas fa-box"></i> Produtos</div>
             <div class="menu-item" onclick="mudarAba('vendas')"><i class="fas fa-shopping-bag"></i> Vendas</div>
             <div class="menu-item" id="btn-sair"><i class="fas fa-sign-out-alt"></i> Sair</div>
@@ -184,14 +202,30 @@
             <label>Categoria</label>
             <select id="novo-categoria">
                 <option value="festa">Festa</option>
+                <option value="comemorativas">Datas Comemorativas</option>
                 <option value="cadernos">Cadernos</option>
                 <option value="mimos">Mimos</option>
                 <option value="simples">Simples</option>
                 <option value="semiluxo">Semi Luxo</option>
             </select>
+
+            <div id="div-evento" style="display:none; margin-top:15px; padding:15px; background:#f9f9f9; border-radius:8px; border-left:4px solid #B39DDB;">
+                <label style="color:#B39DDB; font-weight:bold;">Qual Data Comemorativa?</label>
+                <select id="novo-evento" style="margin-top:5px;">
+                    <option value="mulher">Dia da Mulher (Março)</option>
+                    <option value="pascoa">Páscoa (Abril)</option>
+                    <option value="maes">Dia das Mães (Maio)</option>
+                    <option value="namorados">Dia dos Namorados (Junho)</option>
+                    <option value="pais">Dia dos Pais (Agosto)</option>
+                    <option value="criancas">Dia das Crianças (Outubro)</option>
+                    <option value="professores">Dia dos Professores (Outubro)</option>
+                    <option value="natal">Natal (Dezembro)</option>
+                    <option value="ano_novo">Ano Novo (Jan)</option>
+                </select>
+            </div>
             
-            <button id="btn-salvar" class="btn-new" onclick="salvarProduto()" style="width: 100%;">Salvar</button>
-            <button onclick="fecharFormulario()" style="background: none; border: none; width: 100%; margin-top: 10px; cursor: pointer;">Cancelar</button>
+            <button id="btn-salvar" class="btn-new" onclick="salvarProduto()" style="width: 100%; margin-top:20px;">Salvar</button>
+            <button onclick="fecharFormulario()" style="background: none; border: none; width: 100%; margin-top: 10px; cursor: pointer; color:#666;">Cancelar</button>
         </div>
     </div>
 
@@ -211,35 +245,41 @@
         let produtoEmEdicaoId = null;
         let produtosCache = {};
 
-        // --- SISTEMA DE NOTIFICAÇÕES (TOAST) ---
+        // SISTEMA DE CONFIRMAÇÃO PREMIUM
+        window.showConfirm = (msg, callback, tipo = 'danger') => {
+            document.getElementById('confirm-msg').innerText = msg;
+            const btn = document.getElementById('btn-confirm-yes');
+            const icone = document.getElementById('confirm-icon');
+            
+            if(tipo === 'danger') {
+                btn.style.background = '#F44336'; btn.innerText = 'Sim, excluir';
+                icone.className = 'fas fa-exclamation-triangle'; icone.style.color = '#F44336';
+            } else {
+                btn.style.background = '#B39DDB'; btn.innerText = 'Sim, continuar';
+                icone.className = 'fas fa-question-circle'; icone.style.color = '#B39DDB';
+            }
+            btn.onclick = () => { fecharConfirm(); callback(); };
+            document.getElementById('confirm-modal').style.display = 'flex';
+        }
+        window.fecharConfirm = () => document.getElementById('confirm-modal').style.display = 'none';
+
         window.showToast = (message, type = 'success') => {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = `toast toast-${type}`;
-            
             let icon = type === 'success' ? 'check-circle' : 'exclamation-circle';
             if(type === 'info') icon = 'info-circle';
-
             toast.innerHTML = `<i class="fas fa-${icon}"></i> <span>${message}</span>`;
             container.appendChild(toast);
-
-            // Remove após 4 segundos
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 300);
-            }, 4000);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 4000);
         }
 
-        // --- SISTEMA DE LOADING ---
         window.showLoading = (msg) => {
             document.getElementById('loading-msg').innerText = msg;
             document.getElementById('loading-overlay').style.display = 'flex';
         }
-        window.hideLoading = () => {
-            document.getElementById('loading-overlay').style.display = 'none';
-        }
+        window.hideLoading = () => document.getElementById('loading-overlay').style.display = 'none';
 
-        // LOGIN
         onAuthStateChanged(auth, (user) => {
             if (user) { 
                 document.getElementById('login-screen').style.display = 'none'; 
@@ -252,36 +292,27 @@
         });
 
         window.login = async () => {
-            const email = document.getElementById('email-admin').value; 
-            const senha = document.getElementById('senha-admin').value;
-            const btn = document.querySelector('.btn-entrar'); 
-            const erro = document.getElementById('login-erro');
-            
-            btn.innerText = "Verificando..."; 
-            erro.style.display = 'none';
-            
-            try { 
-                await signInWithEmailAndPassword(auth, email, senha); 
-                showToast("Bem-vindo de volta!", "success");
-            } catch (error) { 
-                erro.innerText = "Senha incorreta."; 
-                erro.style.display = 'block'; 
-                btn.innerText = "Acessar Painel"; 
-                showToast("Senha incorreta", "error");
-            }
+            const email = document.getElementById('email-admin').value; const senha = document.getElementById('senha-admin').value;
+            const btn = document.querySelector('.btn-entrar'); const erro = document.getElementById('login-erro');
+            btn.innerText = "Verificando..."; erro.style.display = 'none';
+            try { await signInWithEmailAndPassword(auth, email, senha); showToast("Acesso Liberado!", "success"); } 
+            catch (error) { erro.innerText = "Senha incorreta."; erro.style.display = 'block'; btn.innerText = "Acessar Painel"; showToast("Senha Incorreta", "error"); }
         }
         
         document.getElementById('btn-sair').addEventListener('click', () => { 
-            if(confirm("Deseja realmente sair?")){ 
-                signOut(auth); 
-                window.location.href = 'index.html'; 
-            } 
+            showConfirm("Deseja realmente sair do painel?", () => { signOut(auth); window.location.href = 'index.html'; }, 'info');
         });
 
-        // UTILITÁRIOS
         const formatarMoeda = (v) => parseFloat(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         window.togglePromoField = () => { document.getElementById('promo-field-container').style.display = document.getElementById('cb-promocao').checked ? 'block' : 'none'; }
         window.mudarAba = (aba) => { document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active')); document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active')); document.getElementById(`view-${aba}`).classList.add('active'); event.currentTarget.classList.add('active'); }
+
+        // MOSTRAR/ESCONDER DATA COMEMORATIVA
+        document.getElementById('novo-categoria').addEventListener('change', (e) => {
+            document.getElementById('div-evento').style.display = e.target.value === 'comemorativas' ? 'block' : 'none';
+        });
+
+        const nomeEventos = { 'mulher':'Dia da Mulher', 'pascoa':'Páscoa', 'maes':'Dia das Mães', 'namorados':'Dia dos Namorados', 'pais':'Dia dos Pais', 'criancas':'Dia das Crianças', 'professores':'Dia dos Professores', 'natal':'Natal', 'ano_novo':'Ano Novo' };
 
         async function carregarDados() {
             const tbody = document.getElementById('lista-produtos');
@@ -303,8 +334,10 @@
                     let priceDisplay = formatarMoeda(p.preco);
                     if(p.em_promocao && p.preco_promocional > 0) priceDisplay = `<div><span style="text-decoration:line-through;color:#999;font-size:0.8em">${formatarMoeda(p.preco)}</span> <strong style="color:#E91E63">${formatarMoeda(p.preco_promocional)}</strong></div>`;
                     
+                    let nomeCatDisplay = p.categoria === 'comemorativas' && p.evento ? `Especial: ${nomeEventos[p.evento]}` : p.categoria;
+
                     html += `<tr>
-                        <td data-label="Produto"><div style="display:flex; gap:15px; align-items:center;">${img} <div style="text-align:left"><strong>${p.nome}</strong><br><small style="color:#777">${p.categoria}</small></div></div></td>
+                        <td data-label="Produto"><div style="display:flex; gap:15px; align-items:center;">${img} <div style="text-align:left"><strong>${p.nome}</strong><br><small style="color:#777">${nomeCatDisplay}</small></div></div></td>
                         <td data-label="Preço">${priceDisplay}</td>
                         <td data-label="Mínimo">${minDisplay}</td>
                         <td data-label="Status"><span style="color:${color}; font-weight:bold">${p.ativo ? 'Ativo' : 'Esgotado'}</span></td>
@@ -343,55 +376,34 @@
 
         window.adicionarFotos = (input) => {
             const files = Array.from(input.files);
-            if((listaFotosEdicao.length + files.length) > 3) {
-                showToast("Máximo de 3 fotos permitidas", "error");
-                return;
-            }
+            if((listaFotosEdicao.length + files.length) > 3) { showToast("Máximo de 3 fotos!", "error"); return; }
             listaFotosEdicao = [...listaFotosEdicao, ...files];
-            renderizarPreview();
-            input.value = ''; 
+            renderizarPreview(); input.value = ''; 
         }
 
-        window.removerFoto = (index) => {
-            listaFotosEdicao.splice(index, 1);
-            renderizarPreview();
-        }
+        window.removerFoto = (index) => { listaFotosEdicao.splice(index, 1); renderizarPreview(); }
 
         function renderizarPreview() {
-            const area = document.getElementById('preview-area');
-            area.innerHTML = '';
+            const area = document.getElementById('preview-area'); area.innerHTML = '';
             listaFotosEdicao.forEach((item, index) => {
-                let src = '';
-                if(typeof item === 'string') src = item;
-                else src = URL.createObjectURL(item);
-                
-                area.innerHTML += `
-                    <div class="thumb-wrapper">
-                        <img src="${src}" class="thumb-img">
-                        <div class="btn-remove-foto" onclick="removerFoto(${index})">X</div>
-                    </div>`;
+                let src = ''; if(typeof item === 'string') src = item; else src = URL.createObjectURL(item);
+                area.innerHTML += `<div class="thumb-wrapper"><img src="${src}" class="thumb-img"><div class="btn-remove-foto" onclick="removerFoto(${index})">X</div></div>`;
             });
         }
 
         const comprimirImagem = async (arquivo) => {
             return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(arquivo);
+                const reader = new FileReader(); reader.readAsDataURL(arquivo);
                 reader.onload = (event) => {
-                    const img = new Image();
-                    img.src = event.target.result;
+                    const img = new Image(); img.src = event.target.result;
                     img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 1920; 
-                        let width = img.width;
-                        let height = img.height;
+                        const canvas = document.createElement('canvas'); const MAX_WIDTH = 1920; 
+                        let width = img.width; let height = img.height;
                         if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
-                        canvas.width = width; canvas.height = height;
-                        const ctx = canvas.getContext('2d');
+                        canvas.width = width; canvas.height = height; const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
                         canvas.toBlob((blob) => {
-                            const fileReduzido = new File([blob], arquivo.name, { type: 'image/jpeg', lastModified: Date.now() });
-                            resolve(fileReduzido);
+                            resolve(new File([blob], arquivo.name, { type: 'image/jpeg', lastModified: Date.now() }));
                         }, 'image/jpeg', 0.8); 
                     };
                 };
@@ -399,84 +411,47 @@
         };
 
         window.salvarProduto = async () => {
-            const nome = document.getElementById('novo-nome').value;
-            const desc = document.getElementById('novo-desc').value;
-            const preco = document.getElementById('novo-preco').value;
-            const minimo = document.getElementById('novo-minimo').value;
-            const link = document.getElementById('novo-link').value;
-            const cat = document.getElementById('novo-categoria').value;
-            const emPromocao = document.getElementById('cb-promocao').checked;
-            const precoPromo = document.getElementById('novo-preco-promo').value;
+            const nome = document.getElementById('novo-nome').value; const desc = document.getElementById('novo-desc').value;
+            const preco = document.getElementById('novo-preco').value; const minimo = document.getElementById('novo-minimo').value;
+            const link = document.getElementById('novo-link').value; const cat = document.getElementById('novo-categoria').value;
+            const evento = cat === 'comemorativas' ? document.getElementById('novo-evento').value : null;
+            const emPromocao = document.getElementById('cb-promocao').checked; const precoPromo = document.getElementById('novo-preco-promo').value;
             
-            if(!nome || !preco) {
-                showToast("Preencha os campos obrigatórios!", "error");
-                return;
-            }
+            if(!nome || !preco) { showToast("Preencha o nome e o preço!", "error"); return; }
 
             try {
                 showLoading("Iniciando...");
-                
-                let listaFinaisUrls = [];
-                let contadorNovas = 0;
-                let arquivosParaEnviar = listaFotosEdicao.filter(item => typeof item !== 'string');
+                let listaFinaisUrls = []; let contadorNovas = 0; let arquivosParaEnviar = listaFotosEdicao.filter(item => typeof item !== 'string');
                 
                 for (let i = 0; i < listaFotosEdicao.length; i++) {
                     const item = listaFotosEdicao[i];
-
-                    if (typeof item === 'string') {
-                        listaFinaisUrls.push(item);
-                    } else {
-                        contadorNovas++;
-                        showLoading(`Otimizando e enviando foto ${contadorNovas}/${arquivosParaEnviar.length}...`);
-                        
+                    if (typeof item === 'string') { listaFinaisUrls.push(item); } else {
+                        contadorNovas++; showLoading(`Otimizando foto ${contadorNovas}/${arquivosParaEnviar.length}...`);
                         const arquivoLeve = await comprimirImagem(item);
-                        const formData = new FormData();
-                        formData.append("image", arquivoLeve);
-
-                        const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-                            method: "POST",
-                            body: formData
-                        });
-
-                        if (!response.ok) throw new Error("Erro ImgBB");
-                        
+                        const formData = new FormData(); formData.append("image", arquivoLeve);
+                        const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData });
+                        if (!response.ok) throw new Error("Falha ao subir foto");
                         const result = await response.json();
-                        if(result.success) {
-                            listaFinaisUrls.push(result.data.url);
-                        } else {
-                            throw new Error("Erro ImgBB: " + result.error.message);
-                        }
+                        if(result.success) { listaFinaisUrls.push(result.data.url); } else { throw new Error(result.error.message); }
                     }
                 }
 
                 let dados = {
-                    nome, descricao: desc, preco: parseFloat(preco), minimo: parseInt(minimo)||1,
-                    link_pagamento: link, categoria: cat, emPromocao: emPromocao,
-                    preco_promocional: emPromocao ? parseFloat(precoPromo) : null,
-                    fotos: listaFinaisUrls
+                    nome, descricao: desc, preco: parseFloat(preco), minimo: parseInt(minimo)||1, link_pagamento: link, categoria: cat, evento: evento,
+                    emPromocao: emPromocao, preco_promocional: emPromocao ? parseFloat(precoPromo) : null, fotos: listaFinaisUrls
                 };
 
-                showLoading("Salvando dados...");
-
+                showLoading("Salvando...");
                 if(produtoEmEdicaoId){
                     await updateDoc(doc(db,"produtos",produtoEmEdicaoId), dados);
                     showToast("Produto atualizado com sucesso!", "success");
                 } else {
-                    dados.ativo = true;
-                    dados.vendas = 0;
+                    dados.ativo = true; dados.vendas = 0;
                     await addDoc(collection(db,"produtos"), dados);
                     showToast("Produto criado com sucesso!", "success");
                 }
-
-                fecharFormulario();
-                carregarDados();
-
-            } catch(e) {
-                console.error(e);
-                showToast("Erro: " + e.message, "error");
-            } finally {
-                hideLoading();
-            }
+                fecharFormulario(); carregarDados();
+            } catch(e) { console.error(e); showToast("Erro: " + e.message, "error"); } finally { hideLoading(); }
         }
 
         window.editarProduto=(id)=>{
@@ -487,70 +462,58 @@
             document.getElementById('novo-preco').value=p.preco;
             document.getElementById('novo-minimo').value=p.minimo||1;
             document.getElementById('novo-link').value=p.link_pagamento||'';
+            
             document.getElementById('novo-categoria').value=p.categoria;
+            document.getElementById('div-evento').style.display = p.categoria === 'comemorativas' ? 'block' : 'none';
+            if(p.evento) document.getElementById('novo-evento').value = p.evento;
+
             document.getElementById('cb-promocao').checked=p.em_promocao||false;
             document.getElementById('novo-preco-promo').value=p.preco_promocional||'';
             togglePromoField();
             listaFotosEdicao = [];
-            if(p.fotos && p.fotos.length > 0) listaFotosEdicao = [...p.fotos]; 
-            else if (p.foto) listaFotosEdicao = [p.foto];
+            if(p.fotos && p.fotos.length > 0) listaFotosEdicao = [...p.fotos]; else if (p.foto) listaFotosEdicao = [p.foto];
             renderizarPreview();
             document.getElementById('titulo-modal').innerText="Editar Produto";
-            document.getElementById('btn-salvar').innerText="Atualizar";
             document.getElementById('form-overlay').style.display='flex';
         }
 
         window.abrirFormulario=()=>{
             produtoEmEdicaoId=null;
             document.getElementById('titulo-modal').innerText="Novo Produto";
-            document.getElementById('btn-salvar').innerText="Salvar";
             document.querySelectorAll('#form-overlay input, #form-overlay textarea').forEach(i=>i.value='');
             document.getElementById('novo-minimo').value='1';
             document.getElementById('cb-promocao').checked=false;
-            togglePromoField();
-            listaFotosEdicao = [];
-            renderizarPreview();
+            document.getElementById('div-evento').style.display='none';
+            togglePromoField(); listaFotosEdicao = []; renderizarPreview();
             document.getElementById('form-overlay').style.display='flex';
         }
         window.fecharFormulario=()=>document.getElementById('form-overlay').style.display='none';
         
         window.mudarStatusPedido=async(id,s)=>{
             const n=s==='Concluído'?'Pendente':'Concluído';
-            if(confirm(`Mudar status para ${n}?`)){
-                try {
-                    await updateDoc(doc(db,"pedidos",id),{status:n});
-                    showToast("Status atualizado!", "info");
-                    carregarVendas();
-                } catch(e) { showToast("Erro ao atualizar", "error"); }
-            }
+            showConfirm(`Deseja alterar o status para ${n}?`, async () => {
+                try { await updateDoc(doc(db,"pedidos",id),{status:n}); showToast("Status atualizado!", "info"); carregarVendas(); } 
+                catch(e) { showToast("Erro ao atualizar", "error"); }
+            }, 'info');
         }
         
         window.apagarPedido=async(id)=>{
-            if(confirm("Tem certeza que deseja apagar este pedido?")){
-                try {
-                    await deleteDoc(doc(db,"pedidos",id));
-                    showToast("Pedido removido!", "success");
-                    carregarVendas();
-                } catch(e) { showToast("Erro ao apagar", "error"); }
-            }
+            showConfirm("Tem certeza que deseja APAGAR este pedido?", async () => {
+                try { await deleteDoc(doc(db,"pedidos",id)); showToast("Pedido removido!", "success"); carregarVendas(); } 
+                catch(e) { showToast("Erro ao apagar", "error"); }
+            });
         }
         
         window.apagarProduto=async(id)=>{
-            if(confirm("Tem certeza que deseja apagar este produto?")){
-                try {
-                    await deleteDoc(doc(db,"produtos",id));
-                    showToast("Produto removido!", "success");
-                    carregarDados();
-                } catch(e) { showToast("Erro ao apagar", "error"); }
-            }
+            showConfirm("Tem certeza que deseja EXCLUIR este produto? Ação irreversível.", async () => {
+                try { await deleteDoc(doc(db,"produtos",id)); showToast("Produto removido!", "success"); carregarDados(); } 
+                catch(e) { showToast("Erro ao apagar", "error"); }
+            });
         }
         
         window.alterarEstoque=async(id,s)=>{
-            try {
-                await updateDoc(doc(db,"produtos",id),{ativo:s});
-                showToast(s ? "Produto ativado!" : "Produto pausado", "info");
-                carregarDados();
-            } catch(e) { showToast("Erro ao alterar estoque", "error"); }
+            try { await updateDoc(doc(db,"produtos",id),{ativo:s}); showToast(s ? "Produto ativado!" : "Produto pausado", "info"); carregarDados(); } 
+            catch(e) { showToast("Erro ao alterar estoque", "error"); }
         }
     </script>
 </body>
