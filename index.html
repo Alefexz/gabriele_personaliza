@@ -16,8 +16,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-T24GYM57CT"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -29,18 +27,58 @@
     <link rel="stylesheet" href="style.css?v=4">
     
     <style>
-        /* CSS INTERNO MANTIDO */
+        /* --- CSS DOS TEMAS DINÂMICOS SUTIS --- */
+        /* Padrão (Sem data comemorativa) */
+        body { background-color: #F0F2F5; transition: background 0.5s ease; }
+        
+        /* Tema AMOR (Dia da Mulher, Mães, Namorados) - Corações Rosa Sutis subindo */
+        body.theme-love {
+            background-color: #FFF0F5; /* Fundo rosa muito claro */
+            /* Padrão de corações quase invisíveis */
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 54.5C29.5 54 5 31.5 5 16.5C5 8.5 11.5 2.5 19 2.5C23 2.5 26.5 4.5 28.5 7.5C30.5 4.5 34 2.5 38 2.5C45.5 2.5 52 8.5 52 16.5C52 31.5 27.5 54 30 54.5Z' fill='%23E91E63' fill-opacity='0.04'/%3E%3C/svg%3E");
+            background-size: 80px 80px;
+            animation: bgFloatUp 30s linear infinite;
+        }
+
+        /* Tema PÁSCOA - Bolinhas Laranja Sutis subindo */
+        body.theme-easter {
+            background-color: #FFF8E1; /* Fundo laranja/amarelo claro */
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='20' cy='20' r='8' fill='%23FF9800' fill-opacity='0.06'/%3E%3C/svg%3E");
+            background-size: 50px 50px;
+            animation: bgFloatUp 25s linear infinite;
+        }
+
+        /* Tema PAIS/CRIANÇAS - Estrelinhas Azuis Sutis subindo */
+        body.theme-cool {
+            background-color: #E3F2FD; /* Fundo azul claro */
+            background-image: url("data:image/svg+xml,%3Csvg width='50' height='50' viewBox='0 0 50 50' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M25 1L32 18L50 18L36 29L41 47L25 37L9 47L14 29L0 18L18 18L25 1Z' fill='%232196F3' fill-opacity='0.05'/%3E%3C/svg%3E");
+            background-size: 70px 70px;
+            animation: bgFloatUp 35s linear infinite;
+        }
+
+        /* Tema NATAL - Flocos Verdes Sutis descendo */
+        body.theme-xmas {
+            background-color: #E8F5E9; /* Fundo verde claro */
+            background-image: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='15' cy='15' r='4' fill='%234CAF50' fill-opacity='0.08'/%3E%3C/svg%3E");
+            background-size: 40px 40px;
+            animation: bgFloatDown 20s linear infinite;
+        }
+
+        /* Animações do Fundo */
+        @keyframes bgFloatUp { from { background-position: 0 0; } to { background-position: 0 -400px; } }
+        @keyframes bgFloatDown { from { background-position: 0 0; } to { background-position: 0 400px; } }
+        
+        /* --- FIM DO CSS DOS TEMAS --- */
+
+
         .politicas-lista { text-align: left; margin-top: 15px; }
         .politicas-lista li { margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; color: #555; font-size: 0.9rem; }
         .politicas-lista i { color: #B39DDB; margin-right: 10px; width: 20px; text-align: center; }
 
         @media (max-width: 768px) {
             .nav-links.active-menu {
-                display: flex;
-                flex-direction: column;
-                position: absolute;
-                top: 70px; left: 0; width: 100%;
-                background: white; box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+                display: flex; flex-direction: column; position: absolute;
+                top: 70px; left: 0; width: 100%; background: white; box-shadow: 0 10px 15px rgba(0,0,0,0.1);
                 padding: 20px 0; animation: slideDown 0.3s ease forwards;
             }
             .nav-links.active-menu li { width: 100%; text-align: center; padding: 15px 0; border-bottom: 1px solid #f0f0f0; }
@@ -90,16 +128,15 @@
         .pedido-id { font-size: 1.5rem; font-weight: bold; color: #B39DDB; margin: 10px 0; letter-spacing: 2px; border: 2px dashed #B39DDB; padding: 10px; border-radius: 10px; display: inline-block; }
         
         .filter-btn[onclick*="promocao"] { background-color: #FCE4EC; color: #E91E63; border: 1px solid #F8BBD0; }
-        .filter-btn[onclick*="promocao"].active { background-color: #E91E63; color: white; }
+        .filter-btn[onclick*="promocao"].active { background-color: #E91E63 !important; color: white !important; border-color: #E91E63 !important; }
 
-        /* OVERLAY DE TELA CHEIA (ZOOM) */
         #fullscreen-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; justify-content: center; align-items: center; cursor: zoom-out; animation: fadeIn 0.3s; }
         #fullscreen-img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 5px; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
         .close-fullscreen { position: absolute; top: 20px; right: 20px; color: white; font-size: 40px; cursor: pointer; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
         
-        /* BANNER SAZONAL AUTOMÁTICO */
-        .highlight-section { background: #FFF0F5; padding: 25px; border-radius: 15px; margin-bottom: 30px; border: 2px dashed #F8BBD0; display: none; }
-        .highlight-title { color: #E91E63; margin-top: 0; margin-bottom: 20px; font-family: 'Playfair Display', serif; font-size: 1.8rem; text-align: left; }
+        /* BANNER SAZONAL AUTOMÁTICO - Cores fixas para não brigar com o fundo */
+        .highlight-section { background: #fff; padding: 25px; border-radius: 15px; margin-bottom: 30px; border: 2px dashed #B39DDB; display: none; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .highlight-title { color: #B39DDB; margin-top: 0; margin-bottom: 20px; font-family: 'Playfair Display', serif; font-size: 1.8rem; text-align: left; }
     </style>
 </head>
 <body>
@@ -120,9 +157,9 @@
 
     <section class="welcome-banner">
         <div class="container">
-            <h1 data-aos="fade-down" data-aos-duration="1000">Seja bem-vindo(a)!</h1>
-            <p data-aos="fade-up" data-aos-delay="200" data-aos-duration="1000">Transforme sua festa com nossa papelaria criativa feita à mão.</p>
-            <div class="hero-socials" data-aos="zoom-in" data-aos-delay="400">
+            <h1>Seja bem-vindo(a)!</h1>
+            <p>Transforme sua festa com nossa papelaria criativa feita à mão.</p>
+            <div class="hero-socials">
                 <a href="https://www.instagram.com/gabriele_personaliza/" target="_blank" class="social-big insta-bg"><i class="fab fa-instagram"></i></a>
                 <a href="https://wa.me/559292770409" target="_blank" class="social-big zap-bg"><i class="fab fa-whatsapp"></i></a>
             </div>
@@ -132,12 +169,12 @@
 
     <section id="loja" class="section-padding store-section">
         <div class="container">
-            <div class="search-container" data-aos="fade-up">
+            <div class="search-container">
                 <input type="text" id="campo-busca" class="search-input" placeholder="O que você procura hoje?" onkeyup="filtrarPorNome()">
                 <i class="fas fa-search search-icon"></i>
             </div>
 
-            <div class="filter-container" data-aos="fade-up" data-aos-delay="100">
+            <div class="filter-container">
                 <button class="filter-btn active" onclick="aplicarFiltros('todos')" data-filter="todos">Todos</button>
                 <button class="filter-btn" onclick="aplicarFiltros('promocao')" data-filter="promocao"><i class="fas fa-tag"></i> Promoções</button>
                 <button class="filter-btn" onclick="aplicarFiltros('kitfestas')" data-filter="kitfestas">Kit Festas</button>
@@ -147,10 +184,10 @@
                 <button class="filter-btn" onclick="aplicarFiltros('lembrancas')" data-filter="lembrancas">Lembranças</button>
             </div>
             
-            <div id="destaque-sazonal-container" class="highlight-section" data-aos="zoom-in">
+            <div id="destaque-sazonal-container" class="highlight-section">
                 <h2 id="titulo-sazonal" class="highlight-title">✨ Especial do Mês</h2>
                 <div class="product-grid" id="grid-sazonal"></div>
-                <hr style="border:none; border-top: 1px dashed #F48FB1; margin-top: 30px;">
+                <hr id="linha-sazonal" style="border:none; border-top: 1px dashed #ccc; margin-top: 30px;">
             </div>
 
             <div class="product-grid" id="container-produtos">
@@ -159,7 +196,7 @@
     </section>
 
     <section id="sobre" class="section-padding" style="background: #fff;">
-        <div class="container about-container" data-aos="zoom-in" data-aos-duration="800">
+        <div class="container about-container">
             <div class="about-text">
                 <h2 class="section-title" style="text-align: left;">Quem faz?</h2>
                 <p>A <strong>Gabriele Personaliza</strong> nasceu do desejo de transformar papel em memórias eternas. O que começou como um hobby criativo, hoje é uma marca dedicada a levar beleza e afeto para os seus momentos especiais.</p>
@@ -168,7 +205,7 @@
         </div>
     </section>
 
-    <footer id="contato" data-aos="fade-up">
+    <footer id="contato">
         <div class="container">
             <div class="footer-brand"><h3>Gabriele Personaliza</h3><p>Feito com amor.</p></div>
             <div class="socials">
@@ -178,13 +215,13 @@
             <div class="copyright" style="text-align: center; margin-top: 20px;">
                 <p>&copy; <span id="ano-atual"></span> Gabriele Personaliza.</p>
                 <p style="font-size: 0.8rem; color: #888; margin-top: 10px; letter-spacing: 0.5px;">
-                    Desenvolvido por <strong style="color: #B39DDB;">NovaStack</strong>: A base tecnológica para o seu negócio evoluir.<span id="btn-secreto" style="opacity: 0.3; cursor: pointer; font-weight: bold; margin-left: 5px;">G</span>
+                    Desenvolvido por <strong id="novastack-logo" style="color: #B39DDB;">NovaStack</strong>: A base tecnológica para o seu negócio evoluir.<span id="btn-secreto" style="opacity: 0.3; cursor: pointer; font-weight: bold; margin-left: 5px;">G</span>
                 </p>
             </div>
         </div>
     </footer>
 
-    <a href="https://wa.me/559292770409" class="floating-whatsapp" target="_blank" data-aos="zoom-in" data-aos-delay="500">
+    <a href="https://wa.me/559292770409" class="floating-whatsapp" target="_blank">
         <i class="fab fa-whatsapp"></i>
     </a>
 
@@ -268,12 +305,7 @@
         <img id="fullscreen-img" src="">
     </div>
 
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-        AOS.init({ duration: 800, once: true, offset: 50 });
-    </script>
-    
-    <script src="script.js?v=9"></script>
+    <script src="script.js?v=12"></script>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -321,6 +353,38 @@
             }
         }
 
+        // --- LÓGICA INTELIGENTE DE DATAS (Determina qual classe CSS usar no body) ---
+        const obterClasseTema = () => {
+            const dataAtual = new Date();
+            const mes = dataAtual.getMonth() + 1;
+            const dia = dataAtual.getDate();
+            const mmdd = mes * 100 + dia;
+
+            if (mmdd <= 308) return { classe: 'theme-love', titulo: '🌸 Especial Dia da Mulher' };
+            if (mmdd <= 415) return { classe: 'theme-easter', titulo: '🐰 A Páscoa está chegando!' };
+            if (mmdd <= 515) return { classe: 'theme-love', titulo: '❤️ Especial Dia das Mães' };
+            if (mmdd <= 612) return { classe: 'theme-love', titulo: '💘 O Dia dos Namorados vem aí!' };
+            if (mmdd <= 815) return { classe: 'theme-cool', titulo: '👔 Especial Dia dos Pais' };
+            if (mmdd <= 1012) return { classe: 'theme-cool', titulo: '🧸 Especial Dia das Crianças' };
+            if (mmdd <= 1225) return { classe: 'theme-xmas', titulo: '🎄 A Magia do Natal está chegando!' };
+            return null;
+        }
+
+        // --- APLICA O TEMA SUTIL NO BODY ---
+        const aplicarTemaSutil = () => {
+            const tema = obterClasseTema();
+            // Remove temas anteriores
+            document.body.classList.remove('theme-love', 'theme-easter', 'theme-cool', 'theme-xmas');
+            
+            if(tema) {
+                document.body.classList.add(tema.classe);
+                // Guarda o título para usar no filtro
+                window.tituloSazonalAtual = tema.titulo;
+            } else {
+                window.tituloSazonalAtual = null;
+            }
+        }
+
         window.carregarLoja = async (filtroInicial = 'todos') => {
             mostrarSkeleton();
             try {
@@ -334,7 +398,6 @@
         window.aplicarFiltros = (categoria) => {
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('active');
-                // COMPATIBILIDADE DOS BOTÕES
                 let isActive = false;
                 let btnText = btn.innerText.toLowerCase();
                 if (categoria === 'todos' && btnText === 'todos') isActive = true;
@@ -351,7 +414,6 @@
             const filtrados = todosProdutos.filter(p => {
                 if (categoria === 'todos') return true;
                 if (categoria === 'promocao') return p.em_promocao && p.ativo;
-                // MÁGICA DA COMPATIBILIDADE DOS PRODUTOS ANTIGOS
                 if (categoria === 'kitfestas') return p.categoria === 'kitfestas' || p.categoria === 'festa';
                 if (categoria === 'lembrancas') return p.categoria === 'lembrancas' || p.categoria === 'simples' || p.categoria === 'semiluxo';
                 
@@ -366,23 +428,7 @@
             renderizarCards(filtrados, termo !== "" ? "Nenhum produto encontrado com esse nome." : "Nenhum produto encontrado.", 'busca');
         }
 
-        const obterEventoDoMes = () => {
-            const dataAtual = new Date();
-            const mes = dataAtual.getMonth() + 1;
-            const dia = dataAtual.getDate();
-            const mmdd = mes * 100 + dia;
-
-            if (mmdd <= 308) return { id: 'mulher', titulo: '🌸 Especial Dia da Mulher' };
-            if (mmdd <= 415) return { id: 'pascoa', titulo: '🐰 A Páscoa está chegando!' };
-            if (mmdd <= 515) return { id: 'maes', titulo: '❤️ Especial Dia das Mães' };
-            if (mmdd <= 612) return { id: 'namorados', titulo: '💘 O Dia dos Namorados vem aí!' };
-            if (mmdd <= 815) return { id: 'pais', titulo: '👔 Especial Dia dos Pais' };
-            if (mmdd <= 1012) return { id: 'criancas', titulo: '🧸 Especial Dia das Crianças' };
-            if (mmdd <= 1225) return { id: 'natal', titulo: '🎄 A Magia do Natal está chegando!' };
-            return null;
-        }
-
-        function criarCardProduto(p, index) {
+        function criarCardProduto(p) {
             const timestamp = new Date().getTime();
             let listaImagens = (p.fotos && p.fotos.length > 0) ? p.fotos : (p.foto ? [p.foto] : []);
             let imagensHtml = '';
@@ -398,7 +444,7 @@
             }
             
             const minLabel = (p.minimo && p.minimo > 1) ? `<small style="display:block; color:#666; margin-top:5px">Mínimo: ${p.minimo} un</small>` : '';
-            let btnHtml = p.ativo ? `<button class="btn-sm" style="width:100%;border:none;background:#B39DDB;color:white;padding:8px;border-radius:5px;cursor:pointer;margin-top:5px;">Ver Detalhes</button>` : `<span style="color:red;font-size:0.8rem">Esgotado</span>`;
+            let btnHtml = p.ativo ? `<button class="btn-sm" style="width:100%;border:none;padding:8px;border-radius:5px;cursor:pointer;margin-top:5px;">Ver Detalhes</button>` : `<span style="color:red;font-size:0.8rem">Esgotado</span>`;
             
             let etiqueta = '';
             if (!p.ativo) etiqueta = '<div class="badge-bestseller" style="background:#F44336;">Esgotado</div>';
@@ -407,7 +453,6 @@
             let priceHtml = formatarMoeda(p.preco);
             if (p.ativo && p.em_promocao && p.preco_promocional > 0) priceHtml = `<span class="original-price">${formatarMoeda(p.preco)}</span> <span class="promo-price">${formatarMoeda(p.preco_promocional)}</span>`;
             
-            // FORMATAÇÃO DO NOME DA CATEGORIA NOS CARDS
             let nomeCatDisplay = p.categoria.toUpperCase();
             if (p.categoria === 'comemorativas') nomeCatDisplay = 'DATAS COMEMORATIVAS';
             if (p.categoria === 'kitfestas' || p.categoria === 'festa') nomeCatDisplay = 'KIT FESTAS';
@@ -415,8 +460,6 @@
 
             const card = document.createElement('div');
             card.className = 'product-card';
-            card.setAttribute('data-aos', 'fade-up');
-            card.setAttribute('data-aos-delay', (index % 4) * 100);
 
             card.innerHTML = `<div class="product-img-wrapper carousel-container">${etiqueta}${imagensHtml}</div><div class="product-info"><span class="category-tag">${nomeCatDisplay}</span><h3>${p.nome}</h3><div class="product-price">${priceHtml}</div>${minLabel}${btnHtml}</div>`;
             if(p.ativo) card.onclick = () => abrirModal(p);
@@ -433,18 +476,20 @@
             gridSazonal.innerHTML = '';
             containerSazonal.style.display = 'none';
 
-            if(aba === 'todos') {
-                const eventoAtual = obterEventoDoMes();
-                if(eventoAtual) {
-                    const produtosSazonais = todosProdutos.filter(p => p.ativo && p.categoria === 'comemorativas' && p.evento === eventoAtual.id);
-                    
+            if(aba === 'todos' && window.tituloSazonalAtual) {
+                // Pega o ID do evento baseado na classe do body (gambiarra rápida e funcional)
+                let eventoId = null;
+                if(document.body.classList.contains('theme-love')) eventoId = (new Date().getMonth()+1) <= 3 ? 'mulher' : 'maes'; // Simplificado
+                if(document.body.classList.contains('theme-easter')) eventoId = 'pascoa';
+                
+                if(eventoId) {
+                     const produtosSazonais = todosProdutos.filter(p => p.ativo && p.categoria === 'comemorativas' && p.evento === eventoId);
                     if(produtosSazonais.length > 0) {
                         const top4 = produtosSazonais.slice(0, 4); 
-                        document.getElementById('titulo-sazonal').innerText = eventoAtual.titulo;
+                        document.getElementById('titulo-sazonal').innerText = window.tituloSazonalAtual;
                         containerSazonal.style.display = 'block';
-                        
-                        top4.forEach((p, index) => {
-                            gridSazonal.appendChild(criarCardProduto(p, index));
+                        top4.forEach((p) => {
+                            gridSazonal.appendChild(criarCardProduto(p));
                             lista = lista.filter(item => item.id !== p.id); 
                         });
                     }
@@ -454,8 +499,8 @@
             if (lista.length === 0 && containerSazonal.style.display === 'none') { 
                 containerProdutos.innerHTML = `<p style="text-align:center; width:100%; grid-column: 1 / -1; padding: 40px; color: #888;">${msgVazio}</p>`; 
             } else {
-                lista.forEach((p, index) => {
-                    containerProdutos.appendChild(criarCardProduto(p, index));
+                lista.forEach((p) => {
+                    containerProdutos.appendChild(criarCardProduto(p));
                 });
             }
             iniciarCarrossel();
@@ -569,6 +614,9 @@
 
         document.getElementById('btn-secreto').addEventListener('click', () => { window.location.href = 'admin.html'; });
         document.getElementById('ano-atual').innerText = new Date().getFullYear();
+        
+        // INICIALIZA O SITE (Aplica a classe do tema no body e carrega os produtos)
+        aplicarTemaSutil();
         carregarLoja();
     </script>
 </body>

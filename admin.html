@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Prime | Gabriele</title>
+    <title>Admin NovaStack | Gabriele</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -137,7 +137,7 @@
 
     <div id="painel-app">
         <div class="sidebar">
-            <h2>Admin Prime</h2>
+            <h2>Admin NovaStack</h2>
             <div class="menu-item active" onclick="mudarAba('produtos')"><i class="fas fa-box"></i> Produtos</div>
             <div class="menu-item" onclick="mudarAba('vendas')"><i class="fas fa-shopping-bag"></i> Vendas</div>
             <div class="menu-item" id="btn-sair"><i class="fas fa-sign-out-alt"></i> Sair</div>
@@ -244,7 +244,6 @@
         let produtoEmEdicaoId = null;
         let produtosCache = {};
 
-        // SISTEMA DE CONFIRMAÇÃO PREMIUM
         window.showConfirm = (msg, callback, tipo = 'danger') => {
             document.getElementById('confirm-msg').innerText = msg;
             const btn = document.getElementById('btn-confirm-yes');
@@ -306,7 +305,6 @@
         window.togglePromoField = () => { document.getElementById('promo-field-container').style.display = document.getElementById('cb-promocao').checked ? 'block' : 'none'; }
         window.mudarAba = (aba) => { document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active')); document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active')); document.getElementById(`view-${aba}`).classList.add('active'); event.currentTarget.classList.add('active'); }
 
-        // MOSTRAR/ESCONDER DATA COMEMORATIVA
         document.getElementById('novo-categoria').addEventListener('change', (e) => {
             document.getElementById('div-evento').style.display = e.target.value === 'comemorativas' ? 'block' : 'none';
         });
@@ -332,7 +330,6 @@
                     let priceDisplay = formatarMoeda(p.preco);
                     if(p.em_promocao && p.preco_promocional > 0) priceDisplay = `<div><span style="text-decoration:line-through;color:#999;font-size:0.8em">${formatarMoeda(p.preco)}</span> <strong style="color:#E91E63">${formatarMoeda(p.preco_promocional)}</strong></div>`;
                     
-                    // COMPATIBILIDADE DE NOMES ANTIGOS NO ADMIN
                     let nomeCatDisplay = p.categoria;
                     if(p.categoria === 'comemorativas' && p.evento) nomeCatDisplay = `Especial: ${nomeEventos[p.evento]}`;
                     else if(p.categoria === 'comemorativas') nomeCatDisplay = 'Datas Comemorativas';
@@ -466,7 +463,6 @@
             document.getElementById('novo-minimo').value=p.minimo||1;
             document.getElementById('novo-link').value=p.link_pagamento||'';
             
-            // JOGA PARA A CATEGORIA CERTA SE FOR PRODUTO ANTIGO
             let catEdit = p.categoria;
             if(catEdit === 'festa') catEdit = 'kitfestas';
             if(catEdit === 'simples' || catEdit === 'semiluxo') catEdit = 'lembrancas';
@@ -492,7 +488,6 @@
             document.getElementById('novo-minimo').value='1';
             document.getElementById('cb-promocao').checked=false;
             document.getElementById('div-evento').style.display='none';
-            // Valor padrão ao abrir
             document.getElementById('novo-categoria').value='kitfestas';
             togglePromoField(); listaFotosEdicao = []; renderizarPreview();
             document.getElementById('form-overlay').style.display='flex';
