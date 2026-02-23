@@ -29,16 +29,22 @@
         .view-section { display: none; animation: fadeIn 0.4s; }
         .view-section.active { display: block; }
 
-        /* TABELA */
+        /* TABELA E BUSCA */
+        .search-admin-input { padding: 10px 15px; border: 1px solid #ddd; border-radius: 8px; width: 100%; max-width: 250px; font-family: inherit; outline: none; transition: 0.2s; }
+        .search-admin-input:focus { border-color: #B39DDB; box-shadow: 0 0 5px rgba(179,157,219,0.3); }
+        .header-vendas { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
+        
         .table-box { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 15px; border-bottom: 1px solid #eee; text-align: left; vertical-align: middle; font-size: 0.9rem; }
         th { color: #888; font-weight: 600; text-transform: uppercase; font-size: 0.8rem; background: #f9f9f9; }
         .btn-new { background: #B39DDB; color: white; border: none; padding: 10px 20px; border-radius: 30px; cursor: pointer; float: right; font-weight: 600; }
         .btn-status { padding: 5px 12px; border-radius: 15px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
+        
         .status-pendente { background: #FFF3E0; color: #EF6C00; } 
-        .status-aguardando { background: #E3F2FD; color: #1976D2; } 
+        .status-aguardando { background: #FFF9C4; color: #F57F17; } 
         .status-concluido { background: #E8F5E9; color: #2E7D32; } 
+        
         .action-icon { cursor: pointer; margin-left: 10px; font-size: 1.2rem; transition: 0.2s; padding: 5px; }
         .icon-edit { color: #2196F3; } .icon-trash { color: #ccc; } .icon-trash:hover { color: #F44336; } .icon-toggle { color: #4CAF50; }
         .mini-foto { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; background: #eee; border: 1px solid #ddd; }
@@ -46,7 +52,7 @@
         /* MODAL FORM */
         #form-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; }
         .form-card { background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; position: relative; }
-        input, select, textarea { width: 100%; padding: 10px; margin: 5px 0 15px; border: 1px solid #ddd; border-radius: 5px; font-family: inherit; }
+        input[type="text"]:not(.search-admin-input), input[type="number"], select, textarea { width: 100%; padding: 10px; margin: 5px 0 15px; border: 1px solid #ddd; border-radius: 5px; font-family: inherit; box-sizing: border-box; }
         textarea { height: 80px; resize: vertical; }
         .promo-box { background: #FCE4EC; padding: 15px; border-radius: 8px; border: 1px solid #F8BBD0; margin: 15px 0; }
         
@@ -70,7 +76,7 @@
         .loading-text { font-size: 1.1rem; color: #555; font-weight: 500; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* MODAL DE CONFIRMAÇÃO PREMIUM */
+        /* MODAL DE CONFIRMAÇÃO */
         #confirm-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 30000; justify-content: center; align-items: center; animation: fadeIn 0.2s; }
         .confirm-box { background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .confirm-box h3 { margin: 0 0 10px 0; color: #333; }
@@ -99,6 +105,8 @@
             td:first-child::before { display: none; }
             .mini-foto { width: 60px; height: 60px; }
             .btn-new { float: none; width: 100%; margin-top: 10px; }
+            .header-vendas { flex-direction: column; align-items: flex-start; }
+            .search-admin-input { max-width: 100%; }
         }
     </style>
 </head>
@@ -139,7 +147,7 @@
         <div class="sidebar">
             <h2>Admin NovaStack</h2>
             <div class="menu-item active" onclick="mudarAba('produtos')"><i class="fas fa-box"></i> Produtos</div>
-            <div class="menu-item" onclick="mudarAba('vendas')"><i class="fas fa-shopping-bag"></i> Vendas</div>
+            <div class="menu-item" onclick="mudarAba('vendas')"><i class="fas fa-shopping-bag"></i> Vendas <span id="badge-vendas" style="background:#F44336; color:white; border-radius:50%; padding:2px 6px; font-size:0.7rem; display:none; margin-left:auto;">Novo</span></div>
             <div class="menu-item" id="btn-sair"><i class="fas fa-sign-out-alt"></i> Sair</div>
         </div>
 
@@ -158,7 +166,10 @@
             </div>
 
             <div id="view-vendas" class="view-section">
-                <h2 style="margin-bottom: 20px;">Pedidos Realizados 🛒</h2>
+                <div class="header-vendas">
+                    <h2 style="margin: 0;">Pedidos Realizados 🛒</h2>
+                    <input type="text" id="busca-id" class="search-admin-input" placeholder="🔍 Buscar por código (#XXXX)" onkeyup="filtrarVendas()">
+                </div>
                 <div class="table-box">
                     <table>
                         <thead><tr><th>ID / Detalhes</th><th>Data</th><th>Cliente</th><th>Total</th><th>Status</th><th>Ações</th></tr></thead>
@@ -197,7 +208,7 @@
                 </div>
             </div>
 
-            <label>Link de Pagamento (Opcional)</label><input type="text" id="novo-link" placeholder="Mercado Pago/Pix">
+            <label>Link de Pagamento Externo (Opcional)</label><input type="text" id="novo-link" placeholder="Mercado Pago/Pix Externo">
             
             <label>Categoria</label>
             <select id="novo-categoria">
@@ -230,7 +241,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, doc, updateDoc, addDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc, addDoc, deleteDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = { apiKey: "AIzaSyBrRLiEFF8dfWHVxhK3popdYgEDQLiKzCM", authDomain: "gabriele-personaliza.firebaseapp.com", projectId: "gabriele-personaliza", storageBucket: "gabriele-personaliza.firebasestorage.app", messagingSenderId: "403724311605", appId: "1:403724311605:web:850e1bb14459a3ec60e57c", measurementId: "G-T24GYM57CT" };
@@ -243,6 +254,41 @@
         let listaFotosEdicao = []; 
         let produtoEmEdicaoId = null;
         let produtosCache = {};
+        let unsubscribeVendas = null;
+
+        // FUNÇÃO PARA BUSCA NA TABELA DE VENDAS
+        window.filtrarVendas = () => {
+            const termo = document.getElementById('busca-id').value.toLowerCase();
+            const linhas = document.querySelectorAll('#lista-vendas tr');
+            linhas.forEach(linha => {
+                const colunaId = linha.querySelector('td[data-label="ID / Detalhes"] strong');
+                if (colunaId) {
+                    const textoId = colunaId.innerText.toLowerCase();
+                    linha.style.display = textoId.includes(termo) ? '' : 'none';
+                }
+            });
+        }
+
+        // FUNÇÃO QUE FORMATA O WHATSAPP AUTOMATICAMENTE (NovaStack Tool)
+        const formatarTelefone = (telOriginal) => {
+            if (!telOriginal) return '-';
+            let num = telOriginal.replace(/\D/g, ""); // Remove tudo que não for número
+            
+            // Remove o código do país (55) se ele foi digitado
+            if (num.startsWith('55') && num.length >= 12) {
+                num = num.substring(2);
+            }
+            
+            // Formata para (XX) XXXXX-XXXX
+            if (num.length === 11) {
+                return `(${num.substring(0,2)}) ${num.substring(2,7)}-${num.substring(7)}`;
+            } else if (num.length === 10) {
+                return `(${num.substring(0,2)}) ${num.substring(2,6)}-${num.substring(6)}`;
+            }
+            
+            // Se o cliente digitou algo muito estranho, devolve do jeito que veio
+            return telOriginal;
+        };
 
         window.showConfirm = (msg, callback, tipo = 'danger') => {
             document.getElementById('confirm-msg').innerText = msg;
@@ -282,10 +328,11 @@
             if (user) { 
                 document.getElementById('login-screen').style.display = 'none'; 
                 document.getElementById('painel-app').style.display = 'flex'; 
-                carregarDados(); carregarVendas(); 
+                carregarDados(); carregarVendasTempoReal();
             } else { 
                 document.getElementById('login-screen').style.display = 'flex'; 
                 document.getElementById('painel-app').style.display = 'none'; 
+                if(unsubscribeVendas) unsubscribeVendas(); 
             }
         });
 
@@ -303,7 +350,18 @@
 
         const formatarMoeda = (v) => parseFloat(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         window.togglePromoField = () => { document.getElementById('promo-field-container').style.display = document.getElementById('cb-promocao').checked ? 'block' : 'none'; }
-        window.mudarAba = (aba) => { document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active')); document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active')); document.getElementById(`view-${aba}`).classList.add('active'); event.currentTarget.classList.add('active'); }
+        
+        window.mudarAba = (aba) => { 
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active')); 
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active')); 
+            document.getElementById(`view-${aba}`).classList.add('active'); 
+            event.currentTarget.classList.add('active'); 
+            if(aba === 'vendas') {
+                document.getElementById('badge-vendas').style.display = 'none';
+                document.getElementById('busca-id').value = ''; // Limpa a busca ao trocar de aba
+                filtrarVendas(); 
+            }
+        }
 
         document.getElementById('novo-categoria').addEventListener('change', (e) => {
             document.getElementById('div-evento').style.display = e.target.value === 'comemorativas' ? 'block' : 'none';
@@ -352,26 +410,52 @@
             } catch (e) { console.error(e); }
         }
 
-        async function carregarVendas() {
+        function carregarVendasTempoReal() {
             const tbody = document.getElementById('lista-vendas');
-            try {
-                let q; try { q = query(collection(db, "pedidos"), orderBy("data", "desc")); } catch { q = collection(db, "pedidos"); }
-                const qs = await getDocs(q); let html = '';
-                qs.forEach(doc => {
+            if(unsubscribeVendas) unsubscribeVendas();
+            
+            const q = query(collection(db, "pedidos"), orderBy("data", "desc"));
+            
+            unsubscribeVendas = onSnapshot(q, (snapshot) => {
+                let html = '';
+                
+                if(!snapshot.empty && !snapshot.metadata.hasPendingWrites) {
+                    snapshot.docChanges().forEach((change) => {
+                        if (change.type === "added" && document.getElementById('view-vendas').classList.contains('active') === false) {
+                            document.getElementById('badge-vendas').style.display = 'inline-block';
+                        }
+                    });
+                }
+
+                snapshot.forEach(doc => {
                     const p = doc.data();
                     const dataF = p.data ? new Date(p.data).toLocaleString('pt-BR', {day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}) : '-';
-                    let statusClass = p.status==='Concluído'?'status-concluido':(p.status==='Aguardando Pagamento'?'status-aguardando':'status-pendente');
-                    html += `<tr>
-                        <td data-label="ID / Produto"><div style="text-align:left"><strong style="color:#B39DDB">${p.id_visual||'-'}</strong><br>${p.produto}</div></td>
+                    
+                    let statusClass = 'status-pendente';
+                    if(p.status === 'Concluído') statusClass = 'status-concluido';
+                    if(p.status === 'Aguardando Pagamento') statusClass = 'status-aguardando';
+
+                    // O FormatarTelefone entra em ação aqui
+                    const telefoneFormatado = formatarTelefone(p.whatsapp);
+                    const linkZap = `https://wa.me/55${p.whatsapp.replace(/\D/g,'')}`;
+
+                    html += `<tr style="transition: background 0.5s;">
+                        <td data-label="ID / Detalhes"><div style="text-align:left"><strong style="color:#B39DDB">${p.id_visual||'-'}</strong><br>${p.produto}</div></td>
                         <td data-label="Data">${dataF}</td>
-                        <td data-label="Cliente"><div style="text-align:left">${p.cliente}<br><small><a href="https://wa.me/55${p.whatsapp.replace(/\D/g,'')}" target="_blank" style="color:#25D366;text-decoration:none"><i class="fab fa-whatsapp"></i> ${p.whatsapp}</a></small></div></td>
+                        <td data-label="Cliente"><div style="text-align:left">${p.cliente}<br><small><a href="${linkZap}" target="_blank" style="color:#25D366;text-decoration:none"><i class="fab fa-whatsapp"></i> ${telefoneFormatado}</a></small></div></td>
                         <td data-label="Total"><strong>${formatarMoeda(p.total)}</strong></td>
                         <td data-label="Status"><span class="btn-status ${statusClass}" onclick="mudarStatusPedido('${doc.id}','${p.status}')" style="cursor:pointer">${p.status}</span></td>
                         <td data-label="Ações"><i class="fas fa-trash action-icon icon-trash" onclick="apagarPedido('${doc.id}')"></i></td>
                     </tr>`;
                 });
+                
                 tbody.innerHTML = html || '<tr><td colspan="6" style="text-align:center; padding: 20px;">Nenhum pedido encontrado.</td></tr>';
-            } catch(e) { console.error(e); }
+                
+                // Reaplica a busca se a pessoa já estiver com algo digitado na barra
+                filtrarVendas();
+            }, (error) => {
+                console.error("Erro no Tempo Real:", error);
+            });
         }
 
         window.adicionarFotos = (input) => {
@@ -497,14 +581,14 @@
         window.mudarStatusPedido=async(id,s)=>{
             const n=s==='Concluído'?'Pendente':'Concluído';
             showConfirm(`Deseja alterar o status para ${n}?`, async () => {
-                try { await updateDoc(doc(db,"pedidos",id),{status:n}); showToast("Status atualizado!", "info"); carregarVendas(); } 
+                try { await updateDoc(doc(db,"pedidos",id),{status:n}); showToast("Status atualizado!", "info"); } 
                 catch(e) { showToast("Erro ao atualizar", "error"); }
             }, 'info');
         }
         
         window.apagarPedido=async(id)=>{
             showConfirm("Tem certeza que deseja APAGAR este pedido?", async () => {
-                try { await deleteDoc(doc(db,"pedidos",id)); showToast("Pedido removido!", "success"); carregarVendas(); } 
+                try { await deleteDoc(doc(db,"pedidos",id)); showToast("Pedido removido!", "success"); } 
                 catch(e) { showToast("Erro ao apagar", "error"); }
             });
         }
