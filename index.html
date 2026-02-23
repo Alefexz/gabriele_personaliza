@@ -29,7 +29,7 @@
     <link rel="stylesheet" href="style.css?v=4">
     
     <style>
-        /* CSS INTERNO MANTIDO (Modais e Ajustes Mobile) */
+        /* CSS INTERNO MANTIDO */
         .politicas-lista { text-align: left; margin-top: 15px; }
         .politicas-lista li { margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; color: #555; font-size: 0.9rem; }
         .politicas-lista i { color: #B39DDB; margin-right: 10px; width: 20px; text-align: center; }
@@ -140,12 +140,11 @@
             <div class="filter-container" data-aos="fade-up" data-aos-delay="100">
                 <button class="filter-btn active" onclick="aplicarFiltros('todos')" data-filter="todos">Todos</button>
                 <button class="filter-btn" onclick="aplicarFiltros('promocao')" data-filter="promocao"><i class="fas fa-tag"></i> Promoções</button>
-                <button class="filter-btn" onclick="aplicarFiltros('festa')" data-filter="festa">Festas</button>
+                <button class="filter-btn" onclick="aplicarFiltros('kitfestas')" data-filter="kitfestas">Kit Festas</button>
                 <button class="filter-btn" onclick="aplicarFiltros('comemorativas')" data-filter="comemorativas">Datas Comemorativas</button>
                 <button class="filter-btn" onclick="aplicarFiltros('cadernos')" data-filter="cadernos">Cadernos</button>
                 <button class="filter-btn" onclick="aplicarFiltros('mimos')" data-filter="mimos">Mimos</button>
-                <button class="filter-btn" onclick="aplicarFiltros('simples')" data-filter="simples">Simples</button>
-                <button class="filter-btn" onclick="aplicarFiltros('semiluxo')" data-filter="semiluxo">Semi Luxo</button>
+                <button class="filter-btn" onclick="aplicarFiltros('lembrancas')" data-filter="lembrancas">Lembranças</button>
             </div>
             
             <div id="destaque-sazonal-container" class="highlight-section" data-aos="zoom-in">
@@ -335,11 +334,27 @@
         window.aplicarFiltros = (categoria) => {
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('active');
-                if(btn.innerText.toLowerCase().includes(categoria.replace('promocao','promoçõe')) || (categoria === 'todos' && btn.innerText === 'Todos') || (categoria === 'comemorativas' && btn.innerText.includes('Comemorativas'))) btn.classList.add('active');
+                // COMPATIBILIDADE DOS BOTÕES
+                let isActive = false;
+                let btnText = btn.innerText.toLowerCase();
+                if (categoria === 'todos' && btnText === 'todos') isActive = true;
+                if (categoria === 'promocao' && btnText.includes('promoçõe')) isActive = true;
+                if (categoria === 'kitfestas' && btnText.includes('kit festas')) isActive = true;
+                if (categoria === 'comemorativas' && btnText.includes('comemorativas')) isActive = true;
+                if (categoria === 'cadernos' && btnText.includes('cadernos')) isActive = true;
+                if (categoria === 'mimos' && btnText.includes('mimos')) isActive = true;
+                if (categoria === 'lembrancas' && btnText.includes('lembranças')) isActive = true;
+                
+                if(isActive) btn.classList.add('active');
             });
+
             const filtrados = todosProdutos.filter(p => {
                 if (categoria === 'todos') return true;
                 if (categoria === 'promocao') return p.em_promocao && p.ativo;
+                // MÁGICA DA COMPATIBILIDADE DOS PRODUTOS ANTIGOS
+                if (categoria === 'kitfestas') return p.categoria === 'kitfestas' || p.categoria === 'festa';
+                if (categoria === 'lembrancas') return p.categoria === 'lembrancas' || p.categoria === 'simples' || p.categoria === 'semiluxo';
+                
                 return p.categoria === categoria;
             });
             renderizarCards(filtrados, "Nenhum produto encontrado.", categoria);
@@ -351,16 +366,12 @@
             renderizarCards(filtrados, termo !== "" ? "Nenhum produto encontrado com esse nome." : "Nenhum produto encontrado.", 'busca');
         }
 
-        // --- LÓGICA INTELIGENTE DE DATAS DA PRIME CODE ---
         const obterEventoDoMes = () => {
             const dataAtual = new Date();
             const mes = dataAtual.getMonth() + 1;
             const dia = dataAtual.getDate();
-            
-            // Cria um número único para comparar as datas facilmente (Ex: 9 de Março vira 309)
             const mmdd = mes * 100 + dia;
 
-            // Define exatamente o dia que cada banner acaba e o próximo começa!
             if (mmdd <= 308) return { id: 'mulher', titulo: '🌸 Especial Dia da Mulher' };
             if (mmdd <= 415) return { id: 'pascoa', titulo: '🐰 A Páscoa está chegando!' };
             if (mmdd <= 515) return { id: 'maes', titulo: '❤️ Especial Dia das Mães' };
@@ -368,8 +379,7 @@
             if (mmdd <= 815) return { id: 'pais', titulo: '👔 Especial Dia dos Pais' };
             if (mmdd <= 1012) return { id: 'criancas', titulo: '🧸 Especial Dia das Crianças' };
             if (mmdd <= 1225) return { id: 'natal', titulo: '🎄 A Magia do Natal está chegando!' };
-            
-            return null; // Do dia 26/12 até 31/12 fica normal
+            return null;
         }
 
         function criarCardProduto(p, index) {
@@ -397,7 +407,11 @@
             let priceHtml = formatarMoeda(p.preco);
             if (p.ativo && p.em_promocao && p.preco_promocional > 0) priceHtml = `<span class="original-price">${formatarMoeda(p.preco)}</span> <span class="promo-price">${formatarMoeda(p.preco_promocional)}</span>`;
             
-            let nomeCatDisplay = p.categoria === 'comemorativas' ? 'DATAS COMEMORATIVAS' : p.categoria.toUpperCase();
+            // FORMATAÇÃO DO NOME DA CATEGORIA NOS CARDS
+            let nomeCatDisplay = p.categoria.toUpperCase();
+            if (p.categoria === 'comemorativas') nomeCatDisplay = 'DATAS COMEMORATIVAS';
+            if (p.categoria === 'kitfestas' || p.categoria === 'festa') nomeCatDisplay = 'KIT FESTAS';
+            if (p.categoria === 'lembrancas' || p.categoria === 'simples' || p.categoria === 'semiluxo') nomeCatDisplay = 'LEMBRANÇAS';
 
             const card = document.createElement('div');
             card.className = 'product-card';
@@ -419,7 +433,6 @@
             gridSazonal.innerHTML = '';
             containerSazonal.style.display = 'none';
 
-            // ATIVA DESTAQUE SAZONAL SÓ SE ESTIVER NA ABA "TODOS"
             if(aba === 'todos') {
                 const eventoAtual = obterEventoDoMes();
                 if(eventoAtual) {

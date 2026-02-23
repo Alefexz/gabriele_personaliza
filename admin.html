@@ -201,26 +201,25 @@
             
             <label>Categoria</label>
             <select id="novo-categoria">
-                <option value="festa">Festa</option>
+                <option value="kitfestas">Kit Festas</option>
                 <option value="comemorativas">Datas Comemorativas</option>
                 <option value="cadernos">Cadernos</option>
                 <option value="mimos">Mimos</option>
-                <option value="simples">Simples</option>
-                <option value="semiluxo">Semi Luxo</option>
+                <option value="lembrancas">Lembranças</option>
             </select>
 
             <div id="div-evento" style="display:none; margin-top:15px; padding:15px; background:#f9f9f9; border-radius:8px; border-left:4px solid #B39DDB;">
                 <label style="color:#B39DDB; font-weight:bold;">Qual Data Comemorativa?</label>
                 <select id="novo-evento" style="margin-top:5px;">
-                    <option value="mulher">Dia da Mulher (Março)</option>
-                    <option value="pascoa">Páscoa (Abril)</option>
-                    <option value="maes">Dia das Mães (Maio)</option>
-                    <option value="namorados">Dia dos Namorados (Junho)</option>
-                    <option value="pais">Dia dos Pais (Agosto)</option>
-                    <option value="criancas">Dia das Crianças (Outubro)</option>
-                    <option value="professores">Dia dos Professores (Outubro)</option>
-                    <option value="natal">Natal (Dezembro)</option>
-                    <option value="ano_novo">Ano Novo (Jan)</option>
+                    <option value="mulher">Dia da Mulher</option>
+                    <option value="pascoa">Páscoa</option>
+                    <option value="maes">Dia das Mães</option>
+                    <option value="namorados">Dia dos Namorados</option>
+                    <option value="pais">Dia dos Pais</option>
+                    <option value="criancas">Dia das Crianças</option>
+                    <option value="professores">Dia dos Professores</option>
+                    <option value="natal">Natal</option>
+                    <option value="ano_novo">Ano Novo</option>
                 </select>
             </div>
             
@@ -325,8 +324,7 @@
                     let thumb = (p.fotos && p.fotos.length > 0) ? p.fotos[0] : (p.foto || '');
                     
                     const timestamp = new Date().getTime();
-                    let finalThumb = thumb;
-                    if(thumb.startsWith('http')) finalThumb = `${thumb}?t=${timestamp}`;
+                    let finalThumb = thumb.startsWith('http') ? `${thumb}?t=${timestamp}` : thumb;
 
                     const img = thumb ? `<img src="${finalThumb}" class="mini-foto">` : '<div class="mini-foto"></div>';
                     const color = p.ativo ? '#4CAF50' : '#F44336';
@@ -334,7 +332,12 @@
                     let priceDisplay = formatarMoeda(p.preco);
                     if(p.em_promocao && p.preco_promocional > 0) priceDisplay = `<div><span style="text-decoration:line-through;color:#999;font-size:0.8em">${formatarMoeda(p.preco)}</span> <strong style="color:#E91E63">${formatarMoeda(p.preco_promocional)}</strong></div>`;
                     
-                    let nomeCatDisplay = p.categoria === 'comemorativas' && p.evento ? `Especial: ${nomeEventos[p.evento]}` : p.categoria;
+                    // COMPATIBILIDADE DE NOMES ANTIGOS NO ADMIN
+                    let nomeCatDisplay = p.categoria;
+                    if(p.categoria === 'comemorativas' && p.evento) nomeCatDisplay = `Especial: ${nomeEventos[p.evento]}`;
+                    else if(p.categoria === 'comemorativas') nomeCatDisplay = 'Datas Comemorativas';
+                    else if(p.categoria === 'kitfestas' || p.categoria === 'festa') nomeCatDisplay = 'Kit Festas';
+                    else if(p.categoria === 'lembrancas' || p.categoria === 'simples' || p.categoria === 'semiluxo') nomeCatDisplay = 'Lembranças';
 
                     html += `<tr>
                         <td data-label="Produto"><div style="display:flex; gap:15px; align-items:center;">${img} <div style="text-align:left"><strong>${p.nome}</strong><br><small style="color:#777">${nomeCatDisplay}</small></div></div></td>
@@ -463,8 +466,13 @@
             document.getElementById('novo-minimo').value=p.minimo||1;
             document.getElementById('novo-link').value=p.link_pagamento||'';
             
-            document.getElementById('novo-categoria').value=p.categoria;
-            document.getElementById('div-evento').style.display = p.categoria === 'comemorativas' ? 'block' : 'none';
+            // JOGA PARA A CATEGORIA CERTA SE FOR PRODUTO ANTIGO
+            let catEdit = p.categoria;
+            if(catEdit === 'festa') catEdit = 'kitfestas';
+            if(catEdit === 'simples' || catEdit === 'semiluxo') catEdit = 'lembrancas';
+            
+            document.getElementById('novo-categoria').value = catEdit;
+            document.getElementById('div-evento').style.display = catEdit === 'comemorativas' ? 'block' : 'none';
             if(p.evento) document.getElementById('novo-evento').value = p.evento;
 
             document.getElementById('cb-promocao').checked=p.em_promocao||false;
@@ -484,6 +492,8 @@
             document.getElementById('novo-minimo').value='1';
             document.getElementById('cb-promocao').checked=false;
             document.getElementById('div-evento').style.display='none';
+            // Valor padrão ao abrir
+            document.getElementById('novo-categoria').value='kitfestas';
             togglePromoField(); listaFotosEdicao = []; renderizarPreview();
             document.getElementById('form-overlay').style.display='flex';
         }
