@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Gabriele | Painel</title>
-    <link rel="shortcut icon" href="https://i.ibb.co/h7XN8kG/logo.png" type="image/x-icon">
+    
+    <link rel="icon" href="assets/img/logo.jpeg" type="image/jpeg">
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -366,7 +367,6 @@
                 snapshot.forEach(doc => {
                     const p = doc.data();
                     
-                    // Oculta APENAS pedidos que estão aguardando o cliente abrir o app do banco (para não lotar de carrinho em andamento)
                     if(p.status === 'Aguardando Pagamento') return;
 
                     const dataF = p.data ? new Date(p.data).toLocaleString('pt-BR', {day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}) : '-';
