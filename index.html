@@ -27,14 +27,13 @@
     <link rel="stylesheet" href="style.css?v=4">
     
     <style>
-        /* --- TEMA DINÂMICO SUTIL (AGORA SEM ANIMAÇÕES) --- */
+        /* TEMA DINÂMICO LIMPO (SEM ANIMAÇÕES) */
         body { background-color: #F0F2F5; transition: background 0.5s ease; }
-        body.theme-love { background-color: #FFF0F5; } /* Apenas fundo rosa claro */
-        body.theme-easter { background-color: #FFF8E1; } /* Apenas fundo bege/laranja claro */
-        body.theme-cool { background-color: #E3F2FD; } /* Apenas fundo azul claro */
-        body.theme-xmas { background-color: #E8F5E9; } /* Apenas fundo verde claro */
+        body.theme-love { background-color: #FFF0F5; } 
+        body.theme-easter { background-color: #FFF8E1; } 
+        body.theme-cool { background-color: #E3F2FD; } 
+        body.theme-xmas { background-color: #E8F5E9; } 
 
-        /* MODAIS E MOBILE */
         .politicas-lista { text-align: left; margin-top: 15px; } .politicas-lista li { margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; color: #555; font-size: 0.9rem; } .politicas-lista i { color: #B39DDB; margin-right: 10px; width: 20px; text-align: center; }
         @media (max-width: 768px) { .nav-links.active-menu { display: flex; flex-direction: column; position: absolute; top: 70px; left: 0; width: 100%; background: white; box-shadow: 0 10px 15px rgba(0,0,0,0.1); padding: 20px 0; animation: slideDown 0.3s ease forwards; } .nav-links.active-menu li { width: 100%; text-align: center; padding: 15px 0; border-bottom: 1px solid #f0f0f0; } .nav-links.active-menu li a { display: block; font-size: 1.1rem; } .nav-links.active-menu .btn-nav { display: inline-block; margin-top: 10px; } @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } } }
         .modal-produto-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: end; }
@@ -58,7 +57,7 @@
         #fullscreen-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; justify-content: center; align-items: center; cursor: zoom-out; animation: fadeIn 0.3s; } #fullscreen-img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 5px; box-shadow: 0 0 20px rgba(0,0,0,0.5); } .close-fullscreen { position: absolute; top: 20px; right: 20px; color: white; font-size: 40px; cursor: pointer; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
         .highlight-section { background: #fff; padding: 25px; border-radius: 15px; margin-bottom: 30px; border: 2px dashed #B39DDB; display: none; box-shadow: 0 5px 15px rgba(0,0,0,0.05); } .highlight-title { color: #B39DDB; margin-top: 0; margin-bottom: 20px; font-family: 'Playfair Display', serif; font-size: 1.8rem; text-align: left; }
 
-        /* --- CSS DO CHECKOUT PIX --- */
+        /* CSS DO CHECKOUT PIX */
         .pix-checkout-container { display: none; text-align: center; padding-top: 10px; border-top: 1px solid #eee; animation: fadeIn 0.4s; }
         .pix-title { font-size: 1.2rem; color: #009EE3; font-weight: bold; margin-bottom: 5px; }
         .qr-code-box { background: #f9f9f9; padding: 15px; border-radius: 15px; display: inline-block; margin-bottom: 15px; border: 1px solid #ddd; }
@@ -234,7 +233,7 @@
                     </div>
 
                     <button class="btn-comprar" onclick="confirmarPixManual()" style="margin-top: 10px; background:#25D366"><i class="fab fa-whatsapp"></i> Já Paguei! Enviar Comprovante</button>
-                    <button class="btn-cartao" onclick="voltarEtapa1()" style="margin-top: 10px; background:#f44336"><i class="fas fa-arrow-left"></i> Cancelar</button>
+                    <button class="btn-cartao" onclick="voltarEtapa1()" style="margin-top: 10px; background:#f44336"><i class="fas fa-arrow-left"></i> Cancelar Pedido</button>
                 </div>
             </div>
 
@@ -280,11 +279,11 @@
         <img id="fullscreen-img" src="">
     </div>
 
-    <script src="script.js?v=15"></script>
+    <script src="script.js?v=18"></script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, onSnapshot, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         
         const firebaseConfig = { apiKey: "AIzaSyBrRLiEFF8dfWHVxhK3popdYgEDQLiKzCM", authDomain: "gabriele-personaliza.firebaseapp.com", projectId: "gabriele-personaliza", storageBucket: "gabriele-personaliza.firebasestorage.app", messagingSenderId: "403724311605", appId: "1:403724311605:web:850e1bb14459a3ec60e57c", measurementId: "G-T24GYM57CT" };
         const app = initializeApp(firebaseConfig);
@@ -295,6 +294,8 @@
         let timerInterval;
         let pedidoAtualIdVisual = "";
         let listenerPagamento = null; 
+        
+        let pedidoPixPendenteId = null;
 
         const VERCEL_API_URL = "https://backand-gabrielepersonaliza.vercel.app/api/pix";
 
@@ -472,16 +473,30 @@
             }
         }
 
-        window.fecharModal = () => { 
+        // --- SISTEMA CORRIGIDO DE CANCELAMENTO ---
+        window.fecharModal = async () => { 
             document.getElementById('modal-produto').style.display = 'none'; 
             if(timerInterval) clearInterval(timerInterval); 
             if(listenerPagamento) { listenerPagamento(); listenerPagamento = null; }
+
+            // Se o usuário fechar o modal no X e deixou o Pix pendente, ATUALIZA PARA CANCELADO!
+            if (pedidoPixPendenteId) {
+                try { await updateDoc(doc(db, "pedidos", pedidoPixPendenteId), { status: 'Cancelado' }); } catch(e) { }
+                pedidoPixPendenteId = null;
+            }
         }
-        window.voltarEtapa1 = () => { 
+
+        window.voltarEtapa1 = async () => { 
             document.getElementById('modal-etapa-2').style.display = 'none'; 
             document.getElementById('modal-etapa-1').style.display = 'block'; 
             if(timerInterval) clearInterval(timerInterval); 
             if(listenerPagamento) { listenerPagamento(); listenerPagamento = null; }
+
+            // Se a pessoa clicou em "Cancelar Pedido", ATUALIZA PARA CANCELADO!
+            if (pedidoPixPendenteId) {
+                try { await updateDoc(doc(db, "pedidos", pedidoPixPendenteId), { status: 'Cancelado' }); } catch(e) { }
+                pedidoPixPendenteId = null;
+            }
         }
 
         function validarTermos() {
@@ -507,6 +522,8 @@
             if(!validarTermos()) return;
             const dadosPedido = await registrarPedidoDb('Site Pix');
             if(!dadosPedido) return;
+
+            pedidoPixPendenteId = dadosPedido.docId;
 
             document.getElementById('pix-valor-display').innerText = `Valor da entrada: ${formatarMoeda(dadosPedido.valor)}`;
             document.getElementById('modal-etapa-1').style.display = 'none';
@@ -537,8 +554,10 @@
                     if(listenerPagamento) listenerPagamento();
                     listenerPagamento = onSnapshot(doc(db, "pedidos", dadosPedido.docId), (docSnap) => {
                         if (docSnap.exists() && docSnap.data().status === 'Concluído') {
+                            pedidoPixPendenteId = null; 
+                            
                             clearInterval(timerInterval);
-                            fecharModal();
+                            document.getElementById('modal-produto').style.display = 'none'; 
                             document.getElementById('sucesso-id').innerText = dadosPedido.id_visual;
                             document.getElementById('modal-sucesso').style.display = 'flex';
                             if(listenerPagamento) listenerPagamento();
@@ -570,20 +589,33 @@
             const display = document.getElementById('pix-timer');
             if(timerInterval) clearInterval(timerInterval);
             
-            timerInterval = setInterval(() => {
+            timerInterval = setInterval(async () => {
                 let minutos = parseInt(tempo / 60, 10); let segundos = parseInt(tempo % 60, 10);
                 minutos = minutos < 10 ? "0" + minutos : minutos; segundos = segundos < 10 ? "0" + segundos : segundos;
                 display.textContent = minutos + ":" + segundos;
                 if (--tempo < 0) {
                     clearInterval(timerInterval);
                     display.textContent = "Expirado";
+                    
+                    // Se o tempo acabou, ATUALIZA PARA CANCELADO!
+                    if (pedidoPixPendenteId) {
+                        try { await updateDoc(doc(db, "pedidos", pedidoPixPendenteId), { status: 'Cancelado' }); } catch(e) { }
+                        pedidoPixPendenteId = null;
+                    }
+                    
                     mostrarAlerta("O tempo do Pix expirou. Por favor, gere um novo pedido ou chame no WhatsApp.");
                 }
             }, 1000);
         }
 
-        window.confirmarPixManual = () => {
-            fecharModal();
+        window.confirmarPixManual = async () => {
+            // MUDA O STATUS PARA PENDENTE (O cliente disse que pagou manual)
+            if (pedidoPixPendenteId) {
+                try { await updateDoc(doc(db, "pedidos", pedidoPixPendenteId), { status: 'Pendente' }); } catch(e) { }
+                pedidoPixPendenteId = null; 
+            }
+            
+            document.getElementById('modal-produto').style.display = 'none';
             const nome = document.getElementById('cliente-nome').value;
             let total = (produtoAtual.em_promocao && produtoAtual.preco_promocional > 0) ? produtoAtual.preco_promocional : produtoAtual.preco;
             total = total * qtdAtual;

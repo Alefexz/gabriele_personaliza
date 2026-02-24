@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin NovaStack | Gabriele</title>
+    <title>Admin Gabriele | Painel</title>
+    <link rel="shortcut icon" href="https://i.ibb.co/h7XN8kG/logo.png" type="image/x-icon">
+    
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* CSS GERAL */
         body { font-family: 'Poppins', sans-serif; background: #F0F2F5; margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
-        /* LOGIN */
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #2c3e50; z-index: 9999; display: flex; justify-content: center; align-items: center; }
         .login-card { background: white; padding: 40px; border-radius: 15px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .login-input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box; }
@@ -19,17 +19,15 @@
         .btn-entrar:hover { background: #9575CD; }
         .error-msg { color: red; font-size: 0.8rem; margin-top: 15px; display: none; background: #FFEBEE; padding: 10px; border-radius: 5px; border: 1px solid #FFCDD2; }
 
-        /* LAYOUT */
         #painel-app { display: none; width: 100%; height: 100%; }
         .sidebar { width: 250px; background: white; padding: 20px; display: flex; flex-direction: column; border-right: 1px solid #ddd; }
-        .sidebar h2 { color: #B39DDB; margin-bottom: 30px; }
+        .sidebar h2 { color: #B39DDB; margin-bottom: 30px; font-size: 1.5rem; }
         .menu-item { padding: 12px; margin-bottom: 8px; cursor: pointer; border-radius: 8px; color: #555; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
         .menu-item:hover, .menu-item.active { background: #B39DDB; color: white; }
         .main-content { flex: 1; padding: 30px; overflow-y: auto; background: #F0F2F5; }
         .view-section { display: none; animation: fadeIn 0.4s; }
         .view-section.active { display: block; }
 
-        /* TABELA E BUSCA */
         .search-admin-input { padding: 10px 15px; border: 1px solid #ddd; border-radius: 8px; width: 100%; max-width: 250px; font-family: inherit; outline: none; transition: 0.2s; }
         .search-admin-input:focus { border-color: #B39DDB; box-shadow: 0 0 5px rgba(179,157,219,0.3); }
         .header-vendas { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
@@ -44,26 +42,24 @@
         .status-pendente { background: #FFF3E0; color: #EF6C00; } 
         .status-aguardando { background: #FFF9C4; color: #F57F17; } 
         .status-concluido { background: #E8F5E9; color: #2E7D32; } 
+        .status-cancelado { background: #FFEBEE; color: #D32F2F; } 
         
         .action-icon { cursor: pointer; margin-left: 10px; font-size: 1.2rem; transition: 0.2s; padding: 5px; }
         .icon-edit { color: #2196F3; } .icon-trash { color: #ccc; } .icon-trash:hover { color: #F44336; } .icon-toggle { color: #4CAF50; }
         .mini-foto { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; background: #eee; border: 1px solid #ddd; }
 
-        /* MODAL FORM */
         #form-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; }
         .form-card { background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; position: relative; }
         input[type="text"]:not(.search-admin-input), input[type="number"], select, textarea { width: 100%; padding: 10px; margin: 5px 0 15px; border: 1px solid #ddd; border-radius: 5px; font-family: inherit; box-sizing: border-box; }
         textarea { height: 80px; resize: vertical; }
         .promo-box { background: #FCE4EC; padding: 15px; border-radius: 8px; border: 1px solid #F8BBD0; margin: 15px 0; }
         
-        /* PREVIEW FOTOS */
         .preview-container { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
         .thumb-wrapper { position: relative; width: 70px; height: 70px; }
         .thumb-img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; }
         .btn-remove-foto { position: absolute; top: -8px; right: -8px; background: #F44336; color: white; border-radius: 50%; width: 22px; height: 22px; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 12px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2); border: 2px solid white; }
         .btn-remove-foto:hover { transform: scale(1.1); }
 
-        /* TOAST E LOADING */
         #toast-container { position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; }
         .toast { background: white; padding: 15px 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 12px; animation: slideIn 0.3s ease; min-width: 250px; border-left: 5px solid #ccc; font-weight: 500; }
         .toast-success { border-left-color: #4CAF50; } .toast-success i { color: #4CAF50; }
@@ -76,7 +72,6 @@
         .loading-text { font-size: 1.1rem; color: #555; font-weight: 500; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* MODAL DE CONFIRMAÇÃO */
         #confirm-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 30000; justify-content: center; align-items: center; animation: fadeIn 0.2s; }
         .confirm-box { background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .confirm-box h3 { margin: 0 0 10px 0; color: #333; }
@@ -86,7 +81,6 @@
         .btn-cancel:hover { background: #e0e0e0; }
         .btn-action { flex: 1; padding: 12px; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; transition: 0.2s; }
 
-        /* MOBILE */
         @media (max-width: 768px) {
             body { flex-direction: column; height: auto; overflow: auto; }
             #painel-app { flex-direction: column; height: auto; }
@@ -113,11 +107,7 @@
 <body>
 
     <div id="toast-container"></div>
-
-    <div id="loading-overlay">
-        <div class="spinner"></div>
-        <div class="loading-text" id="loading-msg">Processando...</div>
-    </div>
+    <div id="loading-overlay"><div class="spinner"></div><div class="loading-text" id="loading-msg">Processando...</div></div>
 
     <div id="confirm-modal">
         <div class="confirm-box">
@@ -145,7 +135,7 @@
 
     <div id="painel-app">
         <div class="sidebar">
-            <h2>Admin NovaStack</h2>
+            <h2>Admin Gabriele</h2>
             <div class="menu-item active" onclick="mudarAba('produtos')"><i class="fas fa-box"></i> Produtos</div>
             <div class="menu-item" onclick="mudarAba('vendas')"><i class="fas fa-shopping-bag"></i> Vendas <span id="badge-vendas" style="background:#F44336; color:white; border-radius:50%; padding:2px 6px; font-size:0.7rem; display:none; margin-left:auto;">Novo</span></div>
             <div class="menu-item" id="btn-sair"><i class="fas fa-sign-out-alt"></i> Sair</div>
@@ -256,7 +246,6 @@
         let produtosCache = {};
         let unsubscribeVendas = null;
 
-        // FUNÇÃO PARA BUSCA NA TABELA DE VENDAS
         window.filtrarVendas = () => {
             const termo = document.getElementById('busca-id').value.toLowerCase();
             const linhas = document.querySelectorAll('#lista-vendas tr');
@@ -269,24 +258,12 @@
             });
         }
 
-        // FUNÇÃO QUE FORMATA O WHATSAPP AUTOMATICAMENTE (NovaStack Tool)
         const formatarTelefone = (telOriginal) => {
             if (!telOriginal) return '-';
-            let num = telOriginal.replace(/\D/g, ""); // Remove tudo que não for número
-            
-            // Remove o código do país (55) se ele foi digitado
-            if (num.startsWith('55') && num.length >= 12) {
-                num = num.substring(2);
-            }
-            
-            // Formata para (XX) XXXXX-XXXX
-            if (num.length === 11) {
-                return `(${num.substring(0,2)}) ${num.substring(2,7)}-${num.substring(7)}`;
-            } else if (num.length === 10) {
-                return `(${num.substring(0,2)}) ${num.substring(2,6)}-${num.substring(6)}`;
-            }
-            
-            // Se o cliente digitou algo muito estranho, devolve do jeito que veio
+            let num = telOriginal.replace(/\D/g, ""); 
+            if (num.startsWith('55') && num.length >= 12) num = num.substring(2);
+            if (num.length === 11) return `(${num.substring(0,2)}) ${num.substring(2,7)}-${num.substring(7)}`;
+            else if (num.length === 10) return `(${num.substring(0,2)}) ${num.substring(2,6)}-${num.substring(6)}`;
             return telOriginal;
         };
 
@@ -294,14 +271,8 @@
             document.getElementById('confirm-msg').innerText = msg;
             const btn = document.getElementById('btn-confirm-yes');
             const icone = document.getElementById('confirm-icon');
-            
-            if(tipo === 'danger') {
-                btn.style.background = '#F44336'; btn.innerText = 'Sim, excluir';
-                icone.className = 'fas fa-exclamation-triangle'; icone.style.color = '#F44336';
-            } else {
-                btn.style.background = '#B39DDB'; btn.innerText = 'Sim, continuar';
-                icone.className = 'fas fa-question-circle'; icone.style.color = '#B39DDB';
-            }
+            if(tipo === 'danger') { btn.style.background = '#F44336'; btn.innerText = 'Sim, excluir'; icone.className = 'fas fa-exclamation-triangle'; icone.style.color = '#F44336'; } 
+            else { btn.style.background = '#B39DDB'; btn.innerText = 'Sim, continuar'; icone.className = 'fas fa-question-circle'; icone.style.color = '#B39DDB'; }
             btn.onclick = () => { fecharConfirm(); callback(); };
             document.getElementById('confirm-modal').style.display = 'flex';
         }
@@ -318,22 +289,12 @@
             setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 4000);
         }
 
-        window.showLoading = (msg) => {
-            document.getElementById('loading-msg').innerText = msg;
-            document.getElementById('loading-overlay').style.display = 'flex';
-        }
+        window.showLoading = (msg) => { document.getElementById('loading-msg').innerText = msg; document.getElementById('loading-overlay').style.display = 'flex'; }
         window.hideLoading = () => document.getElementById('loading-overlay').style.display = 'none';
 
         onAuthStateChanged(auth, (user) => {
-            if (user) { 
-                document.getElementById('login-screen').style.display = 'none'; 
-                document.getElementById('painel-app').style.display = 'flex'; 
-                carregarDados(); carregarVendasTempoReal();
-            } else { 
-                document.getElementById('login-screen').style.display = 'flex'; 
-                document.getElementById('painel-app').style.display = 'none'; 
-                if(unsubscribeVendas) unsubscribeVendas(); 
-            }
+            if (user) { document.getElementById('login-screen').style.display = 'none'; document.getElementById('painel-app').style.display = 'flex'; carregarDados(); carregarVendasTempoReal(); } 
+            else { document.getElementById('login-screen').style.display = 'flex'; document.getElementById('painel-app').style.display = 'none'; if(unsubscribeVendas) unsubscribeVendas(); }
         });
 
         window.login = async () => {
@@ -344,9 +305,7 @@
             catch (error) { erro.innerText = "Senha incorreta."; erro.style.display = 'block'; btn.innerText = "Acessar Painel"; showToast("Senha Incorreta", "error"); }
         }
         
-        document.getElementById('btn-sair').addEventListener('click', () => { 
-            showConfirm("Deseja realmente sair do painel?", () => { signOut(auth); window.location.href = 'index.html'; }, 'info');
-        });
+        document.getElementById('btn-sair').addEventListener('click', () => { showConfirm("Deseja realmente sair do painel?", () => { signOut(auth); window.location.href = 'index.html'; }, 'info'); });
 
         const formatarMoeda = (v) => parseFloat(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         window.togglePromoField = () => { document.getElementById('promo-field-container').style.display = document.getElementById('cb-promocao').checked ? 'block' : 'none'; }
@@ -356,16 +315,10 @@
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active')); 
             document.getElementById(`view-${aba}`).classList.add('active'); 
             event.currentTarget.classList.add('active'); 
-            if(aba === 'vendas') {
-                document.getElementById('badge-vendas').style.display = 'none';
-                document.getElementById('busca-id').value = ''; // Limpa a busca ao trocar de aba
-                filtrarVendas(); 
-            }
+            if(aba === 'vendas') { document.getElementById('badge-vendas').style.display = 'none'; document.getElementById('busca-id').value = ''; filtrarVendas(); }
         }
 
-        document.getElementById('novo-categoria').addEventListener('change', (e) => {
-            document.getElementById('div-evento').style.display = e.target.value === 'comemorativas' ? 'block' : 'none';
-        });
+        document.getElementById('novo-categoria').addEventListener('change', (e) => { document.getElementById('div-evento').style.display = e.target.value === 'comemorativas' ? 'block' : 'none'; });
 
         const nomeEventos = { 'mulher':'Dia da Mulher', 'pascoa':'Páscoa', 'maes':'Dia das Mães', 'namorados':'Dia dos Namorados', 'pais':'Dia dos Pais', 'criancas':'Dia das Crianças', 'professores':'Dia dos Professores', 'natal':'Natal', 'ano_novo':'Ano Novo' };
 
@@ -375,36 +328,21 @@
                 const q = await getDocs(collection(db, "produtos"));
                 let html = ''; produtosCache = {};
                 q.forEach(docSnap => {
-                    const p = docSnap.data();
-                    produtosCache[docSnap.id] = p;
+                    const p = docSnap.data(); produtosCache[docSnap.id] = p;
                     let thumb = (p.fotos && p.fotos.length > 0) ? p.fotos[0] : (p.foto || '');
-                    
-                    const timestamp = new Date().getTime();
-                    let finalThumb = thumb.startsWith('http') ? `${thumb}?t=${timestamp}` : thumb;
-
+                    const timestamp = new Date().getTime(); let finalThumb = thumb.startsWith('http') ? `${thumb}?t=${timestamp}` : thumb;
                     const img = thumb ? `<img src="${finalThumb}" class="mini-foto">` : '<div class="mini-foto"></div>';
                     const color = p.ativo ? '#4CAF50' : '#F44336';
                     const minDisplay = p.minimo > 1 ? `${p.minimo} un` : '1 un';
                     let priceDisplay = formatarMoeda(p.preco);
                     if(p.em_promocao && p.preco_promocional > 0) priceDisplay = `<div><span style="text-decoration:line-through;color:#999;font-size:0.8em">${formatarMoeda(p.preco)}</span> <strong style="color:#E91E63">${formatarMoeda(p.preco_promocional)}</strong></div>`;
-                    
                     let nomeCatDisplay = p.categoria;
                     if(p.categoria === 'comemorativas' && p.evento) nomeCatDisplay = `Especial: ${nomeEventos[p.evento]}`;
                     else if(p.categoria === 'comemorativas') nomeCatDisplay = 'Datas Comemorativas';
                     else if(p.categoria === 'kitfestas' || p.categoria === 'festa') nomeCatDisplay = 'Kit Festas';
                     else if(p.categoria === 'lembrancas' || p.categoria === 'simples' || p.categoria === 'semiluxo') nomeCatDisplay = 'Lembranças';
 
-                    html += `<tr>
-                        <td data-label="Produto"><div style="display:flex; gap:15px; align-items:center;">${img} <div style="text-align:left"><strong>${p.nome}</strong><br><small style="color:#777">${nomeCatDisplay}</small></div></div></td>
-                        <td data-label="Preço">${priceDisplay}</td>
-                        <td data-label="Mínimo">${minDisplay}</td>
-                        <td data-label="Status"><span style="color:${color}; font-weight:bold">${p.ativo ? 'Ativo' : 'Esgotado'}</span></td>
-                        <td data-label="Ações">
-                            <i class="fas fa-pencil-alt action-icon icon-edit" onclick="editarProduto('${docSnap.id}')"></i>
-                            <i class="fas fa-trash action-icon icon-trash" onclick="apagarProduto('${docSnap.id}')"></i>
-                            <i class="fas fa-toggle-on action-icon icon-toggle" style="color:${color}" onclick="alterarEstoque('${docSnap.id}', ${!p.ativo})"></i>
-                        </td>
-                    </tr>`;
+                    html += `<tr><td data-label="Produto"><div style="display:flex; gap:15px; align-items:center;">${img} <div style="text-align:left"><strong>${p.nome}</strong><br><small style="color:#777">${nomeCatDisplay}</small></div></div></td><td data-label="Preço">${priceDisplay}</td><td data-label="Mínimo">${minDisplay}</td><td data-label="Status"><span style="color:${color}; font-weight:bold">${p.ativo ? 'Ativo' : 'Esgotado'}</span></td><td data-label="Ações"><i class="fas fa-pencil-alt action-icon icon-edit" onclick="editarProduto('${docSnap.id}')"></i><i class="fas fa-trash action-icon icon-trash" onclick="apagarProduto('${docSnap.id}')"></i><i class="fas fa-toggle-on action-icon icon-toggle" style="color:${color}" onclick="alterarEstoque('${docSnap.id}', ${!p.ativo})"></i></td></tr>`;
                 });
                 tbody.innerHTML = html;
             } catch (e) { console.error(e); }
@@ -413,15 +351,13 @@
         function carregarVendasTempoReal() {
             const tbody = document.getElementById('lista-vendas');
             if(unsubscribeVendas) unsubscribeVendas();
-            
             const q = query(collection(db, "pedidos"), orderBy("data", "desc"));
             
             unsubscribeVendas = onSnapshot(q, (snapshot) => {
                 let html = '';
-                
                 if(!snapshot.empty && !snapshot.metadata.hasPendingWrites) {
                     snapshot.docChanges().forEach((change) => {
-                        if (change.type === "added" && document.getElementById('view-vendas').classList.contains('active') === false) {
+                        if (change.type === "added" && change.doc.data().status !== 'Cancelado' && document.getElementById('view-vendas').classList.contains('active') === false) {
                             document.getElementById('badge-vendas').style.display = 'inline-block';
                         }
                     });
@@ -429,181 +365,84 @@
 
                 snapshot.forEach(doc => {
                     const p = doc.data();
+                    
+                    // Oculta APENAS pedidos que estão aguardando o cliente abrir o app do banco (para não lotar de carrinho em andamento)
+                    if(p.status === 'Aguardando Pagamento') return;
+
                     const dataF = p.data ? new Date(p.data).toLocaleString('pt-BR', {day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}) : '-';
                     
-                    let statusClass = 'status-pendente';
-                    if(p.status === 'Concluído') statusClass = 'status-concluido';
-                    if(p.status === 'Aguardando Pagamento') statusClass = 'status-aguardando';
+                    let statusClass = 'status-pendente'; 
+                    if(p.status === 'Concluído') statusClass = 'status-concluido'; 
+                    if(p.status === 'Aguardando Pagamento') statusClass = 'status-aguardando'; 
+                    if(p.status === 'Cancelado') statusClass = 'status-cancelado'; 
 
-                    // O FormatarTelefone entra em ação aqui
                     const telefoneFormatado = formatarTelefone(p.whatsapp);
                     const linkZap = `https://wa.me/55${p.whatsapp.replace(/\D/g,'')}`;
 
-                    html += `<tr style="transition: background 0.5s;">
-                        <td data-label="ID / Detalhes"><div style="text-align:left"><strong style="color:#B39DDB">${p.id_visual||'-'}</strong><br>${p.produto}</div></td>
-                        <td data-label="Data">${dataF}</td>
-                        <td data-label="Cliente"><div style="text-align:left">${p.cliente}<br><small><a href="${linkZap}" target="_blank" style="color:#25D366;text-decoration:none"><i class="fab fa-whatsapp"></i> ${telefoneFormatado}</a></small></div></td>
-                        <td data-label="Total"><strong>${formatarMoeda(p.total)}</strong></td>
-                        <td data-label="Status"><span class="btn-status ${statusClass}" onclick="mudarStatusPedido('${doc.id}','${p.status}')" style="cursor:pointer">${p.status}</span></td>
-                        <td data-label="Ações"><i class="fas fa-trash action-icon icon-trash" onclick="apagarPedido('${doc.id}')"></i></td>
-                    </tr>`;
+                    html += `<tr style="transition: background 0.5s;"><td data-label="ID / Detalhes"><div style="text-align:left"><strong style="color:#B39DDB">${p.id_visual||'-'}</strong><br>${p.produto}</div></td><td data-label="Data">${dataF}</td><td data-label="Cliente"><div style="text-align:left">${p.cliente}<br><small><a href="${linkZap}" target="_blank" style="color:#25D366;text-decoration:none"><i class="fab fa-whatsapp"></i> ${telefoneFormatado}</a></small></div></td><td data-label="Total"><strong>${formatarMoeda(p.total)}</strong></td><td data-label="Status"><span class="btn-status ${statusClass}" onclick="mudarStatusPedido('${doc.id}','${p.status}')" style="cursor:pointer">${p.status}</span></td><td data-label="Ações"><i class="fas fa-trash action-icon icon-trash" onclick="apagarPedido('${doc.id}')"></i></td></tr>`;
                 });
                 
                 tbody.innerHTML = html || '<tr><td colspan="6" style="text-align:center; padding: 20px;">Nenhum pedido encontrado.</td></tr>';
-                
-                // Reaplica a busca se a pessoa já estiver com algo digitado na barra
                 filtrarVendas();
-            }, (error) => {
-                console.error("Erro no Tempo Real:", error);
             });
         }
 
-        window.adicionarFotos = (input) => {
-            const files = Array.from(input.files);
-            if((listaFotosEdicao.length + files.length) > 3) { showToast("Máximo de 3 fotos!", "error"); return; }
-            listaFotosEdicao = [...listaFotosEdicao, ...files];
-            renderizarPreview(); input.value = ''; 
-        }
-
+        window.adicionarFotos = (input) => { const files = Array.from(input.files); if((listaFotosEdicao.length + files.length) > 3) { showToast("Máximo de 3 fotos!", "error"); return; } listaFotosEdicao = [...listaFotosEdicao, ...files]; renderizarPreview(); input.value = ''; }
         window.removerFoto = (index) => { listaFotosEdicao.splice(index, 1); renderizarPreview(); }
 
         function renderizarPreview() {
             const area = document.getElementById('preview-area'); area.innerHTML = '';
-            listaFotosEdicao.forEach((item, index) => {
-                let src = ''; if(typeof item === 'string') src = item; else src = URL.createObjectURL(item);
-                area.innerHTML += `<div class="thumb-wrapper"><img src="${src}" class="thumb-img"><div class="btn-remove-foto" onclick="removerFoto(${index})">X</div></div>`;
-            });
+            listaFotosEdicao.forEach((item, index) => { let src = ''; if(typeof item === 'string') src = item; else src = URL.createObjectURL(item); area.innerHTML += `<div class="thumb-wrapper"><img src="${src}" class="thumb-img"><div class="btn-remove-foto" onclick="removerFoto(${index})">X</div></div>`; });
         }
 
-        const comprimirImagem = async (arquivo) => {
-            return new Promise((resolve) => {
-                const reader = new FileReader(); reader.readAsDataURL(arquivo);
-                reader.onload = (event) => {
-                    const img = new Image(); img.src = event.target.result;
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas'); const MAX_WIDTH = 1920; 
-                        let width = img.width; let height = img.height;
-                        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
-                        canvas.width = width; canvas.height = height; const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        canvas.toBlob((blob) => {
-                            resolve(new File([blob], arquivo.name, { type: 'image/jpeg', lastModified: Date.now() }));
-                        }, 'image/jpeg', 0.8); 
-                    };
-                };
-            });
-        };
+        const comprimirImagem = async (arquivo) => { return new Promise((resolve) => { const reader = new FileReader(); reader.readAsDataURL(arquivo); reader.onload = (event) => { const img = new Image(); img.src = event.target.result; img.onload = () => { const canvas = document.createElement('canvas'); const MAX_WIDTH = 1920; let width = img.width; let height = img.height; if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } canvas.width = width; canvas.height = height; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height); canvas.toBlob((blob) => { resolve(new File([blob], arquivo.name, { type: 'image/jpeg', lastModified: Date.now() })); }, 'image/jpeg', 0.8); }; }; }); };
 
         window.salvarProduto = async () => {
-            const nome = document.getElementById('novo-nome').value; const desc = document.getElementById('novo-desc').value;
-            const preco = document.getElementById('novo-preco').value; const minimo = document.getElementById('novo-minimo').value;
-            const link = document.getElementById('novo-link').value; const cat = document.getElementById('novo-categoria').value;
-            const evento = cat === 'comemorativas' ? document.getElementById('novo-evento').value : null;
-            const emPromocao = document.getElementById('cb-promocao').checked; const precoPromo = document.getElementById('novo-preco-promo').value;
-            
+            const nome = document.getElementById('novo-nome').value; const desc = document.getElementById('novo-desc').value; const preco = document.getElementById('novo-preco').value; const minimo = document.getElementById('novo-minimo').value; const link = document.getElementById('novo-link').value; const cat = document.getElementById('novo-categoria').value; const evento = cat === 'comemorativas' ? document.getElementById('novo-evento').value : null; const emPromocao = document.getElementById('cb-promocao').checked; const precoPromo = document.getElementById('novo-preco-promo').value;
             if(!nome || !preco) { showToast("Preencha o nome e o preço!", "error"); return; }
-
             try {
-                showLoading("Iniciando...");
-                let listaFinaisUrls = []; let contadorNovas = 0; let arquivosParaEnviar = listaFotosEdicao.filter(item => typeof item !== 'string');
-                
+                showLoading("Iniciando..."); let listaFinaisUrls = []; let contadorNovas = 0; let arquivosParaEnviar = listaFotosEdicao.filter(item => typeof item !== 'string');
                 for (let i = 0; i < listaFotosEdicao.length; i++) {
                     const item = listaFotosEdicao[i];
                     if (typeof item === 'string') { listaFinaisUrls.push(item); } else {
                         contadorNovas++; showLoading(`Otimizando foto ${contadorNovas}/${arquivosParaEnviar.length}...`);
-                        const arquivoLeve = await comprimirImagem(item);
-                        const formData = new FormData(); formData.append("image", arquivoLeve);
+                        const arquivoLeve = await comprimirImagem(item); const formData = new FormData(); formData.append("image", arquivoLeve);
                         const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData });
-                        if (!response.ok) throw new Error("Falha ao subir foto");
-                        const result = await response.json();
+                        if (!response.ok) throw new Error("Falha ao subir foto"); const result = await response.json();
                         if(result.success) { listaFinaisUrls.push(result.data.url); } else { throw new Error(result.error.message); }
                     }
                 }
-
-                let dados = {
-                    nome, descricao: desc, preco: parseFloat(preco), minimo: parseInt(minimo)||1, link_pagamento: link, categoria: cat, evento: evento,
-                    emPromocao: emPromocao, preco_promocional: emPromocao ? parseFloat(precoPromo) : null, fotos: listaFinaisUrls
-                };
-
+                let dados = { nome, descricao: desc, preco: parseFloat(preco), minimo: parseInt(minimo)||1, link_pagamento: link, categoria: cat, evento: evento, emPromocao: emPromocao, preco_promocional: emPromocao ? parseFloat(precoPromo) : null, fotos: listaFinaisUrls };
                 showLoading("Salvando...");
-                if(produtoEmEdicaoId){
-                    await updateDoc(doc(db,"produtos",produtoEmEdicaoId), dados);
-                    showToast("Produto atualizado com sucesso!", "success");
-                } else {
-                    dados.ativo = true; dados.vendas = 0;
-                    await addDoc(collection(db,"produtos"), dados);
-                    showToast("Produto criado com sucesso!", "success");
-                }
+                if(produtoEmEdicaoId){ await updateDoc(doc(db,"produtos",produtoEmEdicaoId), dados); showToast("Produto atualizado com sucesso!", "success"); } 
+                else { dados.ativo = true; dados.vendas = 0; await addDoc(collection(db,"produtos"), dados); showToast("Produto criado com sucesso!", "success"); }
                 fecharFormulario(); carregarDados();
             } catch(e) { console.error(e); showToast("Erro: " + e.message, "error"); } finally { hideLoading(); }
         }
 
         window.editarProduto=(id)=>{
-            const p=produtosCache[id]; if(!p)return;
-            produtoEmEdicaoId=id;
-            document.getElementById('novo-nome').value=p.nome;
-            document.getElementById('novo-desc').value=p.descricao||'';
-            document.getElementById('novo-preco').value=p.preco;
-            document.getElementById('novo-minimo').value=p.minimo||1;
-            document.getElementById('novo-link').value=p.link_pagamento||'';
-            
-            let catEdit = p.categoria;
-            if(catEdit === 'festa') catEdit = 'kitfestas';
-            if(catEdit === 'simples' || catEdit === 'semiluxo') catEdit = 'lembrancas';
-            
-            document.getElementById('novo-categoria').value = catEdit;
-            document.getElementById('div-evento').style.display = catEdit === 'comemorativas' ? 'block' : 'none';
+            const p=produtosCache[id]; if(!p)return; produtoEmEdicaoId=id;
+            document.getElementById('novo-nome').value=p.nome; document.getElementById('novo-desc').value=p.descricao||''; document.getElementById('novo-preco').value=p.preco; document.getElementById('novo-minimo').value=p.minimo||1; document.getElementById('novo-link').value=p.link_pagamento||'';
+            let catEdit = p.categoria; if(catEdit === 'festa') catEdit = 'kitfestas'; if(catEdit === 'simples' || catEdit === 'semiluxo') catEdit = 'lembrancas';
+            document.getElementById('novo-categoria').value = catEdit; document.getElementById('div-evento').style.display = catEdit === 'comemorativas' ? 'block' : 'none';
             if(p.evento) document.getElementById('novo-evento').value = p.evento;
-
-            document.getElementById('cb-promocao').checked=p.em_promocao||false;
-            document.getElementById('novo-preco-promo').value=p.preco_promocional||'';
-            togglePromoField();
-            listaFotosEdicao = [];
-            if(p.fotos && p.fotos.length > 0) listaFotosEdicao = [...p.fotos]; else if (p.foto) listaFotosEdicao = [p.foto];
-            renderizarPreview();
-            document.getElementById('titulo-modal').innerText="Editar Produto";
-            document.getElementById('form-overlay').style.display='flex';
+            document.getElementById('cb-promocao').checked=p.em_promocao||false; document.getElementById('novo-preco-promo').value=p.preco_promocional||'';
+            togglePromoField(); listaFotosEdicao = []; if(p.fotos && p.fotos.length > 0) listaFotosEdicao = [...p.fotos]; else if (p.foto) listaFotosEdicao = [p.foto];
+            renderizarPreview(); document.getElementById('titulo-modal').innerText="Editar Produto"; document.getElementById('form-overlay').style.display='flex';
         }
 
         window.abrirFormulario=()=>{
-            produtoEmEdicaoId=null;
-            document.getElementById('titulo-modal').innerText="Novo Produto";
+            produtoEmEdicaoId=null; document.getElementById('titulo-modal').innerText="Novo Produto";
             document.querySelectorAll('#form-overlay input, #form-overlay textarea').forEach(i=>i.value='');
-            document.getElementById('novo-minimo').value='1';
-            document.getElementById('cb-promocao').checked=false;
-            document.getElementById('div-evento').style.display='none';
-            document.getElementById('novo-categoria').value='kitfestas';
-            togglePromoField(); listaFotosEdicao = []; renderizarPreview();
-            document.getElementById('form-overlay').style.display='flex';
+            document.getElementById('novo-minimo').value='1'; document.getElementById('cb-promocao').checked=false; document.getElementById('div-evento').style.display='none'; document.getElementById('novo-categoria').value='kitfestas';
+            togglePromoField(); listaFotosEdicao = []; renderizarPreview(); document.getElementById('form-overlay').style.display='flex';
         }
         window.fecharFormulario=()=>document.getElementById('form-overlay').style.display='none';
         
-        window.mudarStatusPedido=async(id,s)=>{
-            const n=s==='Concluído'?'Pendente':'Concluído';
-            showConfirm(`Deseja alterar o status para ${n}?`, async () => {
-                try { await updateDoc(doc(db,"pedidos",id),{status:n}); showToast("Status atualizado!", "info"); } 
-                catch(e) { showToast("Erro ao atualizar", "error"); }
-            }, 'info');
-        }
-        
-        window.apagarPedido=async(id)=>{
-            showConfirm("Tem certeza que deseja APAGAR este pedido?", async () => {
-                try { await deleteDoc(doc(db,"pedidos",id)); showToast("Pedido removido!", "success"); } 
-                catch(e) { showToast("Erro ao apagar", "error"); }
-            });
-        }
-        
-        window.apagarProduto=async(id)=>{
-            showConfirm("Tem certeza que deseja EXCLUIR este produto? Ação irreversível.", async () => {
-                try { await deleteDoc(doc(db,"produtos",id)); showToast("Produto removido!", "success"); carregarDados(); } 
-                catch(e) { showToast("Erro ao apagar", "error"); }
-            });
-        }
-        
-        window.alterarEstoque=async(id,s)=>{
-            try { await updateDoc(doc(db,"produtos",id),{ativo:s}); showToast(s ? "Produto ativado!" : "Produto pausado", "info"); carregarDados(); } 
-            catch(e) { showToast("Erro ao alterar estoque", "error"); }
-        }
+        window.mudarStatusPedido=async(id,s)=>{ const n=s==='Concluído'?'Pendente':'Concluído'; showConfirm(`Deseja alterar o status para ${n}?`, async () => { try { await updateDoc(doc(db,"pedidos",id),{status:n}); showToast("Status atualizado!", "info"); } catch(e) { showToast("Erro ao atualizar", "error"); } }, 'info'); }
+        window.apagarPedido=async(id)=>{ showConfirm("Tem certeza que deseja APAGAR este pedido?", async () => { try { await deleteDoc(doc(db,"pedidos",id)); showToast("Pedido removido!", "success"); } catch(e) { showToast("Erro ao apagar", "error"); } }); }
+        window.apagarProduto=async(id)=>{ showConfirm("Tem certeza que deseja EXCLUIR este produto? Ação irreversível.", async () => { try { await deleteDoc(doc(db,"produtos",id)); showToast("Produto removido!", "success"); carregarDados(); } catch(e) { showToast("Erro ao apagar", "error"); } }); }
+        window.alterarEstoque=async(id,s)=>{ try { await updateDoc(doc(db,"produtos",id),{ativo:s}); showToast(s ? "Produto ativado!" : "Produto pausado", "info"); carregarDados(); } catch(e) { showToast("Erro ao alterar estoque", "error"); } }
     </script>
 </body>
 </html>
