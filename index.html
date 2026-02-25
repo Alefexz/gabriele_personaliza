@@ -27,43 +27,54 @@
       gtag('config', 'G-T24GYM57CT');
     </script>
 
-    <link rel="stylesheet" href="style.css?v=6">
+    <link rel="stylesheet" href="style.css?v=7">
     
     <style>
         /* TEMA DINÂMICO LIMPO */
-        body { background-color: #F4F6F8; transition: background 0.5s ease; }
+        body { background-color: #F4F6F8; transition: background 0.5s ease; margin: 0; }
         body.theme-love { background-color: #FFF0F5; } 
         body.theme-easter { background-color: #FFF8E1; } 
         body.theme-cool { background-color: #E3F2FD; } 
         body.theme-xmas { background-color: #E8F5E9; } 
 
         /* =========================================
-           CATEGORIAS FLUIDAS (SEM ARRASTAR TELA)
+           SPLASH SCREEN MINIMALISTA (TELA DE CARREGAMENTO)
            ========================================= */
-        .filter-container {
+        #site-loader {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #ffffff; 
+            z-index: 9999999; 
             display: flex;
-            overflow-x: auto;
-            gap: 12px;
-            background: transparent !important;
-            box-shadow: none !important;
-            border: none !important;
-            padding: 15px 0 !important;
-            position: static !important; /* Garante que não desça com a tela */
-            -webkit-overflow-scrolling: touch; /* Deslizar suave no iPhone */
-            scrollbar-width: none; 
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
         }
-        .filter-container::-webkit-scrollbar { display: none; }
-        .filter-btn { 
-            border-radius: 20px !important; 
-            padding: 8px 18px !important; 
-            font-weight: 500 !important; 
-            flex: 0 0 auto; /* Impede os botões de esmagarem */
-            white-space: nowrap;
+        .loader-text {
+            color: #555; /* Cor cinza elegante */
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400; /* Letra mais fina e sofisticada */
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            animation: pulse-text 1.5s infinite ease-in-out;
+        }
+        @keyframes pulse-text {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
         }
 
-        /* =========================================
-           PADRÃO APP-LIKE (BORDAS ARREDONDADAS)
-           ========================================= */
+        /* CATEGORIAS FLUIDAS */
+        .filter-container {
+            display: flex; overflow-x: auto; gap: 12px; background: transparent !important;
+            box-shadow: none !important; border: none !important; padding: 15px 0 !important;
+            position: static !important; -webkit-overflow-scrolling: touch; scrollbar-width: none; 
+        }
+        .filter-container::-webkit-scrollbar { display: none; }
+        .filter-btn { border-radius: 20px !important; padding: 8px 18px !important; font-weight: 500 !important; flex: 0 0 auto; white-space: nowrap; }
+
+        /* PADRÃO APP-LIKE (BORDAS ARREDONDADAS) */
         .product-card { border-radius: 16px !important; background: #ffffff !important; border: 1px solid #f0f0f0 !important; box-shadow: 0 4px 15px rgba(0,0,0,0.04) !important; transition: transform 0.3s ease, box-shadow 0.3s ease !important; overflow: hidden !important; }
         .product-card:hover { transform: translateY(-5px) !important; box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important; }
         .product-img-wrapper { border-radius: 16px 16px 0 0 !important; overflow: hidden !important; }
@@ -73,58 +84,28 @@
         .modal-content { border-radius: 24px 24px 0 0 !important; }
         @media(min-width: 768px) { .modal-content { border-radius: 24px !important; } }
 
-        /* =========================================
-           HERO BANNER MODERNO (Design Fluido)
-           ========================================= */
+        /* HERO BANNER MODERNO */
         .modern-hero { width: 100%; max-width: 1200px; margin: 90px auto 20px auto; padding: 0 15px; box-sizing: border-box; }
         .hero-container { width: 100%; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.06); position: relative; background: #fff; display: flex; }
         .hero-img { width: 100%; display: block; object-fit: cover; }
         @media (max-width: 768px) { .modern-hero { margin-top: 80px; padding: 0 15px; } .hero-container { border-radius: 16px; } }
 
-        /* =========================================
-           NOVO: MENU INFERIOR MOBILE (Estilo App)
-           ========================================= */
+        /* MENU INFERIOR MOBILE */
         .mobile-bottom-nav { display: none; }
         @media (max-width: 768px) {
-            body { padding-bottom: 70px; } /* Dá espaço para o menu não tampar o rodapé */
-            .floating-whatsapp { bottom: 85px !important; } /* Levanta o ícone do whats */
+            body { padding-bottom: 70px; } 
+            .floating-whatsapp { bottom: 85px !important; } 
             
             .mobile-bottom-nav {
-                display: flex;
-                justify-content: space-around;
-                align-items: center;
-                position: fixed;
-                bottom: 0; left: 0;
-                width: 100%;
-                background: #ffffff;
-                box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
-                z-index: 1000;
-                padding: 12px 0;
-                padding-bottom: env(safe-area-inset-bottom, 12px); /* Ajuste para iPhones sem botão */
+                display: flex; justify-content: space-around; align-items: center;
+                position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff;
+                box-shadow: 0 -4px 15px rgba(0,0,0,0.05); z-index: 1000; padding: 12px 0;
+                padding-bottom: env(safe-area-inset-bottom, 12px); 
             }
-            .nav-item {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                color: #888;
-                text-decoration: none;
-                font-size: 0.75rem;
-                gap: 5px;
-                transition: 0.3s;
-                width: 33%;
-            }
+            .nav-item { display: flex; flex-direction: column; align-items: center; color: #888; text-decoration: none; font-size: 0.75rem; gap: 5px; transition: 0.3s; width: 33%; }
             .nav-item i { font-size: 1.3rem; }
             .nav-item.active, .nav-item:hover { color: #B39DDB; font-weight: 600; }
         }
-
-        /* =========================================
-           POP-UP PROMOCIONAL
-           ========================================= */
-        #promo-popup-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 99999; justify-content: center; align-items: center; padding: 20px; animation: fadeIn 0.4s ease; }
-        .promo-popup-content { position: relative; max-width: 500px; width: 100%; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.4); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .promo-popup-img { width: 100%; display: block; cursor: pointer; }
-        .close-promo { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.9); color: #333; width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-weight: bold; font-size: 1.2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.15); transition: 0.2s; z-index: 10; }
-        .close-promo:hover { transform: scale(1.1); background: #F44336; color: white; }
 
         /* OUTROS ESTILOS MODAIS */
         .politicas-lista { text-align: left; margin-top: 15px; } .politicas-lista li { margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; color: #555; font-size: 0.9rem; } .politicas-lista i { color: #B39DDB; margin-right: 10px; width: 20px; text-align: center; }
@@ -145,8 +126,6 @@
         
         .filter-btn[onclick*="promocao"] { background-color: #FCE4EC; color: #E91E63; border: 1px solid #F8BBD0; } .filter-btn[onclick*="promocao"].active { background-color: #E91E63 !important; color: white !important; border-color: #E91E63 !important; }
         #fullscreen-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; justify-content: center; align-items: center; cursor: zoom-out; animation: fadeIn 0.3s; } #fullscreen-img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 5px; box-shadow: 0 0 20px rgba(0,0,0,0.5); } .close-fullscreen { position: absolute; top: 20px; right: 20px; color: white; font-size: 40px; cursor: pointer; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-        
-        /* BORDA PRETA REMOVIDA AQUI NA HIGHLIGHT SECTION */
         .highlight-section { background: #fff; padding: 25px; border-radius: 20px; margin-bottom: 30px; display: none; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: none; } 
         .highlight-title { color: #B39DDB; margin-top: 0; margin-bottom: 20px; font-family: 'Playfair Display', serif; font-size: 1.8rem; text-align: left; }
 
@@ -169,6 +148,11 @@
     </style>
 </head>
 <body>
+
+    <div id="site-loader">
+        <div class="loader-text">Estamos preparando tudo para você...</div>
+    </div>
+
     <header>
         <div class="container">
             <a href="#" class="logo">Gabriele <span>Personaliza</span></a>
@@ -187,8 +171,8 @@
     <section class="modern-hero" id="home">
         <div class="hero-container">
             <picture>
-                <source media="(max-width: 768px)" srcset="/assets/img/banner_mobile.png">
-                <img src="/assets/img/banner_desktop.png" alt="Promoção Gabriele Personaliza" class="hero-img">
+                <source media="(max-width: 768px)" srcset="assets/img/banner_mobile.png">
+                <img src="assets/img/banner_desktop.png" alt="Promoção Gabriele Personaliza" class="hero-img">
             </picture>
         </div>
     </section>
@@ -213,7 +197,7 @@
             <div id="destaque-sazonal-container" class="highlight-section">
                 <h2 id="titulo-sazonal" class="highlight-title">✨ Especial do Mês</h2>
                 <div class="product-grid" id="grid-sazonal"></div>
-                </div>
+            </div>
 
             <div class="product-grid" id="container-produtos"></div>
         </div>
@@ -383,16 +367,7 @@
         <img id="fullscreen-img" src="">
     </div>
 
-    <div id="promo-popup-overlay">
-        <div class="promo-popup-content">
-            <div class="close-promo" onclick="fecharPopupPromo()">&times;</div>
-            <a href="#loja" onclick="fecharPopupPromo()">
-                <img src="https://images.unsplash.com/photo-1513201099705-a9746e1e201f?q=80&w=1974&auto=format&fit=crop" alt="Oferta Especial" class="promo-popup-img">
-            </a>
-        </div>
-    </div>
-
-    <script src="script.js?v=21"></script>
+    <script src="script.js?v=22"></script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -411,18 +386,16 @@
 
         const VERCEL_API_URL = "https://backand-gabrielepersonaliza.vercel.app/api/pix";
 
-        // --- FUNÇÕES DA BOTTOM BAR MOBILE ---
         window.focarBuscaMobile = () => {
             const input = document.getElementById('campo-busca');
             window.scrollTo({ top: input.offsetTop - 120, behavior: 'smooth' });
-            setTimeout(() => input.focus(), 400); // Foca o input de busca depois que rolar
+            setTimeout(() => input.focus(), 400); 
         }
         
         window.focarCategoriasMobile = () => {
             const cat = document.querySelector('.filter-container');
             window.scrollTo({ top: cat.offsetTop - 100, behavior: 'smooth' });
         }
-        // -------------------------------------
 
         window.abrirPoliticas = () => document.getElementById('modal-politicas').style.display = 'flex';
         window.fecharPoliticas = () => document.getElementById('modal-politicas').style.display = 'none';
@@ -433,11 +406,6 @@
         const formatarMoeda = (valor) => parseFloat(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         window.mostrarAlerta = (msg) => { document.getElementById('msg-alerta').innerText = msg; document.getElementById('custom-alert').style.display = 'flex'; }
         window.fecharAlerta = () => document.getElementById('custom-alert').style.display = 'none';
-
-        function mostrarSkeleton() {
-            const container = document.getElementById('container-produtos'); container.innerHTML = '';
-            for(let i=0; i<6; i++) container.innerHTML += `<div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-title" style="width: 60%"></div><div class="skeleton skeleton-price"></div></div>`;
-        }
 
         const obterClasseTema = () => {
             const d = new Date(); const mmdd = (d.getMonth() + 1) * 100 + d.getDate();
@@ -458,13 +426,44 @@
             else window.tituloSazonalAtual = null;
         }
 
+        // =========================================
+        // MÁGICA DE CARREGAMENTO (WAIT FOR IMAGES)
+        // =========================================
+        async function aguardarImagensEFecharLoader() {
+            const imagens = document.querySelectorAll('img'); 
+            let promessas = Array.from(imagens).map(img => {
+                return new Promise(resolve => {
+                    if (img.complete) resolve();
+                    else {
+                        img.onload = resolve;
+                        img.onerror = resolve; 
+                    }
+                });
+            });
+            
+            await Promise.all(promessas);
+            
+            const loader = document.getElementById('site-loader');
+            if(loader) {
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.visibility = 'hidden', 500);
+            }
+        }
+
         window.carregarLoja = async (filtroInicial = 'todos') => {
-            mostrarSkeleton();
             try {
                 const q = await getDocs(collection(db, "produtos"));
                 todosProdutos = []; q.forEach(doc => { let p = doc.data(); p.id = doc.id; todosProdutos.push(p); });
+                
                 aplicarFiltros(filtroInicial);
-            } catch(e) { document.getElementById('container-produtos').innerHTML = '<p style="grid-column:1/-1; text-align:center">Erro ao carregar produtos.</p>'; }
+                aguardarImagensEFecharLoader();
+
+            } catch(e) { 
+                console.error(e);
+                document.getElementById('container-produtos').innerHTML = '<p style="text-align:center; grid-column:1/-1;">Erro ao carregar produtos.</p>';
+                const loader = document.getElementById('site-loader');
+                if(loader) loader.style.display = 'none';
+            }
         }
 
         window.aplicarFiltros = (categoria) => {
@@ -774,18 +773,18 @@
 
         document.getElementById('btn-secreto').addEventListener('click', () => { window.location.href = 'admin.html'; });
         document.getElementById('ano-atual').innerText = new Date().getFullYear();
-        
-        // --- INICIALIZA O POP-UP INTELIGENTE ---
+
+        /*
         window.fecharPopupPromo = () => {
             document.getElementById('promo-popup-overlay').style.display = 'none';
             sessionStorage.setItem('popupGabrieleVisto', 'true');
         }
-
         setTimeout(() => {
             if(!sessionStorage.getItem('popupGabrieleVisto')) {
                 document.getElementById('promo-popup-overlay').style.display = 'flex';
             }
         }, 2000);
+        */
 
         aplicarTemaSutil(); carregarLoja();
     </script>
