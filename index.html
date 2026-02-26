@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loja | Gabriele Personaliza</title>
     
-    <link rel="icon" href="assets/img/icone-aba.png?v=3" type="image/png">
+    <link rel="icon" href="assets/img/icone-aba.png?v=4" type="image/png">
 
     <meta property="og:title" content="Gabriele Personaliza | Papelaria Criativa">
     <meta property="og:description" content="Transforme sua festa com mimos e personalizados feitos à mão. Confira nosso catálogo!">
@@ -27,7 +27,7 @@
       gtag('config', 'G-T24GYM57CT');
     </script>
 
-    <link rel="stylesheet" href="style.css?v=7">
+    <link rel="stylesheet" href="style.css?v=8">
     
     <style>
         /* TEMA DINÂMICO LIMPO */
@@ -38,32 +38,20 @@
         body.theme-xmas { background-color: #E8F5E9; } 
 
         /* =========================================
-           SPLASH SCREEN MINIMALISTA (TELA DE CARREGAMENTO)
+           SPLASH SCREEN MINIMALISTA
            ========================================= */
         #site-loader {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: #ffffff; 
-            z-index: 9999999; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #ffffff; z-index: 9999999; 
+            display: flex; justify-content: center; align-items: center;
             transition: opacity 0.5s ease, visibility 0.5s ease;
         }
         .loader-text {
-            color: #555; /* Cor cinza elegante */
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 400; /* Letra mais fina e sofisticada */
-            font-size: 1.1rem;
-            letter-spacing: 1px;
+            color: #555; font-family: 'Montserrat', sans-serif; font-weight: 400; 
+            font-size: 1.1rem; letter-spacing: 1px;
             animation: pulse-text 1.5s infinite ease-in-out;
         }
-        @keyframes pulse-text {
-            0% { opacity: 0.4; }
-            50% { opacity: 1; }
-            100% { opacity: 0.4; }
-        }
+        @keyframes pulse-text { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
 
         /* CATEGORIAS FLUIDAS */
         .filter-container {
@@ -81,8 +69,39 @@
         .search-input { border-radius: 50px !important; box-shadow: 0 2px 10px rgba(0,0,0,0.03) !important; border: 1px solid #eee !important; padding-left: 20px !important; }
         .btn-sm { border-radius: 50px !important; font-weight: bold !important; background: #B39DDB !important; color: white !important; transition: 0.2s !important; }
         .btn-sm:hover { background: #9575CD !important; }
-        .modal-content { border-radius: 24px 24px 0 0 !important; }
-        @media(min-width: 768px) { .modal-content { border-radius: 24px !important; } }
+
+        /* =========================================
+           O MODAL BLINDADO (CORREÇÃO DO BUG)
+           ========================================= */
+        .modal-produto-overlay { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: flex-end; 
+        }
+        .modal-content { 
+            background: #ffffff !important; /* Força o fundo branco */
+            width: 100%; max-width: 500px; 
+            border-radius: 24px 24px 0 0 !important; 
+            padding: 25px; animation: slideUp 0.3s; 
+            position: relative; 
+            max-height: 85vh; /* Limita a altura para não vazar o monitor */
+            overflow-y: auto; 
+            box-sizing: border-box;
+        }
+        @media(min-width: 768px) { 
+            .modal-produto-overlay { align-items: center; padding: 20px; box-sizing: border-box; } 
+            .modal-content { border-radius: 24px !important; max-height: 90vh; margin: auto; } 
+        }
+        @keyframes slideUp { from {transform: translateY(100%)} to {transform: translateY(0)} }
+        
+        .modal-img-container { height: 300px; overflow: hidden; border-radius: 12px; margin-bottom: 15px; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; background-color: #f0f0f0; }
+        .modal-img { width: 100%; height: 100%; object-fit: contain; flex-shrink: 0; scroll-snap-align: center; cursor: zoom-in; }
+        .modal-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #333; margin-bottom: 5px; } .modal-price { font-size: 1.3rem; color: #B39DDB; font-weight: bold; margin-bottom: 15px; } .modal-desc { font-size: 0.9rem; color: #666; line-height: 1.6; margin-bottom: 20px; background: #f9f9f9; padding: 10px; border-radius: 12px; }
+        .qtd-wrapper { margin-bottom: 20px; background: #f0f0f0; padding: 10px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; } .qtd-controls { display: flex; align-items: center; gap: 10px; } .btn-qtd { width: 35px; height: 35px; background: #B39DDB; color: white; border: none; border-radius: 50%; font-weight: bold; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; } .qtd-display { font-size: 1.2rem; font-weight: bold; width: 30px; text-align: center; } .total-price { font-weight: bold; color: #333; }
+        .input-group { margin-bottom: 15px; } .input-group label { display: block; font-size: 0.8rem; margin-bottom: 5px; color: #555; } .input-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; box-sizing: border-box; }
+        .termos-box { background: #FFF3E0; border: 1px solid #FFCC80; padding: 12px; border-radius: 12px; margin: 15px 0; display: flex; gap: 10px; align-items: flex-start; transition: 0.3s; } .termos-box input { margin-top: 5px; transform: scale(1.2); cursor: pointer; } .termos-text { font-size: 0.8rem; color: #E65100; line-height: 1.4; } .termos-text strong { font-weight: bold; text-decoration: underline; }
+        .btn-comprar { background: #25D366; color: white; width: 100%; padding: 15px; border: none; border-radius: 50px; font-size: 1rem; font-weight: bold; cursor: pointer; display: flex; justify-content: center; gap: 10px; align-items: center; margin-top: 10px; }
+        .btn-cartao { background: #009EE3; color: white; width: 100%; padding: 15px; border: none; border-radius: 50px; font-size: 1rem; font-weight: bold; cursor: pointer; display: flex; justify-content: center; gap: 10px; align-items: center; text-decoration: none; margin-bottom: 10px; }
+        .close-modal { position: absolute; top: 15px; right: 15px; font-size: 1.5rem; cursor: pointer; color: #aaa; z-index: 10; background: white; border-radius: 50%; width: 35px; height: 35px; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
 
         /* HERO BANNER MODERNO */
         .modern-hero { width: 100%; max-width: 1200px; margin: 90px auto 20px auto; padding: 0 15px; box-sizing: border-box; }
@@ -107,19 +126,9 @@
             .nav-item.active, .nav-item:hover { color: #B39DDB; font-weight: 600; }
         }
 
-        /* OUTROS ESTILOS MODAIS */
+        /* OUTROS ESTILOS */
         .politicas-lista { text-align: left; margin-top: 15px; } .politicas-lista li { margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; color: #555; font-size: 0.9rem; } .politicas-lista i { color: #B39DDB; margin-right: 10px; width: 20px; text-align: center; }
         @media (max-width: 768px) { .nav-links.active-menu { display: flex; flex-direction: column; position: absolute; top: 70px; left: 0; width: 100%; background: white; box-shadow: 0 10px 15px rgba(0,0,0,0.1); padding: 20px 0; animation: slideDown 0.3s ease forwards; } .nav-links.active-menu li { width: 100%; text-align: center; padding: 15px 0; border-bottom: 1px solid #f0f0f0; } .nav-links.active-menu li a { display: block; font-size: 1.1rem; } .nav-links.active-menu .btn-nav { display: inline-block; margin-top: 10px; } @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } } }
-        .modal-produto-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: end; }
-        .modal-img-container { height: 300px; overflow: hidden; border-radius: 12px; margin-bottom: 15px; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; background-color: #f0f0f0; }
-        .modal-img { width: 100%; height: 100%; object-fit: contain; flex-shrink: 0; scroll-snap-align: center; cursor: zoom-in; }
-        .modal-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #333; margin-bottom: 5px; } .modal-price { font-size: 1.3rem; color: #B39DDB; font-weight: bold; margin-bottom: 15px; } .modal-desc { font-size: 0.9rem; color: #666; line-height: 1.6; margin-bottom: 20px; background: #f9f9f9; padding: 10px; border-radius: 12px; }
-        .qtd-wrapper { margin-bottom: 20px; background: #f0f0f0; padding: 10px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; } .qtd-controls { display: flex; align-items: center; gap: 10px; } .btn-qtd { width: 35px; height: 35px; background: #B39DDB; color: white; border: none; border-radius: 50%; font-weight: bold; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; } .qtd-display { font-size: 1.2rem; font-weight: bold; width: 30px; text-align: center; } .total-price { font-weight: bold; color: #333; }
-        .input-group { margin-bottom: 15px; } .input-group label { display: block; font-size: 0.8rem; margin-bottom: 5px; color: #555; } .input-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; }
-        .termos-box { background: #FFF3E0; border: 1px solid #FFCC80; padding: 12px; border-radius: 12px; margin: 15px 0; display: flex; gap: 10px; align-items: flex-start; transition: 0.3s; } .termos-box input { margin-top: 5px; transform: scale(1.2); cursor: pointer; } .termos-text { font-size: 0.8rem; color: #E65100; line-height: 1.4; } .termos-text strong { font-weight: bold; text-decoration: underline; }
-        .btn-comprar { background: #25D366; color: white; width: 100%; padding: 15px; border: none; border-radius: 50px; font-size: 1rem; font-weight: bold; cursor: pointer; display: flex; justify-content: center; gap: 10px; align-items: center; margin-top: 10px; }
-        .btn-cartao { background: #009EE3; color: white; width: 100%; padding: 15px; border: none; border-radius: 50px; font-size: 1rem; font-weight: bold; cursor: pointer; display: flex; justify-content: center; gap: 10px; align-items: center; text-decoration: none; margin-bottom: 10px; }
-        .close-modal { position: absolute; top: 15px; right: 15px; font-size: 1.5rem; cursor: pointer; color: #aaa; z-index: 10; background: white; border-radius: 50%; width: 35px; height: 35px; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         
         #custom-alert { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 5000; justify-content: center; align-items: center; } .alert-box { background: white; padding: 30px; border-radius: 20px; width: 85%; max-width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); } .alert-icon { font-size: 3rem; color: #FFC107; margin-bottom: 15px; display: block; } .alert-title { font-size: 1.2rem; font-weight: bold; color: #333; margin-bottom: 10px; font-family: 'Playfair Display', serif; } .alert-msg { font-size: 0.9rem; color: #666; line-height: 1.5; margin-bottom: 20px; } .alert-btn { background: #B39DDB; color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 1rem; width: 100%; transition: 0.2s; }
         @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -367,7 +376,7 @@
         <img id="fullscreen-img" src="">
     </div>
 
-    <script src="script.js?v=22"></script>
+    <script src="script.js?v=23"></script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -407,6 +416,11 @@
         window.mostrarAlerta = (msg) => { document.getElementById('msg-alerta').innerText = msg; document.getElementById('custom-alert').style.display = 'flex'; }
         window.fecharAlerta = () => document.getElementById('custom-alert').style.display = 'none';
 
+        function mostrarSkeleton() {
+            const container = document.getElementById('container-produtos'); container.innerHTML = '';
+            for(let i=0; i<6; i++) container.innerHTML += `<div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-title" style="width: 60%"></div><div class="skeleton skeleton-price"></div></div>`;
+        }
+
         const obterClasseTema = () => {
             const d = new Date(); const mmdd = (d.getMonth() + 1) * 100 + d.getDate();
             if (mmdd <= 308) return { classe: 'theme-love', titulo: '🌸 Especial Dia da Mulher' };
@@ -426,9 +440,6 @@
             else window.tituloSazonalAtual = null;
         }
 
-        // =========================================
-        // MÁGICA DE CARREGAMENTO (WAIT FOR IMAGES)
-        // =========================================
         async function aguardarImagensEFecharLoader() {
             const imagens = document.querySelectorAll('img'); 
             let promessas = Array.from(imagens).map(img => {
@@ -440,9 +451,7 @@
                     }
                 });
             });
-            
             await Promise.all(promessas);
-            
             const loader = document.getElementById('site-loader');
             if(loader) {
                 loader.style.opacity = '0';
@@ -451,13 +460,12 @@
         }
 
         window.carregarLoja = async (filtroInicial = 'todos') => {
+            mostrarSkeleton();
             try {
                 const q = await getDocs(collection(db, "produtos"));
                 todosProdutos = []; q.forEach(doc => { let p = doc.data(); p.id = doc.id; todosProdutos.push(p); });
-                
                 aplicarFiltros(filtroInicial);
                 aguardarImagensEFecharLoader();
-
             } catch(e) { 
                 console.error(e);
                 document.getElementById('container-produtos').innerHTML = '<p style="text-align:center; grid-column:1/-1;">Erro ao carregar produtos.</p>';
@@ -773,18 +781,6 @@
 
         document.getElementById('btn-secreto').addEventListener('click', () => { window.location.href = 'admin.html'; });
         document.getElementById('ano-atual').innerText = new Date().getFullYear();
-
-        /*
-        window.fecharPopupPromo = () => {
-            document.getElementById('promo-popup-overlay').style.display = 'none';
-            sessionStorage.setItem('popupGabrieleVisto', 'true');
-        }
-        setTimeout(() => {
-            if(!sessionStorage.getItem('popupGabrieleVisto')) {
-                document.getElementById('promo-popup-overlay').style.display = 'flex';
-            }
-        }, 2000);
-        */
 
         aplicarTemaSutil(); carregarLoja();
     </script>
