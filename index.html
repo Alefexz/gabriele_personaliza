@@ -44,7 +44,7 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #ffffff; z-index: 9999999; 
             display: flex; justify-content: center; align-items: center;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
+            transition: opacity 0.5s ease;
         }
         .loader-text {
             color: #555; font-family: 'Montserrat', sans-serif; font-weight: 400; 
@@ -70,20 +70,18 @@
         .btn-sm { border-radius: 50px !important; font-weight: bold !important; background: #B39DDB !important; color: white !important; transition: 0.2s !important; }
         .btn-sm:hover { background: #9575CD !important; }
 
-        /* =========================================
-           O MODAL BLINDADO (CORREÇÃO DO BUG)
-           ========================================= */
+        /* O MODAL BLINDADO */
         .modal-produto-overlay { 
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: flex-end; 
         }
         .modal-content { 
-            background: #ffffff !important; /* Força o fundo branco */
+            background: #ffffff !important; 
             width: 100%; max-width: 500px; 
             border-radius: 24px 24px 0 0 !important; 
             padding: 25px; animation: slideUp 0.3s; 
             position: relative; 
-            max-height: 85vh; /* Limita a altura para não vazar o monitor */
+            max-height: 85vh; 
             overflow-y: auto; 
             box-sizing: border-box;
         }
@@ -161,6 +159,16 @@
     <div id="site-loader">
         <div class="loader-text">Estamos preparando tudo para você...</div>
     </div>
+    
+    <script>
+        setTimeout(function() {
+            var loader = document.getElementById('site-loader');
+            if(loader && loader.style.display !== 'none') {
+                loader.style.opacity = '0';
+                setTimeout(function() { loader.style.display = 'none'; }, 500);
+            }
+        }, 2500); // Maximo de 2.5 segundos e a tela some!
+    </script>
 
     <header>
         <div class="container">
@@ -367,7 +375,7 @@
         <img id="fullscreen-img" src="">
     </div>
 
-    <script src="script.js?v=24"></script>
+    <script src="script.js?v=25"></script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -432,6 +440,7 @@
         }
 
         async function aguardarImagensEFecharLoader() {
+            const loader = document.getElementById('site-loader');
             const imagens = document.querySelectorAll('img'); 
             let promessas = Array.from(imagens).map(img => {
                 return new Promise(resolve => {
@@ -443,10 +452,9 @@
                 });
             });
             await Promise.all(promessas);
-            const loader = document.getElementById('site-loader');
-            if(loader) {
+            if(loader && loader.style.display !== 'none') {
                 loader.style.opacity = '0';
-                setTimeout(() => loader.style.visibility = 'hidden', 500);
+                setTimeout(() => loader.style.display = 'none', 500);
             }
         }
 
@@ -459,9 +467,9 @@
                 aguardarImagensEFecharLoader();
             } catch(e) { 
                 console.error(e);
-                document.getElementById('container-produtos').innerHTML = '<p style="text-align:center; grid-column:1/-1;">Erro ao carregar produtos.</p>';
+                document.getElementById('container-produtos').innerHTML = '<p style="text-align:center; grid-column:1/-1;">Erro ao carregar produtos. Verifique sua conexão.</p>';
                 const loader = document.getElementById('site-loader');
-                if(loader) loader.style.display = 'none';
+                if(loader) { loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 500); }
             }
         }
 
@@ -772,18 +780,6 @@
 
         document.getElementById('btn-secreto').addEventListener('click', () => { window.location.href = 'admin.html'; });
         document.getElementById('ano-atual').innerText = new Date().getFullYear();
-
-        /*
-        window.fecharPopupPromo = () => {
-            document.getElementById('promo-popup-overlay').style.display = 'none';
-            sessionStorage.setItem('popupGabrieleVisto', 'true');
-        }
-        setTimeout(() => {
-            if(!sessionStorage.getItem('popupGabrieleVisto')) {
-                document.getElementById('promo-popup-overlay').style.display = 'flex';
-            }
-        }, 2000);
-        */
 
         aplicarTemaSutil(); carregarLoja();
     </script>
