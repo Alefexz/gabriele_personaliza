@@ -27,19 +27,15 @@
       gtag('config', 'G-T24GYM57CT');
     </script>
 
-    <link rel="stylesheet" href="style.css?v=8">
+    <link rel="stylesheet" href="style.css?v=9">
     
     <style>
-        /* TEMA DINÂMICO LIMPO */
         body { background-color: #F4F6F8; transition: background 0.5s ease; margin: 0; }
         body.theme-love { background-color: #FFF0F5; } 
         body.theme-easter { background-color: #FFF8E1; } 
         body.theme-cool { background-color: #E3F2FD; } 
         body.theme-xmas { background-color: #E8F5E9; } 
 
-        /* =========================================
-           SPLASH SCREEN MINIMALISTA
-           ========================================= */
         #site-loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #ffffff; z-index: 9999999; 
@@ -53,7 +49,6 @@
         }
         @keyframes pulse-text { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
 
-        /* CATEGORIAS FLUIDAS */
         .filter-container {
             display: flex; overflow-x: auto; gap: 12px; background: transparent !important;
             box-shadow: none !important; border: none !important; padding: 15px 0 !important;
@@ -62,28 +57,22 @@
         .filter-container::-webkit-scrollbar { display: none; }
         .filter-btn { border-radius: 20px !important; padding: 8px 18px !important; font-weight: 500 !important; flex: 0 0 auto; white-space: nowrap; }
 
-        /* PADRÃO APP-LIKE (BORDAS ARREDONDADAS) */
         .product-card { border-radius: 16px !important; background: #ffffff !important; border: 1px solid #f0f0f0 !important; box-shadow: 0 4px 15px rgba(0,0,0,0.04) !important; transition: transform 0.3s ease, box-shadow 0.3s ease !important; overflow: hidden !important; }
         .product-card:hover { transform: translateY(-5px) !important; box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important; }
         .product-img-wrapper { border-radius: 16px 16px 0 0 !important; overflow: hidden !important; }
         .search-input { border-radius: 50px !important; box-shadow: 0 2px 10px rgba(0,0,0,0.03) !important; border: 1px solid #eee !important; padding-left: 20px !important; }
-        .btn-sm { border-radius: 50px !important; font-weight: bold !important; background: #B39DDB !important; color: white !important; transition: 0.2s !important; }
+        .btn-sm { border-radius: 50px !important; font-weight: bold !important; background: #B39DDB !important; color: white !important; transition: 0.2s !important; cursor: pointer; }
         .btn-sm:hover { background: #9575CD !important; }
 
-        /* O MODAL BLINDADO */
+        /* MODAL */
         .modal-produto-overlay { 
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: flex-end; 
         }
         .modal-content { 
-            background: #ffffff !important; 
-            width: 100%; max-width: 500px; 
-            border-radius: 24px 24px 0 0 !important; 
-            padding: 25px; animation: slideUp 0.3s; 
-            position: relative; 
-            max-height: 85vh; 
-            overflow-y: auto; 
-            box-sizing: border-box;
+            background: #ffffff !important; width: 100%; max-width: 500px; 
+            border-radius: 24px 24px 0 0 !important; padding: 25px; animation: slideUp 0.3s; 
+            position: relative; max-height: 85vh; overflow-y: auto; box-sizing: border-box;
         }
         @media(min-width: 768px) { 
             .modal-produto-overlay { align-items: center; padding: 20px; box-sizing: border-box; } 
@@ -101,13 +90,11 @@
         .btn-cartao { background: #009EE3; color: white; width: 100%; padding: 15px; border: none; border-radius: 50px; font-size: 1rem; font-weight: bold; cursor: pointer; display: flex; justify-content: center; gap: 10px; align-items: center; text-decoration: none; margin-bottom: 10px; }
         .close-modal { position: absolute; top: 15px; right: 15px; font-size: 1.5rem; cursor: pointer; color: #aaa; z-index: 10; background: white; border-radius: 50%; width: 35px; height: 35px; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
 
-        /* HERO BANNER MODERNO */
         .modern-hero { width: 100%; max-width: 1200px; margin: 90px auto 20px auto; padding: 0 15px; box-sizing: border-box; }
         .hero-container { width: 100%; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.06); position: relative; background: #fff; display: flex; }
         .hero-img { width: 100%; display: block; object-fit: cover; }
         @media (max-width: 768px) { .modern-hero { margin-top: 80px; padding: 0 15px; } .hero-container { border-radius: 16px; } }
 
-        /* MENU INFERIOR MOBILE */
         .mobile-bottom-nav { display: none; }
         @media (max-width: 768px) {
             body { padding-bottom: 70px; } 
@@ -124,7 +111,6 @@
             .nav-item.active, .nav-item:hover { color: #B39DDB; font-weight: 600; }
         }
 
-        /* OUTROS ESTILOS MODAIS */
         .politicas-lista { text-align: left; margin-top: 15px; } .politicas-lista li { margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; color: #555; font-size: 0.9rem; } .politicas-lista i { color: #B39DDB; margin-right: 10px; width: 20px; text-align: center; }
         @media (max-width: 768px) { .nav-links.active-menu { display: flex; flex-direction: column; position: absolute; top: 70px; left: 0; width: 100%; background: white; box-shadow: 0 10px 15px rgba(0,0,0,0.1); padding: 20px 0; animation: slideDown 0.3s ease forwards; } .nav-links.active-menu li { width: 100%; text-align: center; padding: 15px 0; border-bottom: 1px solid #f0f0f0; } .nav-links.active-menu li a { display: block; font-size: 1.1rem; } .nav-links.active-menu .btn-nav { display: inline-block; margin-top: 10px; } @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } } }
         
@@ -136,7 +122,6 @@
         .highlight-section { background: #fff; padding: 25px; border-radius: 20px; margin-bottom: 30px; display: none; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: none; } 
         .highlight-title { color: #B39DDB; margin-top: 0; margin-bottom: 20px; font-family: 'Playfair Display', serif; font-size: 1.8rem; text-align: left; }
 
-        /* CSS DO CHECKOUT PIX */
         .pix-checkout-container { display: none; text-align: center; padding-top: 10px; border-top: 1px solid #eee; animation: fadeIn 0.4s; }
         .pix-title { font-size: 1.2rem; color: #009EE3; font-weight: bold; margin-bottom: 5px; }
         .qr-code-box { background: #f9f9f9; padding: 15px; border-radius: 15px; display: inline-block; margin-bottom: 15px; border: 1px solid #ddd; }
@@ -167,7 +152,7 @@
                 loader.style.opacity = '0';
                 setTimeout(function() { loader.style.display = 'none'; }, 500);
             }
-        }, 2500); // Maximo de 2.5 segundos e a tela some!
+        }, 2500); 
     </script>
 
     <header>
@@ -242,97 +227,43 @@
     </a>
 
     <nav class="mobile-bottom-nav">
-        <a href="#home" class="nav-item active" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">
-            <i class="fas fa-home"></i>
-            <span>Início</span>
-        </a>
-        <a href="javascript:void(0)" class="nav-item" onclick="focarBuscaMobile()">
-            <i class="fas fa-search"></i>
-            <span>Busca</span>
-        </a>
-        <a href="javascript:void(0)" class="nav-item" onclick="focarCategoriasMobile()">
-            <i class="fas fa-th-large"></i>
-            <span>Categorias</span>
-        </a>
+        <a href="#home" class="nav-item active" onclick="window.scrollTo({top: 0, behavior: 'smooth'});"><i class="fas fa-home"></i><span>Início</span></a>
+        <a href="javascript:void(0)" class="nav-item" onclick="focarBuscaMobile()"><i class="fas fa-search"></i><span>Busca</span></a>
+        <a href="javascript:void(0)" class="nav-item" onclick="focarCategoriasMobile()"><i class="fas fa-th-large"></i><span>Categorias</span></a>
     </nav>
 
     <div id="modal-produto" class="modal-produto-overlay">
         <div class="modal-content">
             <i class="fas fa-times close-modal" onclick="fecharModal()"></i>
-            
             <div id="modal-etapa-1">
                 <div id="modal-imagens" class="modal-img-container"></div>
-                
-                <div style="display:flex; justify-content:space-between; align-items:start;">
-                    <h3 id="modal-titulo" class="modal-title">Nome</h3>
-                    <button onclick="compartilharProduto()" style="background:none; border:none; color:#B39DDB; font-size:1.5rem; cursor:pointer; padding:0 10px;">
-                        <i class="fas fa-share-alt"></i>
-                    </button>
-                </div>
-
+                <div style="display:flex; justify-content:space-between; align-items:start;"><h3 id="modal-titulo" class="modal-title">Nome</h3><button onclick="compartilharProduto()" style="background:none; border:none; color:#B39DDB; font-size:1.5rem; cursor:pointer; padding:0 10px;"><i class="fas fa-share-alt"></i></button></div>
                 <div id="modal-preco-container" class="modal-price">R$ 0,00</div>
                 <div id="modal-descricao" class="modal-desc"></div>
-                
                 <div style="border-top: 1px solid #eee; padding-top: 20px;">
-                    <div class="qtd-wrapper">
-                        <div class="qtd-controls">
-                            <button class="btn-qtd" onclick="mudarQtd(-1)">-</button>
-                            <span id="qtd-numero" class="qtd-display">1</span>
-                            <button class="btn-qtd" onclick="mudarQtd(1)">+</button>
-                        </div>
-                        <div id="total-final" class="total-price">Total: R$ 0,00</div>
-                    </div>
-                    <div class="input-group">
-                        <label>Seu Nome *</label><input type="text" id="cliente-nome" placeholder="Seu nome">
-                    </div>
-                    <div class="input-group">
-                        <label>WhatsApp *</label><input type="tel" id="cliente-zap" placeholder="Seu número com DDD">
-                    </div>
-                    <div class="termos-box" id="box-termos">
-                        <input type="checkbox" id="check-termos">
-                        <div class="termos-text">Estou ciente do pagamento de <strong>50% de entrada</strong> para iniciar a produção.<br><span style="font-size:0.75rem;">* Valor não reembolsável em caso de desistência.</span></div>
-                    </div>
-                    
-                    <div id="aviso-valor-pix" style="text-align:center; margin-bottom: 10px; font-weight: bold; color: #E91E63; background: #FCE4EC; padding: 10px; border-radius: 12px; border: 1px dashed #F8BBD0; display: none;">
-                        O Pix será gerado no valor de <span>R$ 0,00</span> (50% de entrada)
-                    </div>
-
+                    <div class="qtd-wrapper"><div class="qtd-controls"><button class="btn-qtd" onclick="mudarQtd(-1)">-</button><span id="qtd-numero" class="qtd-display">1</span><button class="btn-qtd" onclick="mudarQtd(1)">+</button></div><div id="total-final" class="total-price">Total: R$ 0,00</div></div>
+                    <div class="input-group"><label>Seu Nome *</label><input type="text" id="cliente-nome" placeholder="Seu nome"></div>
+                    <div class="input-group"><label>WhatsApp *</label><input type="tel" id="cliente-zap" placeholder="Seu número com DDD"></div>
+                    <div class="termos-box" id="box-termos"><input type="checkbox" id="check-termos"><div class="termos-text">Estou ciente do pagamento de <strong>50% de entrada</strong> para iniciar a produção.<br><span style="font-size:0.75rem;">* Valor não reembolsável em caso de desistência.</span></div></div>
+                    <div id="aviso-valor-pix" style="text-align:center; margin-bottom: 10px; font-weight: bold; color: #E91E63; background: #FCE4EC; padding: 10px; border-radius: 12px; border: 1px dashed #F8BBD0; display: none;">O Pix será gerado no valor de <span>R$ 0,00</span> (50% de entrada)</div>
                     <button id="btn-gerar-pix" class="btn-cartao" style="background:#009EE3" onclick="iniciarPagamentoPix()"><i class="fas fa-qrcode"></i> Pagar Agora via Pix</button>
                     <p style="text-align:center; font-size:0.8rem; color:#888; margin:5px 0;">- OU -</p>
                     <button class="btn-comprar" onclick="finalizarPedidoZap()"><i class="fab fa-whatsapp"></i> Pedir pelo WhatsApp</button>
                 </div>
             </div>
-
             <div id="modal-etapa-2" class="pix-checkout-container">
                 <div class="pix-title"><i class="fab fa-pix"></i> Pagamento Seguro</div>
                 <p style="color:#666; font-size:0.9rem; margin-bottom:5px;">Escaneie o código ou copie a chave para pagar no app do seu banco.</p>
                 <p style="color:#E91E63; font-weight:bold; font-size:1.1rem; margin-bottom:15px;" id="pix-valor-display">Valor a pagar: R$ 0,00</p>
-                
-                <div id="pix-loading">
-                    <div class="loader-pix"></div>
-                    <p>Gerando seu QR Code...</p>
-                </div>
-
+                <div id="pix-loading"><div class="loader-pix"></div><p>Gerando seu QR Code...</p></div>
                 <div id="pix-conteudo" style="display:none;">
-                    <div class="qr-code-box">
-                        <img id="pix-qr-img" src="" class="qr-code-img">
-                    </div>
-                    
-                    <div class="copia-cola-box">
-                        <input type="text" id="pix-copia-cola" class="copia-cola-input" readonly>
-                        <button class="btn-copiar" onclick="copiarPix()"><i class="fas fa-copy"></i> Copiar</button>
-                    </div>
-
-                    <div class="timer-box">
-                        <span class="timer-text">Pague em até:</span>
-                        <span id="pix-timer">05:00</span>
-                    </div>
-
+                    <div class="qr-code-box"><img id="pix-qr-img" src="" class="qr-code-img"></div>
+                    <div class="copia-cola-box"><input type="text" id="pix-copia-cola" class="copia-cola-input" readonly><button class="btn-copiar" onclick="copiarPix()"><i class="fas fa-copy"></i> Copiar</button></div>
+                    <div class="timer-box"><span class="timer-text">Pague em até:</span><span id="pix-timer">05:00</span></div>
                     <button class="btn-comprar" onclick="confirmarPixManual()" style="margin-top: 10px; background:#25D366"><i class="fab fa-whatsapp"></i> Já Paguei! Enviar Comprovante</button>
                     <button class="btn-cartao" onclick="voltarEtapa1()" style="margin-top: 10px; background:#f44336"><i class="fas fa-arrow-left"></i> Cancelar Pedido</button>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -351,31 +282,11 @@
         </div>
     </div>
 
-    <div id="custom-alert">
-        <div class="alert-box">
-            <i class="fas fa-exclamation-circle alert-icon"></i>
-            <div class="alert-title">Atenção</div>
-            <p class="alert-msg" id="msg-alerta">Mensagem</p>
-            <button class="alert-btn" onclick="fecharAlerta()">Entendi</button>
-        </div>
-    </div>
+    <div id="custom-alert"><div class="alert-box"><i class="fas fa-exclamation-circle alert-icon"></i><div class="alert-title">Atenção</div><p class="alert-msg" id="msg-alerta">Mensagem</p><button class="alert-btn" onclick="fecharAlerta()">Entendi</button></div></div>
+    <div id="modal-sucesso"><div class="sucesso-card"><i class="fas fa-check-circle" style="font-size: 3rem; color: #2E7D32; margin-bottom: 20px;"></i><h3>Pagamento Concluído!</h3><div class="pedido-id" id="sucesso-id">#1234</div><p style="margin-top:20px; font-size:0.9rem; color:#666">Recebemos seu Pix de entrada. Envie este código no WhatsApp para combinarmos os detalhes da arte.</p><button class="btn-comprar" onclick="fecharSucesso()" style="margin-top:20px"><i class="fab fa-whatsapp"></i> Falar com Gabriele</button></div></div>
+    <div id="fullscreen-overlay" onclick="fecharImagemCheia()"><span class="close-fullscreen">&times;</span><img id="fullscreen-img" src=""></div>
 
-    <div id="modal-sucesso">
-        <div class="sucesso-card">
-            <i class="fas fa-check-circle" style="font-size: 3rem; color: #2E7D32; margin-bottom: 20px;"></i>
-            <h3>Pagamento Concluído!</h3>
-            <div class="pedido-id" id="sucesso-id">#1234</div>
-            <p style="margin-top:20px; font-size:0.9rem; color:#666">Recebemos seu Pix de entrada. Envie este código no WhatsApp para combinarmos os detalhes da arte.</p>
-            <button class="btn-comprar" onclick="fecharSucesso()" style="margin-top:20px"><i class="fab fa-whatsapp"></i> Falar com Gabriele</button>
-        </div>
-    </div>
-
-    <div id="fullscreen-overlay" onclick="fecharImagemCheia()">
-        <span class="close-fullscreen">&times;</span>
-        <img id="fullscreen-img" src="">
-    </div>
-
-    <script src="script.js?v=25"></script>
+    <script src="script.js?v=26"></script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -385,29 +296,13 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         
-        let todosProdutos = [];
-        let produtoAtual = {}, qtdAtual = 1, minimoAtual = 1;
-        let timerInterval;
-        let pedidoAtualIdVisual = "";
-        let listenerPagamento = null; 
-        let pedidoPixPendenteId = null;
-
+        let todosProdutos = []; let produtoAtual = {}, qtdAtual = 1, minimoAtual = 1; let timerInterval; let pedidoAtualIdVisual = ""; let listenerPagamento = null; let pedidoPixPendenteId = null;
         const VERCEL_API_URL = "https://backand-gabrielepersonaliza.vercel.app/api/pix";
 
-        window.focarBuscaMobile = () => {
-            const input = document.getElementById('campo-busca');
-            window.scrollTo({ top: input.offsetTop - 120, behavior: 'smooth' });
-            setTimeout(() => input.focus(), 400); 
-        }
-        
-        window.focarCategoriasMobile = () => {
-            const cat = document.querySelector('.filter-container');
-            window.scrollTo({ top: cat.offsetTop - 100, behavior: 'smooth' });
-        }
-
+        window.focarBuscaMobile = () => { const input = document.getElementById('campo-busca'); window.scrollTo({ top: input.offsetTop - 120, behavior: 'smooth' }); setTimeout(() => input.focus(), 400); }
+        window.focarCategoriasMobile = () => { const cat = document.querySelector('.filter-container'); window.scrollTo({ top: cat.offsetTop - 100, behavior: 'smooth' }); }
         window.abrirPoliticas = () => document.getElementById('modal-politicas').style.display = 'flex';
         window.fecharPoliticas = () => document.getElementById('modal-politicas').style.display = 'none';
-
         window.abrirImagemCheia = (src) => { document.getElementById('fullscreen-img').src = src; document.getElementById('fullscreen-overlay').style.display = 'flex'; }
         window.fecharImagemCheia = () => { document.getElementById('fullscreen-overlay').style.display = 'none'; document.getElementById('fullscreen-img').src = ''; }
 
@@ -433,29 +328,15 @@
         }
 
         const aplicarTemaSutil = () => {
-            const tema = obterClasseTema();
-            document.body.classList.remove('theme-love', 'theme-easter', 'theme-cool', 'theme-xmas');
-            if(tema) { document.body.classList.add(tema.classe); window.tituloSazonalAtual = tema.titulo; } 
-            else window.tituloSazonalAtual = null;
+            const tema = obterClasseTema(); document.body.classList.remove('theme-love', 'theme-easter', 'theme-cool', 'theme-xmas');
+            if(tema) { document.body.classList.add(tema.classe); window.tituloSazonalAtual = tema.titulo; } else window.tituloSazonalAtual = null;
         }
 
         async function aguardarImagensEFecharLoader() {
-            const loader = document.getElementById('site-loader');
-            const imagens = document.querySelectorAll('img'); 
-            let promessas = Array.from(imagens).map(img => {
-                return new Promise(resolve => {
-                    if (img.complete) resolve();
-                    else {
-                        img.onload = resolve;
-                        img.onerror = resolve; 
-                    }
-                });
-            });
+            const loader = document.getElementById('site-loader'); const imagens = document.querySelectorAll('img'); 
+            let promessas = Array.from(imagens).map(img => { return new Promise(resolve => { if (img.complete) resolve(); else { img.onload = resolve; img.onerror = resolve; } }); });
             await Promise.all(promessas);
-            if(loader && loader.style.display !== 'none') {
-                loader.style.opacity = '0';
-                setTimeout(() => loader.style.display = 'none', 500);
-            }
+            if(loader && loader.style.display !== 'none') { loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 500); }
         }
 
         window.carregarLoja = async (filtroInicial = 'todos') => {
@@ -466,10 +347,8 @@
                 aplicarFiltros(filtroInicial);
                 aguardarImagensEFecharLoader();
             } catch(e) { 
-                console.error(e);
-                document.getElementById('container-produtos').innerHTML = '<p style="text-align:center; grid-column:1/-1;">Erro ao carregar produtos. Verifique sua conexão.</p>';
-                const loader = document.getElementById('site-loader');
-                if(loader) { loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 500); }
+                console.error(e); document.getElementById('container-produtos').innerHTML = '<p style="text-align:center; grid-column:1/-1;">Erro ao carregar produtos. Verifique sua conexão.</p>';
+                const loader = document.getElementById('site-loader'); if(loader) { loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 500); }
             }
         }
 
@@ -505,10 +384,7 @@
             const timestamp = new Date().getTime();
             let listaImagens = (p.fotos && p.fotos.length > 0) ? p.fotos : (p.foto ? [p.foto] : []);
             let imagensHtml = ''; let estiloExtra = p.ativo ? '' : 'filter: grayscale(1); opacity: 0.6;';
-            if (listaImagens.length > 0) {
-                listaImagens.forEach((imgUrl, i) => { imagensHtml += `<img src="${imgUrl.startsWith('http') ? `${imgUrl}?t=${timestamp}` : imgUrl}" class="carousel-img ${i===0?'active':''}" style="${estiloExtra}">`; });
-            } else imagensHtml = `<div class="carousel-img active" style="background:#E1BEE7;height:100%"></div>`;
-            
+            if (listaImagens.length > 0) { listaImagens.forEach((imgUrl, i) => { imagensHtml += `<img src="${imgUrl.startsWith('http') ? `${imgUrl}?t=${timestamp}` : imgUrl}" class="carousel-img ${i===0?'active':''}" style="${estiloExtra}">`; }); } else imagensHtml = `<div class="carousel-img active" style="background:#E1BEE7;height:100%"></div>`;
             const minLabel = (p.minimo && p.minimo > 1) ? `<small style="display:block; color:#666; margin-top:5px">Mínimo: ${p.minimo} un</small>` : '';
             let btnHtml = p.ativo ? `<button class="btn-sm" style="width:100%;border:none;padding:8px;border-radius:5px;cursor:pointer;margin-top:5px;">Ver Detalhes</button>` : `<span style="color:red;font-size:0.8rem">Esgotado</span>`;
             
@@ -534,6 +410,25 @@
             const containerProdutos = document.getElementById('container-produtos'); const containerSazonal = document.getElementById('destaque-sazonal-container'); const gridSazonal = document.getElementById('grid-sazonal');
             containerProdutos.innerHTML = ''; gridSazonal.innerHTML = ''; containerSazonal.style.display = 'none';
 
+            // ==========================================
+            // NOVO: CARD "FAÇA SOB MEDIDA" 
+            // ==========================================
+            const cardSobMedida = document.createElement('div'); 
+            cardSobMedida.className = 'product-card';
+            cardSobMedida.style = 'border: 2px dashed #B39DDB; background: #FFF0F5; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; cursor: pointer; box-sizing: border-box;';
+            cardSobMedida.innerHTML = `
+                <i class="fab fa-whatsapp" style="font-size: 3rem; color: #25D366; margin-bottom: 15px;"></i>
+                <h3 style="color: #333; margin-bottom: 10px; font-family: 'Playfair Display', serif;">Não achou seu tema?</h3>
+                <p style="font-size: 0.85rem; color: #666; margin-bottom: 15px; line-height: 1.4;">Nós criamos uma arte exclusiva sob medida para a sua festa!</p>
+                <button class="btn-sm" style="background: #25D366; width: 100%; border-radius: 50px; border: none; padding: 10px; color: white; font-weight: bold;"><i class="fab fa-whatsapp"></i> Fazer Orçamento</button>
+            `;
+            cardSobMedida.onclick = () => { 
+                const msg = "Olá! Vi o catálogo no site, mas gostaria de fazer um orçamento para um tema personalizado. Podemos conversar?"; 
+                window.open(`https://wa.me/559292770409?text=${encodeURIComponent(msg)}`, '_blank'); 
+            };
+            containerProdutos.appendChild(cardSobMedida);
+            // ==========================================
+
             if(aba === 'todos' && window.tituloSazonalAtual) {
                 let eventoId = null;
                 if(document.body.classList.contains('theme-love')) eventoId = (new Date().getMonth()+1) <= 3 ? 'mulher' : 'maes';
@@ -549,7 +444,7 @@
                     }
                 }
             }
-            if (lista.length === 0 && containerSazonal.style.display === 'none') { containerProdutos.innerHTML = `<p style="text-align:center; width:100%; grid-column: 1 / -1; padding: 40px; color: #888;">${msgVazio}</p>`; } 
+            if (lista.length === 0 && containerSazonal.style.display === 'none') { containerProdutos.innerHTML += `<p style="text-align:center; width:100%; grid-column: 1 / -1; padding: 40px; color: #888;">${msgVazio}</p>`; } 
             else { lista.forEach((p) => { containerProdutos.appendChild(criarCardProduto(p)); }); }
             iniciarCarrossel();
         }
@@ -567,24 +462,13 @@
 
         window.abrirModal = (p) => {
             produtoAtual = p; minimoAtual = p.minimo || 1; qtdAtual = minimoAtual; 
-            
-            document.getElementById('modal-etapa-1').style.display = 'block';
-            document.getElementById('modal-etapa-2').style.display = 'none';
-            if(timerInterval) clearInterval(timerInterval);
-            if(listenerPagamento) { listenerPagamento(); listenerPagamento = null; }
-
-            document.getElementById('modal-produto').style.display = 'flex';
-            document.getElementById('modal-titulo').innerText = p.nome;
-            
-            let priceHtmlModal = formatarMoeda(p.preco);
-            if (p.em_promocao && p.preco_promocional > 0) priceHtmlModal = `<span class="original-price">${formatarMoeda(p.preco)}</span> <span class="promo-price">${formatarMoeda(p.preco_promocional)}</span>`;
-            document.getElementById('modal-preco-container').innerHTML = priceHtmlModal;
-            document.getElementById('modal-descricao').innerText = p.descricao || "";
-            document.getElementById('check-termos').checked = false; 
-            document.getElementById('box-termos').style.border = "1px solid #FFCC80"; 
-            
-            const imgC = document.getElementById('modal-imagens'); imgC.innerHTML = '';
-            const timestamp = new Date().getTime();
+            document.getElementById('modal-etapa-1').style.display = 'block'; document.getElementById('modal-etapa-2').style.display = 'none';
+            if(timerInterval) clearInterval(timerInterval); if(listenerPagamento) { listenerPagamento(); listenerPagamento = null; }
+            document.getElementById('modal-produto').style.display = 'flex'; document.getElementById('modal-titulo').innerText = p.nome;
+            let priceHtmlModal = formatarMoeda(p.preco); if (p.em_promocao && p.preco_promocional > 0) priceHtmlModal = `<span class="original-price">${formatarMoeda(p.preco)}</span> <span class="promo-price">${formatarMoeda(p.preco_promocional)}</span>`;
+            document.getElementById('modal-preco-container').innerHTML = priceHtmlModal; document.getElementById('modal-descricao').innerText = p.descricao || "";
+            document.getElementById('check-termos').checked = false; document.getElementById('box-termos').style.border = "1px solid #FFCC80"; 
+            const imgC = document.getElementById('modal-imagens'); imgC.innerHTML = ''; const timestamp = new Date().getTime();
             (p.fotos || [p.foto]).forEach(f => { if(f) { imgC.innerHTML += `<img src="${f.startsWith('http') ? `${f}?t=${timestamp}` : f}" class="modal-img" onclick="abrirImagemCheia(this.src)">`; } });
             atualizarUI();
         }
@@ -594,37 +478,19 @@
         function atualizarUI() {
             document.getElementById('qtd-numero').innerText = qtdAtual;
             let precoEfetivo = (produtoAtual.em_promocao && produtoAtual.preco_promocional > 0) ? produtoAtual.preco_promocional : produtoAtual.preco;
-            let total = precoEfetivo * qtdAtual;
-            document.getElementById('total-final').innerText = `Total: ${formatarMoeda(total)}`;
-            
+            let total = precoEfetivo * qtdAtual; document.getElementById('total-final').innerText = `Total: ${formatarMoeda(total)}`;
             const avisoPix = document.getElementById('aviso-valor-pix');
-            if(avisoPix) {
-                avisoPix.style.display = 'block';
-                avisoPix.innerHTML = `<i class="fas fa-info-circle"></i> O Pix será gerado no valor de <strong>${formatarMoeda(total / 2)}</strong> (50% de entrada)`;
-            }
+            if(avisoPix) { avisoPix.style.display = 'block'; avisoPix.innerHTML = `<i class="fas fa-info-circle"></i> O Pix será gerado no valor de <strong>${formatarMoeda(total / 2)}</strong> (50% de entrada)`; }
         }
 
         window.fecharModal = async () => { 
-            document.getElementById('modal-produto').style.display = 'none'; 
-            if(timerInterval) clearInterval(timerInterval); 
-            if(listenerPagamento) { listenerPagamento(); listenerPagamento = null; }
-
-            if (pedidoPixPendenteId) {
-                try { await updateDoc(doc(db, "pedidos", pedidoPixPendenteId), { status: 'Cancelado' }); } catch(e) { }
-                pedidoPixPendenteId = null;
-            }
+            document.getElementById('modal-produto').style.display = 'none'; if(timerInterval) clearInterval(timerInterval); if(listenerPagamento) { listenerPagamento(); listenerPagamento = null; }
+            if (pedidoPixPendenteId) { try { await updateDoc(doc(db, "pedidos", pedidoPixPendenteId), { status: 'Cancelado' }); } catch(e) { } pedidoPixPendenteId = null; }
         }
 
         window.voltarEtapa1 = async () => { 
-            document.getElementById('modal-etapa-2').style.display = 'none'; 
-            document.getElementById('modal-etapa-1').style.display = 'block'; 
-            if(timerInterval) clearInterval(timerInterval); 
-            if(listenerPagamento) { listenerPagamento(); listenerPagamento = null; }
-
-            if (pedidoPixPendenteId) {
-                try { await updateDoc(doc(db, "pedidos", pedidoPixPendenteId), { status: 'Cancelado' }); } catch(e) { }
-                pedidoPixPendenteId = null;
-            }
+            document.getElementById('modal-etapa-2').style.display = 'none'; document.getElementById('modal-etapa-1').style.display = 'block'; if(timerInterval) clearInterval(timerInterval); if(listenerPagamento) { listenerPagamento(); listenerPagamento = null; }
+            if (pedidoPixPendenteId) { try { await updateDoc(doc(db, "pedidos", pedidoPixPendenteId), { status: 'Cancelado' }); } catch(e) { } pedidoPixPendenteId = null; }
         }
 
         function validarTermos() {
@@ -638,146 +504,55 @@
             pedidoAtualIdVisual = '#' + Math.random().toString(36).substr(2, 4).toUpperCase();
             try {
                 let precoEfetivo = (produtoAtual.em_promocao && produtoAtual.preco_promocional > 0) ? produtoAtual.preco_promocional : produtoAtual.preco;
-                let total = precoEfetivo * qtdAtual;
-                let valorCobrar = total / 2;
-                
+                let total = precoEfetivo * qtdAtual; let valorCobrar = total / 2;
                 const docRef = await addDoc(collection(db, "pedidos"), { id_visual: pedidoAtualIdVisual, cliente: nome, whatsapp: zap, produto: `${produtoAtual.nome} (x${qtdAtual})`, total: total, data: new Date().toISOString(), status: 'Aguardando Pagamento', origem });
                 return { id_visual: pedidoAtualIdVisual, valor: valorCobrar, docId: docRef.id };
             } catch(e) { mostrarAlerta("Erro: " + e.message); return null; }
         }
 
         window.iniciarPagamentoPix = async () => {
-            if(!validarTermos()) return;
-            const dadosPedido = await registrarPedidoDb('Site Pix');
-            if(!dadosPedido) return;
-
+            if(!validarTermos()) return; const dadosPedido = await registrarPedidoDb('Site Pix'); if(!dadosPedido) return;
             pedidoPixPendenteId = dadosPedido.docId;
-
-            document.getElementById('pix-valor-display').innerText = `Valor da entrada: ${formatarMoeda(dadosPedido.valor)}`;
-            document.getElementById('modal-etapa-1').style.display = 'none';
-            document.getElementById('modal-etapa-2').style.display = 'block';
-            document.getElementById('pix-loading').style.display = 'block';
-            document.getElementById('pix-conteudo').style.display = 'none';
-
+            document.getElementById('pix-valor-display').innerText = `Valor da entrada: ${formatarMoeda(dadosPedido.valor)}`; document.getElementById('modal-etapa-1').style.display = 'none'; document.getElementById('modal-etapa-2').style.display = 'block'; document.getElementById('pix-loading').style.display = 'block'; document.getElementById('pix-conteudo').style.display = 'none';
             try {
-                const response = await fetch(VERCEL_API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        valor: dadosPedido.valor.toFixed(2),
-                        descricao: `Entrada: ${produtoAtual.nome} - Pedido ${dadosPedido.id_visual}`,
-                        docId: dadosPedido.docId
-                    })
-                });
-
+                const response = await fetch(VERCEL_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ valor: dadosPedido.valor.toFixed(2), descricao: `Entrada: ${produtoAtual.nome} - Pedido ${dadosPedido.id_visual}`, docId: dadosPedido.docId }) });
                 const data = await response.json();
-
                 if(response.ok && data.qr_code_base64) {
-                    document.getElementById('pix-qr-img').src = `data:image/jpeg;base64,${data.qr_code_base64}`;
-                    document.getElementById('pix-copia-cola').value = data.qr_code;
-                    document.getElementById('pix-loading').style.display = 'none';
-                    document.getElementById('pix-conteudo').style.display = 'block';
-                    iniciarTimer();
-                    
+                    document.getElementById('pix-qr-img').src = `data:image/jpeg;base64,${data.qr_code_base64}`; document.getElementById('pix-copia-cola').value = data.qr_code; document.getElementById('pix-loading').style.display = 'none'; document.getElementById('pix-conteudo').style.display = 'block'; iniciarTimer();
                     if(listenerPagamento) listenerPagamento();
-                    listenerPagamento = onSnapshot(doc(db, "pedidos", dadosPedido.docId), (docSnap) => {
-                        if (docSnap.exists() && docSnap.data().status === 'Concluído') {
-                            pedidoPixPendenteId = null; 
-                            
-                            clearInterval(timerInterval);
-                            document.getElementById('modal-produto').style.display = 'none'; 
-                            document.getElementById('sucesso-id').innerText = dadosPedido.id_visual;
-                            document.getElementById('modal-sucesso').style.display = 'flex';
-                            if(listenerPagamento) listenerPagamento();
-                        }
-                    });
-
-                } else {
-                    throw new Error("Erro na Vercel: " + (data.error || "Desconhecido"));
-                }
-            } catch(erro) {
-                console.error(erro);
-                mostrarAlerta("Desculpe, o sistema Pix está indisponível no momento. Por favor, faça o pedido pelo WhatsApp.");
-                voltarEtapa1();
-            }
+                    listenerPagamento = onSnapshot(doc(db, "pedidos", dadosPedido.docId), (docSnap) => { if (docSnap.exists() && docSnap.data().status === 'Concluído') { pedidoPixPendenteId = null; clearInterval(timerInterval); document.getElementById('modal-produto').style.display = 'none'; document.getElementById('sucesso-id').innerText = dadosPedido.id_visual; document.getElementById('modal-sucesso').style.display = 'flex'; if(listenerPagamento) listenerPagamento(); } });
+                } else { throw new Error("Erro na Vercel: " + (data.error || "Desconhecido")); }
+            } catch(erro) { console.error(erro); mostrarAlerta("Desculpe, o sistema Pix está indisponível no momento. Por favor, faça o pedido pelo WhatsApp."); voltarEtapa1(); }
         }
 
         window.copiarPix = () => {
-            const input = document.getElementById('pix-copia-cola');
-            input.select(); input.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(input.value);
-            const btn = document.querySelector('.btn-copiar');
-            btn.innerHTML = '<i class="fas fa-check"></i> Copiado!';
-            btn.style.background = '#25D366';
-            setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Copiar'; btn.style.background = '#009EE3'; }, 2000);
+            const input = document.getElementById('pix-copia-cola'); input.select(); input.setSelectionRange(0, 99999); navigator.clipboard.writeText(input.value);
+            const btn = document.querySelector('.btn-copiar'); btn.innerHTML = '<i class="fas fa-check"></i> Copiado!'; btn.style.background = '#25D366'; setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Copiar'; btn.style.background = '#009EE3'; }, 2000);
         }
 
         function iniciarTimer() {
-            let tempo = 5 * 60;
-            const display = document.getElementById('pix-timer');
-            if(timerInterval) clearInterval(timerInterval);
-            
+            let tempo = 5 * 60; const display = document.getElementById('pix-timer'); if(timerInterval) clearInterval(timerInterval);
             timerInterval = setInterval(async () => {
-                let minutos = parseInt(tempo / 60, 10); let segundos = parseInt(tempo % 60, 10);
-                minutos = minutos < 10 ? "0" + minutos : minutos; segundos = segundos < 10 ? "0" + segundos : segundos;
-                display.textContent = minutos + ":" + segundos;
-                if (--tempo < 0) {
-                    clearInterval(timerInterval);
-                    display.textContent = "Expirado";
-                    
-                    if (pedidoPixPendenteId) {
-                        try { await updateDoc(doc(db, "pedidos", pedidoPixPendenteId), { status: 'Cancelado' }); } catch(e) { }
-                        pedidoPixPendenteId = null;
-                    }
-                    
-                    mostrarAlerta("O tempo do Pix expirou. Por favor, gere um novo pedido ou chame no WhatsApp.");
-                }
+                let minutos = parseInt(tempo / 60, 10); let segundos = parseInt(tempo % 60, 10); minutos = minutos < 10 ? "0" + minutos : minutos; segundos = segundos < 10 ? "0" + segundos : segundos; display.textContent = minutos + ":" + segundos;
+                if (--tempo < 0) { clearInterval(timerInterval); display.textContent = "Expirado"; if (pedidoPixPendenteId) { try { await updateDoc(doc(db, "pedidos", pedidoPixPendenteId), { status: 'Cancelado' }); } catch(e) { } pedidoPixPendenteId = null; } mostrarAlerta("O tempo do Pix expirou. Por favor, gere um novo pedido ou chame no WhatsApp."); }
             }, 1000);
         }
 
         window.confirmarPixManual = async () => {
-            if (pedidoPixPendenteId) {
-                try { await updateDoc(doc(db, "pedidos", pedidoPixPendenteId), { status: 'Pendente' }); } catch(e) { }
-                pedidoPixPendenteId = null; 
-            }
-            
-            document.getElementById('modal-produto').style.display = 'none';
-            const nome = document.getElementById('cliente-nome').value;
-            let total = (produtoAtual.em_promocao && produtoAtual.preco_promocional > 0) ? produtoAtual.preco_promocional : produtoAtual.preco;
-            total = total * qtdAtual;
-            const msg = `✅ *Pagamento Realizado!*\n\nOlá, sou *${nome}*.\nFiz o Pix de 50% de entrada referente ao Pedido *${pedidoAtualIdVisual}*.\nProduto: ${qtdAtual}x *${produtoAtual.nome}*.\nTotal do pedido: ${formatarMoeda(total)}.\n\nSegue o comprovante abaixo:`;
-            window.open(`https://wa.me/559292770409?text=${encodeURIComponent(msg)}`, '_blank');
+            if (pedidoPixPendenteId) { try { await updateDoc(doc(db, "pedidos", pedidoPixPendenteId), { status: 'Pendente' }); } catch(e) { } pedidoPixPendenteId = null;  }
+            document.getElementById('modal-produto').style.display = 'none'; const nome = document.getElementById('cliente-nome').value; let total = (produtoAtual.em_promocao && produtoAtual.preco_promocional > 0) ? produtoAtual.preco_promocional : produtoAtual.preco; total = total * qtdAtual;
+            const msg = `✅ *Pagamento Realizado!*\n\nOlá, sou *${nome}*.\nFiz o Pix de 50% de entrada referente ao Pedido *${pedidoAtualIdVisual}*.\nProduto: ${qtdAtual}x *${produtoAtual.nome}*.\nTotal do pedido: ${formatarMoeda(total)}.\n\nSegue o comprovante abaixo:`; window.open(`https://wa.me/559292770409?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
         window.finalizarPedidoZap = async () => {
-            if(!validarTermos()) return;
-            const nome = document.getElementById('cliente-nome').value;
-            const zap = document.getElementById('cliente-zap').value;
-            if(!nome || !zap) { mostrarAlerta("Por favor, preencha seu Nome e WhatsApp!"); return; }
-            
-            const id = '#' + Math.random().toString(36).substr(2, 4).toUpperCase();
-            let precoEfetivo = (produtoAtual.em_promocao && produtoAtual.preco_promocional > 0) ? produtoAtual.preco_promocional : produtoAtual.preco;
-            let total = precoEfetivo * qtdAtual;
-            
+            if(!validarTermos()) return; const nome = document.getElementById('cliente-nome').value; const zap = document.getElementById('cliente-zap').value; if(!nome || !zap) { mostrarAlerta("Por favor, preencha seu Nome e WhatsApp!"); return; }
+            const id = '#' + Math.random().toString(36).substr(2, 4).toUpperCase(); let precoEfetivo = (produtoAtual.em_promocao && produtoAtual.preco_promocional > 0) ? produtoAtual.preco_promocional : produtoAtual.preco; let total = precoEfetivo * qtdAtual;
             await addDoc(collection(db, "pedidos"), { id_visual: id, cliente: nome, whatsapp: zap, produto: `${produtoAtual.nome} (x${qtdAtual})`, total: total, data: new Date().toISOString(), status: 'Pendente', origem: 'WhatsApp' });
-            
-            const msg = `Olá! Sou *${nome}*.\nPedido *${id}*: ${qtdAtual}x *${produtoAtual.nome}*.\nTotal: ${formatarMoeda(total)}.\n\n✅ *Li e concordo com os 50% de entrada.*\nAguardo chave Pix para pagamento.`;
-            window.open(`https://wa.me/559292770409?text=${encodeURIComponent(msg)}`, '_blank');
-            fecharModal();
+            const msg = `Olá! Sou *${nome}*.\nPedido *${id}*: ${qtdAtual}x *${produtoAtual.nome}*.\nTotal: ${formatarMoeda(total)}.\n\n✅ *Li e concordo com os 50% de entrada.*\nAguardo chave Pix para pagamento.`; window.open(`https://wa.me/559292770409?text=${encodeURIComponent(msg)}`, '_blank'); fecharModal();
         }
 
-        window.fecharSucesso = () => {
-            const id = document.getElementById('sucesso-id').innerText;
-            const msg = `Olá! Meu pedido *${id}* já foi pago e aprovado pelo site. Podemos combinar os detalhes da arte?`;
-            window.open(`https://wa.me/559292770409?text=${encodeURIComponent(msg)}`, '_blank');
-            document.getElementById('modal-sucesso').style.display = 'none';
-        }
-
-        window.compartilharProduto = async () => {
-            if (navigator.share) { try { await navigator.share({ title: `Olha que lindo: ${produtoAtual.nome}`, text: `Achei esse ${produtoAtual.nome} na Gabriele Personaliza!`, url: window.location.href }); } catch (err) {} } 
-            else { mostrarAlerta("Link copiado!"); navigator.clipboard.writeText(window.location.href); }
-        }
-
+        window.fecharSucesso = () => { const id = document.getElementById('sucesso-id').innerText; const msg = `Olá! Meu pedido *${id}* já foi pago e aprovado pelo site. Podemos combinar os detalhes da arte?`; window.open(`https://wa.me/559292770409?text=${encodeURIComponent(msg)}`, '_blank'); document.getElementById('modal-sucesso').style.display = 'none'; }
+        window.compartilharProduto = async () => { if (navigator.share) { try { await navigator.share({ title: `Olha que lindo: ${produtoAtual.nome}`, text: `Achei esse ${produtoAtual.nome} na Gabriele Personaliza!`, url: window.location.href }); } catch (err) {} } else { mostrarAlerta("Link copiado!"); navigator.clipboard.writeText(window.location.href); } }
         document.getElementById('btn-secreto').addEventListener('click', () => { window.location.href = 'admin.html'; });
         document.getElementById('ano-atual').innerText = new Date().getFullYear();
 

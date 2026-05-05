@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Gabriele | Painel</title>
     
-    <link rel="icon" href="assets/img/logo.jpeg" type="image/jpeg">
+    <link rel="icon" href="assets/img/icone-aba.png?v=4" type="image/png">
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -139,7 +139,9 @@
             <h2>Admin Gabriele</h2>
             <div class="menu-item active" onclick="mudarAba('produtos')"><i class="fas fa-box"></i> Produtos</div>
             <div class="menu-item" onclick="mudarAba('vendas')"><i class="fas fa-shopping-bag"></i> Vendas <span id="badge-vendas" style="background:#F44336; color:white; border-radius:50%; padding:2px 6px; font-size:0.7rem; display:none; margin-left:auto;">Novo</span></div>
-            <div class="menu-item" id="btn-sair"><i class="fas fa-sign-out-alt"></i> Sair</div>
+            <div class="menu-item" onclick="mudarAba('pix')"><i class="fas fa-bolt" style="color: #FFC107;"></i> Pix Expresso</div>
+            
+            <div class="menu-item" id="btn-sair" style="margin-top: auto;"><i class="fas fa-sign-out-alt"></i> Sair</div>
         </div>
 
         <div class="main-content">
@@ -168,6 +170,40 @@
                     </table>
                 </div>
             </div>
+
+            <div id="view-pix" class="view-section">
+                <div style="margin-bottom: 20px;">
+                    <h2 style="margin: 0 0 10px 0;">Pix Expresso ⚡</h2>
+                    <p style="color:#666; font-size: 0.9rem;">Gere cobranças de 50% para pedidos fechados sob medida no WhatsApp.</p>
+                </div>
+                
+                <div class="table-box" style="max-width: 500px; padding: 30px;">
+                    <label style="font-weight: bold; font-size: 0.85rem; color: #555;">Nome da Cliente</label>
+                    <input type="text" id="pix-expresso-cliente" class="login-input" placeholder="Ex: Ana Silva">
+                    
+                    <label style="font-weight: bold; font-size: 0.85rem; color: #555; margin-top: 10px; display: block;">Descrição do que foi pedido</label>
+                    <input type="text" id="pix-expresso-desc" class="login-input" placeholder="Ex: 30 Caixinhas Tema Safári">
+                    
+                    <label style="font-weight: bold; font-size: 0.85rem; color: #555; margin-top: 10px; display: block;">Valor TOTAL do Pedido (R$)</label>
+                    <input type="number" id="pix-expresso-total" class="login-input" step="0.01" placeholder="Ex: 150.00">
+                    
+                    <button class="btn-new" onclick="gerarPixExpresso()" style="width: 100%; float: none; margin-top: 20px; padding: 15px; font-size: 1rem;"><i class="fas fa-qrcode"></i> Gerar Pix de 50%</button>
+
+                    <div id="pix-expresso-resultado" style="display: none; margin-top: 30px; padding-top: 20px; border-top: 1px dashed #ccc; text-align: center; animation: fadeIn 0.4s;">
+                        <i class="fas fa-check-circle" style="font-size: 2.5rem; color: #4CAF50; margin-bottom: 10px;"></i>
+                        <h3 style="color: #333; margin: 0 0 5px 0;">Pix Gerado!</h3>
+                        <p style="font-size: 0.9rem; color: #666;">Valor da Entrada: <strong id="pix-expresso-valor-entrada" style="color: #E91E63; font-size: 1.1rem;">R$ 0,00</strong></p>
+                        
+                        <input type="text" id="pix-expresso-copiacola" readonly style="width: 100%; padding: 12px; margin: 15px 0; border: 1px dashed #B39DDB; background: #f9f9f9; text-align: center; font-size: 0.8rem; border-radius: 8px;">
+                        
+                        <div style="display: flex; gap: 10px; flex-direction: column;">
+                            <button class="btn-new" onclick="copiarPixExpresso()" style="background: #009EE3; width: 100%; float: none; border-radius: 8px;"><i class="fas fa-copy"></i> Copiar Código Pix</button>
+                            <button class="btn-new" onclick="enviarPixWhatsApp()" style="background: #25D366; width: 100%; float: none; border-radius: 8px;"><i class="fab fa-whatsapp"></i> Enviar Texto Pronto pro WhatsApp</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -247,15 +283,14 @@
         let produtosCache = {};
         let unsubscribeVendas = null;
 
+        const VERCEL_API_URL = "https://backand-gabrielepersonaliza.vercel.app/api/pix";
+
         window.filtrarVendas = () => {
             const termo = document.getElementById('busca-id').value.toLowerCase();
             const linhas = document.querySelectorAll('#lista-vendas tr');
             linhas.forEach(linha => {
                 const colunaId = linha.querySelector('td[data-label="ID / Detalhes"] strong');
-                if (colunaId) {
-                    const textoId = colunaId.innerText.toLowerCase();
-                    linha.style.display = textoId.includes(termo) ? '' : 'none';
-                }
+                if (colunaId) { const textoId = colunaId.innerText.toLowerCase(); linha.style.display = textoId.includes(termo) ? '' : 'none'; }
             });
         }
 
@@ -269,25 +304,17 @@
         };
 
         window.showConfirm = (msg, callback, tipo = 'danger') => {
-            document.getElementById('confirm-msg').innerText = msg;
-            const btn = document.getElementById('btn-confirm-yes');
-            const icone = document.getElementById('confirm-icon');
+            document.getElementById('confirm-msg').innerText = msg; const btn = document.getElementById('btn-confirm-yes'); const icone = document.getElementById('confirm-icon');
             if(tipo === 'danger') { btn.style.background = '#F44336'; btn.innerText = 'Sim, excluir'; icone.className = 'fas fa-exclamation-triangle'; icone.style.color = '#F44336'; } 
             else { btn.style.background = '#B39DDB'; btn.innerText = 'Sim, continuar'; icone.className = 'fas fa-question-circle'; icone.style.color = '#B39DDB'; }
-            btn.onclick = () => { fecharConfirm(); callback(); };
-            document.getElementById('confirm-modal').style.display = 'flex';
+            btn.onclick = () => { fecharConfirm(); callback(); }; document.getElementById('confirm-modal').style.display = 'flex';
         }
         window.fecharConfirm = () => document.getElementById('confirm-modal').style.display = 'none';
 
         window.showToast = (message, type = 'success') => {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast toast-${type}`;
-            let icon = type === 'success' ? 'check-circle' : 'exclamation-circle';
-            if(type === 'info') icon = 'info-circle';
-            toast.innerHTML = `<i class="fas fa-${icon}"></i> <span>${message}</span>`;
-            container.appendChild(toast);
-            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 4000);
+            const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast toast-${type}`;
+            let icon = type === 'success' ? 'check-circle' : 'exclamation-circle'; if(type === 'info') icon = 'info-circle';
+            toast.innerHTML = `<i class="fas fa-${icon}"></i> <span>${message}</span>`; container.appendChild(toast); setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 4000);
         }
 
         window.showLoading = (msg) => { document.getElementById('loading-msg').innerText = msg; document.getElementById('loading-overlay').style.display = 'flex'; }
@@ -299,8 +326,7 @@
         });
 
         window.login = async () => {
-            const email = document.getElementById('email-admin').value; const senha = document.getElementById('senha-admin').value;
-            const btn = document.querySelector('.btn-entrar'); const erro = document.getElementById('login-erro');
+            const email = document.getElementById('email-admin').value; const senha = document.getElementById('senha-admin').value; const btn = document.querySelector('.btn-entrar'); const erro = document.getElementById('login-erro');
             btn.innerText = "Verificando..."; erro.style.display = 'none';
             try { await signInWithEmailAndPassword(auth, email, senha); showToast("Acesso Liberado!", "success"); } 
             catch (error) { erro.innerText = "Senha incorreta."; erro.style.display = 'block'; btn.innerText = "Acessar Painel"; showToast("Senha Incorreta", "error"); }
@@ -319,8 +345,72 @@
             if(aba === 'vendas') { document.getElementById('badge-vendas').style.display = 'none'; document.getElementById('busca-id').value = ''; filtrarVendas(); }
         }
 
-        document.getElementById('novo-categoria').addEventListener('change', (e) => { document.getElementById('div-evento').style.display = e.target.value === 'comemorativas' ? 'block' : 'none'; });
+        // =========================================
+        // FUNÇÕES DO NOVO PIX EXPRESSO
+        // =========================================
+        window.gerarPixExpresso = async () => {
+            const cliente = document.getElementById('pix-expresso-cliente').value;
+            const desc = document.getElementById('pix-expresso-desc').value;
+            const totalStr = document.getElementById('pix-expresso-total').value;
 
+            if(!cliente || !desc || !totalStr) { showToast("Preencha todos os campos!", "error"); return; }
+
+            const total = parseFloat(totalStr);
+            const valorEntrada = total / 2;
+            const idVisual = '#' + Math.random().toString(36).substr(2, 4).toUpperCase();
+
+            showLoading("Gerando Pix de Cobrança...");
+
+            try {
+                // Salva o pedido personalizado no banco de dados para a Gabriele ter controle
+                const docRef = await addDoc(collection(db, "pedidos"), {
+                    id_visual: idVisual, cliente: cliente, whatsapp: "Não informado (Pix Expresso)",
+                    produto: `[SOB MEDIDA] ${desc}`, total: total, data: new Date().toISOString(), status: 'Aguardando Pagamento', origem: 'Pix Expresso Admin'
+                });
+
+                // Chama a API para gerar o QR Code
+                const response = await fetch(VERCEL_API_URL, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ valor: valorEntrada.toFixed(2), descricao: `Entrada: Personalizado - Pedido ${idVisual}`, docId: docRef.id })
+                });
+
+                const data = await response.json();
+
+                if(response.ok && data.qr_code) {
+                    document.getElementById('pix-expresso-resultado').style.display = 'block';
+                    document.getElementById('pix-expresso-valor-entrada').innerText = formatarMoeda(valorEntrada);
+                    document.getElementById('pix-expresso-copiacola').value = data.qr_code;
+
+                    // Guarda a mensagem pronta para enviar no Zap
+                    window.mensagemPixExpresso = `Olá, *${cliente}*!\nSeu pedido personalizado (*${desc}*) foi registrado com o código *${idVisual}*.\n\nO valor total ficou em *${formatarMoeda(total)}*.\nPara iniciarmos a sua produção, segue o código Pix Copia e Cola referente a 50% de entrada (*${formatarMoeda(valorEntrada)}*):\n\n${data.qr_code}\n\nAssim que fizer o pagamento, o nosso sistema já me avisa por aqui! 🥰`;
+
+                    showToast("Pix gerado com sucesso!", "success");
+                    
+                    // Limpa os campos para o próximo
+                    document.getElementById('pix-expresso-cliente').value = '';
+                    document.getElementById('pix-expresso-desc').value = '';
+                    document.getElementById('pix-expresso-total').value = '';
+                } else { throw new Error(data.error || "Desconhecido"); }
+            } catch (e) {
+                console.error(e); showToast("Erro ao conectar com o banco", "error");
+            } finally { hideLoading(); }
+        }
+
+        window.copiarPixExpresso = () => {
+            const input = document.getElementById('pix-expresso-copiacola');
+            input.select(); input.setSelectionRange(0, 99999); navigator.clipboard.writeText(input.value);
+            showToast("Código Copia e Cola copiado!", "success");
+        }
+
+        window.enviarPixWhatsApp = () => {
+            if(window.mensagemPixExpresso) {
+                // Abre o WhatsApp para ela colar a mensagem direto na conversa com a cliente
+                window.open(`https://wa.me/?text=${encodeURIComponent(window.mensagemPixExpresso)}`, '_blank');
+            }
+        }
+        // =========================================
+
+        document.getElementById('novo-categoria').addEventListener('change', (e) => { document.getElementById('div-evento').style.display = e.target.value === 'comemorativas' ? 'block' : 'none'; });
         const nomeEventos = { 'mulher':'Dia da Mulher', 'pascoa':'Páscoa', 'maes':'Dia das Mães', 'namorados':'Dia dos Namorados', 'pais':'Dia dos Pais', 'criancas':'Dia das Crianças', 'professores':'Dia dos Professores', 'natal':'Natal', 'ano_novo':'Ano Novo' };
 
         async function carregarDados() {
@@ -377,7 +467,7 @@
                     if(p.status === 'Cancelado') statusClass = 'status-cancelado'; 
 
                     const telefoneFormatado = formatarTelefone(p.whatsapp);
-                    const linkZap = `https://wa.me/55${p.whatsapp.replace(/\D/g,'')}`;
+                    const linkZap = p.whatsapp.includes('Não informado') ? '#' : `https://wa.me/55${p.whatsapp.replace(/\D/g,'')}`;
 
                     html += `<tr style="transition: background 0.5s;"><td data-label="ID / Detalhes"><div style="text-align:left"><strong style="color:#B39DDB">${p.id_visual||'-'}</strong><br>${p.produto}</div></td><td data-label="Data">${dataF}</td><td data-label="Cliente"><div style="text-align:left">${p.cliente}<br><small><a href="${linkZap}" target="_blank" style="color:#25D366;text-decoration:none"><i class="fab fa-whatsapp"></i> ${telefoneFormatado}</a></small></div></td><td data-label="Total"><strong>${formatarMoeda(p.total)}</strong></td><td data-label="Status"><span class="btn-status ${statusClass}" onclick="mudarStatusPedido('${doc.id}','${p.status}')" style="cursor:pointer">${p.status}</span></td><td data-label="Ações"><i class="fas fa-trash action-icon icon-trash" onclick="apagarPedido('${doc.id}')"></i></td></tr>`;
                 });
