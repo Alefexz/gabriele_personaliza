@@ -27,7 +27,7 @@
       gtag('config', 'G-T24GYM57CT');
     </script>
 
-    <link rel="stylesheet" href="style.css?v=10">
+    <link rel="stylesheet" href="style.css?v=11">
     
     <style>
         body { background-color: #F4F6F8; transition: background 0.5s ease; margin: 0; }
@@ -57,9 +57,6 @@
         .filter-container::-webkit-scrollbar { display: none; }
         .filter-btn { border-radius: 20px !important; padding: 8px 18px !important; font-weight: 500 !important; flex: 0 0 auto; white-space: nowrap; }
 
-        /* =========================================
-           CSS DOS CONTADORES DE FILTROS (BADGES)
-           ========================================= */
         .filter-count {
             display: inline-flex; align-items: center; justify-content: center;
             background: rgba(0, 0, 0, 0.12); color: inherit; font-size: 0.7rem;
@@ -87,7 +84,6 @@
         .modal-img { width: 100%; height: 100%; object-fit: contain; flex-shrink: 0; scroll-snap-align: center; cursor: zoom-in; }
         .modal-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #333; margin-bottom: 5px; } .modal-price { font-size: 1.3rem; color: #B39DDB; font-weight: bold; margin-bottom: 5px; } .modal-desc { font-size: 0.9rem; color: #666; line-height: 1.6; margin-bottom: 15px; background: #f9f9f9; padding: 10px; border-radius: 12px; }
         
-        /* CAIXA DE PERSONALIZAÇÃO E INPUTS */
         .caixa-personalizacao { background: #F3E5F5; border: 1px dashed #CE93D8; padding: 15px; border-radius: 12px; margin-bottom: 20px; }
         .caixa-personalizacao h4 { margin: 0 0 10px 0; color: #8E24AA; font-size: 0.95rem; display: flex; align-items: center; gap: 5px; }
         .qtd-wrapper { margin-bottom: 15px; background: #f0f0f0; padding: 10px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; } .qtd-controls { display: flex; align-items: center; gap: 10px; } .btn-qtd { width: 35px; height: 35px; background: #B39DDB; color: white; border: none; border-radius: 50%; font-weight: bold; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; } .qtd-display { font-size: 1.2rem; font-weight: bold; width: 30px; text-align: center; } .total-price { font-weight: bold; color: #333; }
@@ -233,7 +229,6 @@
         <a href="javascript:void(0)" class="nav-item" onclick="focarCategoriasMobile()"><i class="fas fa-th-large"></i><span>Categorias</span></a>
     </nav>
 
-    <!-- MODAL PRINCIPAL -->
     <div id="modal-produto" class="modal-produto-overlay">
         <div class="modal-content">
             <i class="fas fa-times close-modal" onclick="fecharModal()"></i>
@@ -249,7 +244,6 @@
 
                 <div id="modal-preco-container" class="modal-price">R$ 0,00</div>
                 
-                <!-- NOVIDADE: ETIQUETA DE PRAZO VISÍVEL -->
                 <div style="font-size: 0.75rem; color: #E65100; background: #FFF3E0; padding: 6px 12px; border-radius: 8px; display: inline-block; margin-bottom: 15px; font-weight: bold;">
                     <i class="fas fa-calendar-alt"></i> Prazo de Produção: 7 a 15 dias úteis
                 </div>
@@ -257,8 +251,6 @@
                 <div id="modal-descricao" class="modal-desc"></div>
                 
                 <div style="border-top: 1px solid #eee; padding-top: 20px;">
-                    
-                    <!-- NOVIDADE: CAMPOS DE PERSONALIZAÇÃO -->
                     <div class="caixa-personalizacao">
                         <h4><i class="fas fa-magic"></i> Detalhes da Arte</h4>
                         <div class="input-group">
@@ -325,7 +317,7 @@
     <div id="modal-sucesso"><div class="sucesso-card"><i class="fas fa-check-circle" style="font-size: 3rem; color: #2E7D32; margin-bottom: 20px;"></i><h3>Pagamento Concluído!</h3><div class="pedido-id" id="sucesso-id">#1234</div><p style="margin-top:20px; font-size:0.9rem; color:#666">Recebemos seu Pix de entrada. Envie este código no WhatsApp para combinarmos os detalhes da arte.</p><button class="btn-comprar" onclick="fecharSucesso()" style="margin-top:20px"><i class="fab fa-whatsapp"></i> Falar com Gabriele</button></div></div>
     <div id="fullscreen-overlay" onclick="fecharImagemCheia()"><span class="close-fullscreen">&times;</span><img id="fullscreen-img" src=""></div>
 
-    <script src="script.js?v=27"></script>
+    <script src="script.js?v=28"></script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -371,27 +363,13 @@
             if(tema) { document.body.classList.add(tema.classe); window.tituloSazonalAtual = tema.titulo; } else window.tituloSazonalAtual = null;
         }
 
-        // NOVIDADE: VERIFICAR LINK DIRETO PELO HASH DA URL
-        function verificarLinkDireto() {
-            const hash = window.location.hash;
-            if(hash && hash.startsWith('#produto=')) {
-                const pId = hash.split('=')[1];
-                const p = todosProdutos.find(item => item.id === pId);
-                if(p && p.ativo) {
-                    abrirModal(p);
-                }
-            }
-        }
-
         async function aguardarImagensEFecharLoader() {
             const loader = document.getElementById('site-loader'); const imagens = document.querySelectorAll('img'); 
             let promessas = Array.from(imagens).map(img => { return new Promise(resolve => { if (img.complete) resolve(); else { img.onload = resolve; img.onerror = resolve; } }); });
             await Promise.all(promessas);
             if(loader && loader.style.display !== 'none') { loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 500); }
-            verificarLinkDireto(); // Checa se tem link de produto pra abrir direto!
         }
 
-        // NOVIDADE: FUNÇÃO PARA ATUALIZAR CONTADORES NO BOTÃO DE FILTRO
         function atualizarContadoresFiltros(produtos) {
             const contagens = {
                 todos: produtos.length,
@@ -424,10 +402,36 @@
                 const q = await getDocs(collection(db, "produtos"));
                 todosProdutos = []; q.forEach(doc => { let p = doc.data(); p.id = doc.id; todosProdutos.push(p); });
                 
-                atualizarContadoresFiltros(todosProdutos); // Chama o contador aqui!
-                
+                // ==========================================
+                // TRATAMENTO VIP: PRIORIDADE MÁXIMA PRO LINK
+                // ==========================================
+                const hash = window.location.hash;
+                if (hash && hash.startsWith('#produto=')) {
+                    const pId = hash.split('=')[1];
+                    const p = todosProdutos.find(item => item.id === pId);
+                    
+                    if (p && p.ativo) {
+                        abrirModal(p); // 1. Abre o produto na mesma hora
+                        
+                        // 2. Mata a tela branca imediatamente
+                        const loader = document.getElementById('site-loader');
+                        if (loader) { loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 300); }
+
+                        // 3. Dá 1 segundo de vantagem para a foto do modal carregar sozinha
+                        setTimeout(() => {
+                            atualizarContadoresFiltros(todosProdutos);
+                            aplicarFiltros(filtroInicial);
+                        }, 1000); 
+                        
+                        return; // Encerra a função aqui
+                    }
+                }
+
+                // FLUXO NORMAL
+                atualizarContadoresFiltros(todosProdutos);
                 aplicarFiltros(filtroInicial);
                 aguardarImagensEFecharLoader();
+                
             } catch(e) { 
                 console.error(e); document.getElementById('container-produtos').innerHTML = '<p style="text-align:center; grid-column:1/-1;">Erro ao carregar produtos. Verifique sua conexão.</p>';
                 const loader = document.getElementById('site-loader'); if(loader) { loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 500); }
@@ -463,10 +467,9 @@
         }
 
         function criarCardProduto(p) {
-            const timestamp = new Date().getTime();
             let listaImagens = (p.fotos && p.fotos.length > 0) ? p.fotos : (p.foto ? [p.foto] : []);
             let imagensHtml = ''; let estiloExtra = p.ativo ? '' : 'filter: grayscale(1); opacity: 0.6;';
-            if (listaImagens.length > 0) { listaImagens.forEach((imgUrl, i) => { imagensHtml += `<img src="${imgUrl.startsWith('http') ? `${imgUrl}?t=${timestamp}` : imgUrl}" class="carousel-img ${i===0?'active':''}" style="${estiloExtra}">`; }); } else imagensHtml = `<div class="carousel-img active" style="background:#E1BEE7;height:100%"></div>`;
+            if (listaImagens.length > 0) { listaImagens.forEach((imgUrl, i) => { imagensHtml += `<img src="${imgUrl}" class="carousel-img ${i===0?'active':''}" style="${estiloExtra}">`; }); } else imagensHtml = `<div class="carousel-img active" style="background:#E1BEE7;height:100%"></div>`;
             const minLabel = (p.minimo && p.minimo > 1) ? `<small style="display:block; color:#666; margin-top:5px">Mínimo: ${p.minimo} un</small>` : '';
             let btnHtml = p.ativo ? `<button class="btn-sm" style="width:100%;border:none;padding:8px;border-radius:5px;cursor:pointer;margin-top:5px;">Ver Detalhes</button>` : `<span style="color:red;font-size:0.8rem">Esgotado</span>`;
             
@@ -547,21 +550,17 @@
             document.getElementById('modal-preco-container').innerHTML = priceHtmlModal; document.getElementById('modal-descricao').innerText = p.descricao || "";
             document.getElementById('check-termos').checked = false; document.getElementById('box-termos').style.border = "1px solid #FFCC80"; 
             
-            // NOVIDADE: PUXAR DADOS DA MEMÓRIA
             document.getElementById('cliente-nome').value = localStorage.getItem('gabriele_nome') || '';
             document.getElementById('cliente-zap').value = localStorage.getItem('gabriele_zap') || '';
             document.getElementById('pedido-tema').value = '';
             document.getElementById('pedido-nome-arte').value = '';
             document.getElementById('pedido-idade').value = '';
             
-            // NOVIDADE: GERAR LINK NA URL
             window.history.pushState(null, null, `#produto=${p.id}`);
-            
-            // NOVIDADE: ESCONDER WHATSAPP FLUTUANTE
             document.getElementById('btn-flutuante-zap').style.display = 'none';
 
-            const imgC = document.getElementById('modal-imagens'); imgC.innerHTML = ''; const timestamp = new Date().getTime();
-            (p.fotos || [p.foto]).forEach(f => { if(f) { imgC.innerHTML += `<img src="${f.startsWith('http') ? `${f}?t=${timestamp}` : f}" class="modal-img" onclick="abrirImagemCheia(this.src)">`; } });
+            const imgC = document.getElementById('modal-imagens'); imgC.innerHTML = ''; 
+            (p.fotos || [p.foto]).forEach(f => { if(f) { imgC.innerHTML += `<img src="${f}" class="modal-img" onclick="abrirImagemCheia(this.src)">`; } });
             atualizarUI();
         }
 
@@ -579,7 +578,6 @@
             document.getElementById('modal-produto').style.display = 'none'; if(timerInterval) clearInterval(timerInterval); if(listenerPagamento) { listenerPagamento(); listenerPagamento = null; }
             if (pedidoPixPendenteId) { try { await updateDoc(doc(db, "pedidos", pedidoPixPendenteId), { status: 'Cancelado' }); } catch(e) { } pedidoPixPendenteId = null; }
             
-            // NOVIDADE: LIMPAR URL E VOLTAR WHATSAPP
             window.history.pushState(null, null, ' ');
             document.getElementById('btn-flutuante-zap').style.display = 'flex';
         }
@@ -612,7 +610,6 @@
             const nome = document.getElementById('cliente-nome').value; const zap = document.getElementById('cliente-zap').value;
             if(!nome || !zap) { mostrarAlerta("Por favor, preencha seu Nome e WhatsApp!"); return null; }
             
-            // NOVIDADE: SALVAR NA MEMÓRIA
             localStorage.setItem('gabriele_nome', nome);
             localStorage.setItem('gabriele_zap', zap);
 
@@ -667,7 +664,6 @@
         window.finalizarPedidoZap = async () => {
             if(!validarTermos()) return; const nome = document.getElementById('cliente-nome').value; const zap = document.getElementById('cliente-zap').value; if(!nome || !zap) { mostrarAlerta("Por favor, preencha seu Nome e WhatsApp!"); return; }
             
-            // NOVIDADE: SALVAR NA MEMÓRIA
             localStorage.setItem('gabriele_nome', nome);
             localStorage.setItem('gabriele_zap', zap);
 
@@ -681,9 +677,8 @@
 
         window.fecharSucesso = () => { const id = document.getElementById('sucesso-id').innerText; const msg = `Olá! Meu pedido *${id}* já foi pago e aprovado pelo site. Podemos combinar os detalhes da arte?`; window.open(`https://wa.me/559292770409?text=${encodeURIComponent(msg)}`, '_blank'); document.getElementById('modal-sucesso').style.display = 'none'; }
         
-        // NOVIDADE: O BOTÃO DE COMPARTILHAR AGORA GERA O LINK EXATO DO PRODUTO (URL COM HASH)
         window.compartilharProduto = async () => { 
-            const linkProduto = window.location.href; // Já vai estar com o #produto=ID
+            const linkProduto = window.location.href; 
             if (navigator.share) { try { await navigator.share({ title: `Olha que lindo: ${produtoAtual.nome}`, text: `Achei esse ${produtoAtual.nome} na Gabriele Personaliza!`, url: linkProduto }); } catch (err) {} } else { mostrarAlerta("Link do produto copiado com sucesso!"); navigator.clipboard.writeText(linkProduto); } 
         }
         
