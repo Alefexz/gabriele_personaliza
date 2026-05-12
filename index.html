@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loja | Gabriele Personaliza</title>
     
-    <link rel="icon" href="assets/img/icone-aba.png?v=4" type="image/png">
+    <link rel="icon" href="assets/img/icone-aba.png?v=5" type="image/png">
 
     <meta property="og:title" content="Gabriele Personaliza | Papelaria Criativa">
     <meta property="og:description" content="Transforme sua festa com mimos e personalizados feitos à mão. Confira nosso catálogo!">
@@ -27,7 +27,7 @@
       gtag('config', 'G-T24GYM57CT');
     </script>
 
-    <link rel="stylesheet" href="style.css?v=9">
+    <link rel="stylesheet" href="style.css?v=10">
     
     <style>
         body { background-color: #F4F6F8; transition: background 0.5s ease; margin: 0; }
@@ -57,6 +57,19 @@
         .filter-container::-webkit-scrollbar { display: none; }
         .filter-btn { border-radius: 20px !important; padding: 8px 18px !important; font-weight: 500 !important; flex: 0 0 auto; white-space: nowrap; }
 
+        /* =========================================
+           CSS DOS CONTADORES DE FILTROS (BADGES)
+           ========================================= */
+        .filter-count {
+            display: inline-flex; align-items: center; justify-content: center;
+            background: rgba(0, 0, 0, 0.12); color: inherit; font-size: 0.7rem;
+            font-weight: 700; min-width: 18px; height: 18px; padding: 0 5px;
+            border-radius: 20px; margin-left: 6px; line-height: 1;
+        }
+        .filter-btn.active .filter-count { background: rgba(255, 255, 255, 0.3); color: white; }
+        .filter-btn[onclick*="promocao"] .filter-count { background: rgba(233, 30, 99, 0.15); color: #E91E63; }
+        .filter-btn[onclick*="promocao"].active .filter-count { background: rgba(255, 255, 255, 0.3); color: white; }
+
         .product-card { border-radius: 16px !important; background: #ffffff !important; border: 1px solid #f0f0f0 !important; box-shadow: 0 4px 15px rgba(0,0,0,0.04) !important; transition: transform 0.3s ease, box-shadow 0.3s ease !important; overflow: hidden !important; }
         .product-card:hover { transform: translateY(-5px) !important; box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important; }
         .product-img-wrapper { border-radius: 16px 16px 0 0 !important; overflow: hidden !important; }
@@ -65,26 +78,20 @@
         .btn-sm:hover { background: #9575CD !important; }
 
         /* MODAL */
-        .modal-produto-overlay { 
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: flex-end; 
-        }
-        .modal-content { 
-            background: #ffffff !important; width: 100%; max-width: 500px; 
-            border-radius: 24px 24px 0 0 !important; padding: 25px; animation: slideUp 0.3s; 
-            position: relative; max-height: 85vh; overflow-y: auto; box-sizing: border-box;
-        }
-        @media(min-width: 768px) { 
-            .modal-produto-overlay { align-items: center; padding: 20px; box-sizing: border-box; } 
-            .modal-content { border-radius: 24px !important; max-height: 90vh; margin: auto; } 
-        }
+        .modal-produto-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: flex-end; }
+        .modal-content { background: #ffffff !important; width: 100%; max-width: 500px; border-radius: 24px 24px 0 0 !important; padding: 25px; animation: slideUp 0.3s; position: relative; max-height: 85vh; overflow-y: auto; box-sizing: border-box; }
+        @media(min-width: 768px) { .modal-produto-overlay { align-items: center; padding: 20px; box-sizing: border-box; } .modal-content { border-radius: 24px !important; max-height: 90vh; margin: auto; } }
         @keyframes slideUp { from {transform: translateY(100%)} to {transform: translateY(0)} }
         
         .modal-img-container { height: 300px; overflow: hidden; border-radius: 12px; margin-bottom: 15px; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; background-color: #f0f0f0; }
         .modal-img { width: 100%; height: 100%; object-fit: contain; flex-shrink: 0; scroll-snap-align: center; cursor: zoom-in; }
-        .modal-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #333; margin-bottom: 5px; } .modal-price { font-size: 1.3rem; color: #B39DDB; font-weight: bold; margin-bottom: 15px; } .modal-desc { font-size: 0.9rem; color: #666; line-height: 1.6; margin-bottom: 20px; background: #f9f9f9; padding: 10px; border-radius: 12px; }
-        .qtd-wrapper { margin-bottom: 20px; background: #f0f0f0; padding: 10px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; } .qtd-controls { display: flex; align-items: center; gap: 10px; } .btn-qtd { width: 35px; height: 35px; background: #B39DDB; color: white; border: none; border-radius: 50%; font-weight: bold; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; } .qtd-display { font-size: 1.2rem; font-weight: bold; width: 30px; text-align: center; } .total-price { font-weight: bold; color: #333; }
-        .input-group { margin-bottom: 15px; } .input-group label { display: block; font-size: 0.8rem; margin-bottom: 5px; color: #555; } .input-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; box-sizing: border-box; }
+        .modal-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #333; margin-bottom: 5px; } .modal-price { font-size: 1.3rem; color: #B39DDB; font-weight: bold; margin-bottom: 5px; } .modal-desc { font-size: 0.9rem; color: #666; line-height: 1.6; margin-bottom: 15px; background: #f9f9f9; padding: 10px; border-radius: 12px; }
+        
+        /* CAIXA DE PERSONALIZAÇÃO E INPUTS */
+        .caixa-personalizacao { background: #F3E5F5; border: 1px dashed #CE93D8; padding: 15px; border-radius: 12px; margin-bottom: 20px; }
+        .caixa-personalizacao h4 { margin: 0 0 10px 0; color: #8E24AA; font-size: 0.95rem; display: flex; align-items: center; gap: 5px; }
+        .qtd-wrapper { margin-bottom: 15px; background: #f0f0f0; padding: 10px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; } .qtd-controls { display: flex; align-items: center; gap: 10px; } .btn-qtd { width: 35px; height: 35px; background: #B39DDB; color: white; border: none; border-radius: 50%; font-weight: bold; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; } .qtd-display { font-size: 1.2rem; font-weight: bold; width: 30px; text-align: center; } .total-price { font-weight: bold; color: #333; }
+        .input-group { margin-bottom: 10px; } .input-group label { display: block; font-size: 0.75rem; margin-bottom: 3px; color: #555; font-weight: bold; } .input-group input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9rem; box-sizing: border-box; }
         .termos-box { background: #FFF3E0; border: 1px solid #FFCC80; padding: 12px; border-radius: 12px; margin: 15px 0; display: flex; gap: 10px; align-items: flex-start; transition: 0.3s; } .termos-box input { margin-top: 5px; transform: scale(1.2); cursor: pointer; } .termos-text { font-size: 0.8rem; color: #E65100; line-height: 1.4; } .termos-text strong { font-weight: bold; text-decoration: underline; }
         .btn-comprar { background: #25D366; color: white; width: 100%; padding: 15px; border: none; border-radius: 50px; font-size: 1rem; font-weight: bold; cursor: pointer; display: flex; justify-content: center; gap: 10px; align-items: center; margin-top: 10px; }
         .btn-cartao { background: #009EE3; color: white; width: 100%; padding: 15px; border: none; border-radius: 50px; font-size: 1rem; font-weight: bold; cursor: pointer; display: flex; justify-content: center; gap: 10px; align-items: center; text-decoration: none; margin-bottom: 10px; }
@@ -98,14 +105,8 @@
         .mobile-bottom-nav { display: none; }
         @media (max-width: 768px) {
             body { padding-bottom: 70px; } 
-            .floating-whatsapp { bottom: 85px !important; } 
-            
-            .mobile-bottom-nav {
-                display: flex; justify-content: space-around; align-items: center;
-                position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff;
-                box-shadow: 0 -4px 15px rgba(0,0,0,0.05); z-index: 1000; padding: 12px 0;
-                padding-bottom: env(safe-area-inset-bottom, 12px); 
-            }
+            .floating-whatsapp { bottom: 85px !important; transition: opacity 0.3s; } 
+            .mobile-bottom-nav { display: flex; justify-content: space-around; align-items: center; position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); z-index: 1000; padding: 12px 0; padding-bottom: env(safe-area-inset-bottom, 12px); }
             .nav-item { display: flex; flex-direction: column; align-items: center; color: #888; text-decoration: none; font-size: 0.75rem; gap: 5px; transition: 0.3s; width: 33%; }
             .nav-item i { font-size: 1.3rem; }
             .nav-item.active, .nav-item:hover { color: #B39DDB; font-weight: 600; }
@@ -222,7 +223,7 @@
         </div>
     </footer>
 
-    <a href="https://wa.me/559292770409" class="floating-whatsapp" target="_blank">
+    <a href="https://wa.me/559292770409" class="floating-whatsapp" id="btn-flutuante-zap" target="_blank">
         <i class="fab fa-whatsapp"></i>
     </a>
 
@@ -232,20 +233,58 @@
         <a href="javascript:void(0)" class="nav-item" onclick="focarCategoriasMobile()"><i class="fas fa-th-large"></i><span>Categorias</span></a>
     </nav>
 
+    <!-- MODAL PRINCIPAL -->
     <div id="modal-produto" class="modal-produto-overlay">
         <div class="modal-content">
             <i class="fas fa-times close-modal" onclick="fecharModal()"></i>
             <div id="modal-etapa-1">
                 <div id="modal-imagens" class="modal-img-container"></div>
-                <div style="display:flex; justify-content:space-between; align-items:start;"><h3 id="modal-titulo" class="modal-title">Nome</h3><button onclick="compartilharProduto()" style="background:none; border:none; color:#B39DDB; font-size:1.5rem; cursor:pointer; padding:0 10px;"><i class="fas fa-share-alt"></i></button></div>
+                
+                <div style="display:flex; justify-content:space-between; align-items:start;">
+                    <h3 id="modal-titulo" class="modal-title">Nome</h3>
+                    <button onclick="compartilharProduto()" style="background:none; border:none; color:#B39DDB; font-size:1.5rem; cursor:pointer; padding:0 10px;" title="Compartilhar Produto">
+                        <i class="fas fa-share-alt"></i>
+                    </button>
+                </div>
+
                 <div id="modal-preco-container" class="modal-price">R$ 0,00</div>
+                
+                <!-- NOVIDADE: ETIQUETA DE PRAZO VISÍVEL -->
+                <div style="font-size: 0.75rem; color: #E65100; background: #FFF3E0; padding: 6px 12px; border-radius: 8px; display: inline-block; margin-bottom: 15px; font-weight: bold;">
+                    <i class="fas fa-calendar-alt"></i> Prazo de Produção: 7 a 15 dias úteis
+                </div>
+
                 <div id="modal-descricao" class="modal-desc"></div>
+                
                 <div style="border-top: 1px solid #eee; padding-top: 20px;">
+                    
+                    <!-- NOVIDADE: CAMPOS DE PERSONALIZAÇÃO -->
+                    <div class="caixa-personalizacao">
+                        <h4><i class="fas fa-magic"></i> Detalhes da Arte</h4>
+                        <div class="input-group">
+                            <label>Tema da Festa / Cores desejadas</label>
+                            <input type="text" id="pedido-tema" placeholder="Ex: Safári, Rosa e Dourado...">
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <div class="input-group" style="flex: 2;">
+                                <label>Nome na arte</label>
+                                <input type="text" id="pedido-nome-arte" placeholder="Ex: Enzo">
+                            </div>
+                            <div class="input-group" style="flex: 1;">
+                                <label>Idade</label>
+                                <input type="text" id="pedido-idade" placeholder="Ex: 5 anos">
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="qtd-wrapper"><div class="qtd-controls"><button class="btn-qtd" onclick="mudarQtd(-1)">-</button><span id="qtd-numero" class="qtd-display">1</span><button class="btn-qtd" onclick="mudarQtd(1)">+</button></div><div id="total-final" class="total-price">Total: R$ 0,00</div></div>
-                    <div class="input-group"><label>Seu Nome *</label><input type="text" id="cliente-nome" placeholder="Seu nome"></div>
-                    <div class="input-group"><label>WhatsApp *</label><input type="tel" id="cliente-zap" placeholder="Seu número com DDD"></div>
+                    
+                    <div class="input-group"><label>Seu Nome *</label><input type="text" id="cliente-nome" placeholder="Como podemos te chamar?"></div>
+                    <div class="input-group"><label>Seu WhatsApp *</label><input type="tel" id="cliente-zap" placeholder="Seu número com DDD"></div>
+                    
                     <div class="termos-box" id="box-termos"><input type="checkbox" id="check-termos"><div class="termos-text">Estou ciente do pagamento de <strong>50% de entrada</strong> para iniciar a produção.<br><span style="font-size:0.75rem;">* Valor não reembolsável em caso de desistência.</span></div></div>
                     <div id="aviso-valor-pix" style="text-align:center; margin-bottom: 10px; font-weight: bold; color: #E91E63; background: #FCE4EC; padding: 10px; border-radius: 12px; border: 1px dashed #F8BBD0; display: none;">O Pix será gerado no valor de <span>R$ 0,00</span> (50% de entrada)</div>
+                    
                     <button id="btn-gerar-pix" class="btn-cartao" style="background:#009EE3" onclick="iniciarPagamentoPix()"><i class="fas fa-qrcode"></i> Pagar Agora via Pix</button>
                     <p style="text-align:center; font-size:0.8rem; color:#888; margin:5px 0;">- OU -</p>
                     <button class="btn-comprar" onclick="finalizarPedidoZap()"><i class="fab fa-whatsapp"></i> Pedir pelo WhatsApp</button>
@@ -286,7 +325,7 @@
     <div id="modal-sucesso"><div class="sucesso-card"><i class="fas fa-check-circle" style="font-size: 3rem; color: #2E7D32; margin-bottom: 20px;"></i><h3>Pagamento Concluído!</h3><div class="pedido-id" id="sucesso-id">#1234</div><p style="margin-top:20px; font-size:0.9rem; color:#666">Recebemos seu Pix de entrada. Envie este código no WhatsApp para combinarmos os detalhes da arte.</p><button class="btn-comprar" onclick="fecharSucesso()" style="margin-top:20px"><i class="fab fa-whatsapp"></i> Falar com Gabriele</button></div></div>
     <div id="fullscreen-overlay" onclick="fecharImagemCheia()"><span class="close-fullscreen">&times;</span><img id="fullscreen-img" src=""></div>
 
-    <script src="script.js?v=26"></script>
+    <script src="script.js?v=27"></script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -332,11 +371,51 @@
             if(tema) { document.body.classList.add(tema.classe); window.tituloSazonalAtual = tema.titulo; } else window.tituloSazonalAtual = null;
         }
 
+        // NOVIDADE: VERIFICAR LINK DIRETO PELO HASH DA URL
+        function verificarLinkDireto() {
+            const hash = window.location.hash;
+            if(hash && hash.startsWith('#produto=')) {
+                const pId = hash.split('=')[1];
+                const p = todosProdutos.find(item => item.id === pId);
+                if(p && p.ativo) {
+                    abrirModal(p);
+                }
+            }
+        }
+
         async function aguardarImagensEFecharLoader() {
             const loader = document.getElementById('site-loader'); const imagens = document.querySelectorAll('img'); 
             let promessas = Array.from(imagens).map(img => { return new Promise(resolve => { if (img.complete) resolve(); else { img.onload = resolve; img.onerror = resolve; } }); });
             await Promise.all(promessas);
             if(loader && loader.style.display !== 'none') { loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 500); }
+            verificarLinkDireto(); // Checa se tem link de produto pra abrir direto!
+        }
+
+        // NOVIDADE: FUNÇÃO PARA ATUALIZAR CONTADORES NO BOTÃO DE FILTRO
+        function atualizarContadoresFiltros(produtos) {
+            const contagens = {
+                todos: produtos.length,
+                promocao: produtos.filter(p => p.em_promocao && p.ativo).length,
+                kitfestas: produtos.filter(p => p.categoria === 'kitfestas' || p.categoria === 'festa').length,
+                comemorativas: produtos.filter(p => p.categoria === 'comemorativas').length,
+                cadernos: produtos.filter(p => p.categoria === 'cadernos').length,
+                mimos: produtos.filter(p => p.categoria === 'mimos').length,
+                lembrancas: produtos.filter(p => p.categoria === 'lembrancas' || p.categoria === 'simples' || p.categoria === 'semiluxo').length,
+            };
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                const filtro = btn.getAttribute('data-filter');
+                if (filtro && contagens[filtro] !== undefined) {
+                    const count = contagens[filtro];
+                    const badgeExistente = btn.querySelector('.filter-count');
+                    if (badgeExistente) badgeExistente.remove();
+                    if (count > 0) {
+                        const badge = document.createElement('span');
+                        badge.className = 'filter-count';
+                        badge.textContent = count;
+                        btn.appendChild(badge);
+                    }
+                }
+            });
         }
 
         window.carregarLoja = async (filtroInicial = 'todos') => {
@@ -344,6 +423,9 @@
             try {
                 const q = await getDocs(collection(db, "produtos"));
                 todosProdutos = []; q.forEach(doc => { let p = doc.data(); p.id = doc.id; todosProdutos.push(p); });
+                
+                atualizarContadoresFiltros(todosProdutos); // Chama o contador aqui!
+                
                 aplicarFiltros(filtroInicial);
                 aguardarImagensEFecharLoader();
             } catch(e) { 
@@ -410,9 +492,6 @@
             const containerProdutos = document.getElementById('container-produtos'); const containerSazonal = document.getElementById('destaque-sazonal-container'); const gridSazonal = document.getElementById('grid-sazonal');
             containerProdutos.innerHTML = ''; gridSazonal.innerHTML = ''; containerSazonal.style.display = 'none';
 
-            // ==========================================
-            // NOVO: CARD "FAÇA SOB MEDIDA" 
-            // ==========================================
             const cardSobMedida = document.createElement('div'); 
             cardSobMedida.className = 'product-card';
             cardSobMedida.style = 'border: 2px dashed #B39DDB; background: #FFF0F5; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; cursor: pointer; box-sizing: border-box;';
@@ -427,7 +506,6 @@
                 window.open(`https://wa.me/559292770409?text=${encodeURIComponent(msg)}`, '_blank'); 
             };
             containerProdutos.appendChild(cardSobMedida);
-            // ==========================================
 
             if(aba === 'todos' && window.tituloSazonalAtual) {
                 let eventoId = null;
@@ -468,6 +546,20 @@
             let priceHtmlModal = formatarMoeda(p.preco); if (p.em_promocao && p.preco_promocional > 0) priceHtmlModal = `<span class="original-price">${formatarMoeda(p.preco)}</span> <span class="promo-price">${formatarMoeda(p.preco_promocional)}</span>`;
             document.getElementById('modal-preco-container').innerHTML = priceHtmlModal; document.getElementById('modal-descricao').innerText = p.descricao || "";
             document.getElementById('check-termos').checked = false; document.getElementById('box-termos').style.border = "1px solid #FFCC80"; 
+            
+            // NOVIDADE: PUXAR DADOS DA MEMÓRIA
+            document.getElementById('cliente-nome').value = localStorage.getItem('gabriele_nome') || '';
+            document.getElementById('cliente-zap').value = localStorage.getItem('gabriele_zap') || '';
+            document.getElementById('pedido-tema').value = '';
+            document.getElementById('pedido-nome-arte').value = '';
+            document.getElementById('pedido-idade').value = '';
+            
+            // NOVIDADE: GERAR LINK NA URL
+            window.history.pushState(null, null, `#produto=${p.id}`);
+            
+            // NOVIDADE: ESCONDER WHATSAPP FLUTUANTE
+            document.getElementById('btn-flutuante-zap').style.display = 'none';
+
             const imgC = document.getElementById('modal-imagens'); imgC.innerHTML = ''; const timestamp = new Date().getTime();
             (p.fotos || [p.foto]).forEach(f => { if(f) { imgC.innerHTML += `<img src="${f.startsWith('http') ? `${f}?t=${timestamp}` : f}" class="modal-img" onclick="abrirImagemCheia(this.src)">`; } });
             atualizarUI();
@@ -486,6 +578,10 @@
         window.fecharModal = async () => { 
             document.getElementById('modal-produto').style.display = 'none'; if(timerInterval) clearInterval(timerInterval); if(listenerPagamento) { listenerPagamento(); listenerPagamento = null; }
             if (pedidoPixPendenteId) { try { await updateDoc(doc(db, "pedidos", pedidoPixPendenteId), { status: 'Cancelado' }); } catch(e) { } pedidoPixPendenteId = null; }
+            
+            // NOVIDADE: LIMPAR URL E VOLTAR WHATSAPP
+            window.history.pushState(null, null, ' ');
+            document.getElementById('btn-flutuante-zap').style.display = 'flex';
         }
 
         window.voltarEtapa1 = async () => { 
@@ -498,15 +594,36 @@
             if(!check.checked) { mostrarAlerta("Para continuar, você precisa confirmar que concorda com a regra de 50% de entrada."); const box = document.getElementById('box-termos'); box.style.border = "2px solid #F44336"; box.style.animation = "shake 0.5s"; setTimeout(() => box.style.animation = "none", 500); return false; } return true;
         }
 
+        function compilarDetalhesPersonalizacao() {
+            const tema = document.getElementById('pedido-tema').value.trim();
+            const nomeArte = document.getElementById('pedido-nome-arte').value.trim();
+            const idade = document.getElementById('pedido-idade').value.trim();
+            let detalhes = "";
+            if(tema || nomeArte || idade) {
+                detalhes += "\n📋 *Detalhes da Arte:*";
+                if(tema) detalhes += `\n- Tema/Cores: ${tema}`;
+                if(nomeArte) detalhes += `\n- Nome na arte: ${nomeArte}`;
+                if(idade) detalhes += `\n- Idade: ${idade}`;
+            }
+            return detalhes;
+        }
+
         async function registrarPedidoDb(origem) {
             const nome = document.getElementById('cliente-nome').value; const zap = document.getElementById('cliente-zap').value;
             if(!nome || !zap) { mostrarAlerta("Por favor, preencha seu Nome e WhatsApp!"); return null; }
+            
+            // NOVIDADE: SALVAR NA MEMÓRIA
+            localStorage.setItem('gabriele_nome', nome);
+            localStorage.setItem('gabriele_zap', zap);
+
+            const detalhesPers = compilarDetalhesPersonalizacao();
             pedidoAtualIdVisual = '#' + Math.random().toString(36).substr(2, 4).toUpperCase();
+            
             try {
                 let precoEfetivo = (produtoAtual.em_promocao && produtoAtual.preco_promocional > 0) ? produtoAtual.preco_promocional : produtoAtual.preco;
                 let total = precoEfetivo * qtdAtual; let valorCobrar = total / 2;
-                const docRef = await addDoc(collection(db, "pedidos"), { id_visual: pedidoAtualIdVisual, cliente: nome, whatsapp: zap, produto: `${produtoAtual.nome} (x${qtdAtual})`, total: total, data: new Date().toISOString(), status: 'Aguardando Pagamento', origem });
-                return { id_visual: pedidoAtualIdVisual, valor: valorCobrar, docId: docRef.id };
+                const docRef = await addDoc(collection(db, "pedidos"), { id_visual: pedidoAtualIdVisual, cliente: nome, whatsapp: zap, produto: `${produtoAtual.nome} (x${qtdAtual}) ${detalhesPers}`, total: total, data: new Date().toISOString(), status: 'Aguardando Pagamento', origem });
+                return { id_visual: pedidoAtualIdVisual, valor: valorCobrar, docId: docRef.id, detalhesPers: detalhesPers };
             } catch(e) { mostrarAlerta("Erro: " + e.message); return null; }
         }
 
@@ -541,18 +658,35 @@
         window.confirmarPixManual = async () => {
             if (pedidoPixPendenteId) { try { await updateDoc(doc(db, "pedidos", pedidoPixPendenteId), { status: 'Pendente' }); } catch(e) { } pedidoPixPendenteId = null;  }
             document.getElementById('modal-produto').style.display = 'none'; const nome = document.getElementById('cliente-nome').value; let total = (produtoAtual.em_promocao && produtoAtual.preco_promocional > 0) ? produtoAtual.preco_promocional : produtoAtual.preco; total = total * qtdAtual;
-            const msg = `✅ *Pagamento Realizado!*\n\nOlá, sou *${nome}*.\nFiz o Pix de 50% de entrada referente ao Pedido *${pedidoAtualIdVisual}*.\nProduto: ${qtdAtual}x *${produtoAtual.nome}*.\nTotal do pedido: ${formatarMoeda(total)}.\n\nSegue o comprovante abaixo:`; window.open(`https://wa.me/559292770409?text=${encodeURIComponent(msg)}`, '_blank');
+            
+            const detalhesPers = compilarDetalhesPersonalizacao();
+            
+            const msg = `✅ *Pagamento Realizado!*\n\nOlá, sou *${nome}*.\nFiz o Pix de 50% de entrada referente ao Pedido *${pedidoAtualIdVisual}*.\nProduto: ${qtdAtual}x *${produtoAtual.nome}*${detalhesPers}\nTotal do pedido: ${formatarMoeda(total)}.\n\nSegue o comprovante abaixo:`; window.open(`https://wa.me/559292770409?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
         window.finalizarPedidoZap = async () => {
             if(!validarTermos()) return; const nome = document.getElementById('cliente-nome').value; const zap = document.getElementById('cliente-zap').value; if(!nome || !zap) { mostrarAlerta("Por favor, preencha seu Nome e WhatsApp!"); return; }
+            
+            // NOVIDADE: SALVAR NA MEMÓRIA
+            localStorage.setItem('gabriele_nome', nome);
+            localStorage.setItem('gabriele_zap', zap);
+
+            const detalhesPers = compilarDetalhesPersonalizacao();
+
             const id = '#' + Math.random().toString(36).substr(2, 4).toUpperCase(); let precoEfetivo = (produtoAtual.em_promocao && produtoAtual.preco_promocional > 0) ? produtoAtual.preco_promocional : produtoAtual.preco; let total = precoEfetivo * qtdAtual;
-            await addDoc(collection(db, "pedidos"), { id_visual: id, cliente: nome, whatsapp: zap, produto: `${produtoAtual.nome} (x${qtdAtual})`, total: total, data: new Date().toISOString(), status: 'Pendente', origem: 'WhatsApp' });
-            const msg = `Olá! Sou *${nome}*.\nPedido *${id}*: ${qtdAtual}x *${produtoAtual.nome}*.\nTotal: ${formatarMoeda(total)}.\n\n✅ *Li e concordo com os 50% de entrada.*\nAguardo chave Pix para pagamento.`; window.open(`https://wa.me/559292770409?text=${encodeURIComponent(msg)}`, '_blank'); fecharModal();
+            await addDoc(collection(db, "pedidos"), { id_visual: id, cliente: nome, whatsapp: zap, produto: `${produtoAtual.nome} (x${qtdAtual}) ${detalhesPers}`, total: total, data: new Date().toISOString(), status: 'Pendente', origem: 'WhatsApp' });
+            
+            const msg = `Olá! Sou *${nome}*.\nPedido *${id}*: ${qtdAtual}x *${produtoAtual.nome}*${detalhesPers}\nTotal: ${formatarMoeda(total)}.\n\n✅ *Li e concordo com os 50% de entrada.*\nAguardo chave Pix para pagamento.`; window.open(`https://wa.me/559292770409?text=${encodeURIComponent(msg)}`, '_blank'); fecharModal();
         }
 
         window.fecharSucesso = () => { const id = document.getElementById('sucesso-id').innerText; const msg = `Olá! Meu pedido *${id}* já foi pago e aprovado pelo site. Podemos combinar os detalhes da arte?`; window.open(`https://wa.me/559292770409?text=${encodeURIComponent(msg)}`, '_blank'); document.getElementById('modal-sucesso').style.display = 'none'; }
-        window.compartilharProduto = async () => { if (navigator.share) { try { await navigator.share({ title: `Olha que lindo: ${produtoAtual.nome}`, text: `Achei esse ${produtoAtual.nome} na Gabriele Personaliza!`, url: window.location.href }); } catch (err) {} } else { mostrarAlerta("Link copiado!"); navigator.clipboard.writeText(window.location.href); } }
+        
+        // NOVIDADE: O BOTÃO DE COMPARTILHAR AGORA GERA O LINK EXATO DO PRODUTO (URL COM HASH)
+        window.compartilharProduto = async () => { 
+            const linkProduto = window.location.href; // Já vai estar com o #produto=ID
+            if (navigator.share) { try { await navigator.share({ title: `Olha que lindo: ${produtoAtual.nome}`, text: `Achei esse ${produtoAtual.nome} na Gabriele Personaliza!`, url: linkProduto }); } catch (err) {} } else { mostrarAlerta("Link do produto copiado com sucesso!"); navigator.clipboard.writeText(linkProduto); } 
+        }
+        
         document.getElementById('btn-secreto').addEventListener('click', () => { window.location.href = 'admin.html'; });
         document.getElementById('ano-atual').innerText = new Date().getFullYear();
 
