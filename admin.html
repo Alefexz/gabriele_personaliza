@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
     <title>Admin Gabriele | Painel</title>
     
-    <link rel="icon" href="assets/img/icone-aba.png?v=4" type="image/png">
+    <link rel="icon" href="assets/img/favicon-64.png?v=1" type="image/png">
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -32,6 +33,13 @@
         .search-admin-input { padding: 10px 15px; border: 1px solid #ddd; border-radius: 8px; width: 100%; max-width: 250px; font-family: inherit; outline: none; transition: 0.2s; }
         .search-admin-input:focus { border-color: #B39DDB; box-shadow: 0 0 5px rgba(179,157,219,0.3); }
         .header-vendas { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
+        .admin-filters { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .admin-select { padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; background: white; min-width: 150px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+        .stat-card { background: white; padding: 16px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-left: 4px solid #B39DDB; }
+        .stat-label { color: #777; font-size: 0.75rem; text-transform: uppercase; font-weight: 600; letter-spacing: 0.4px; }
+        .stat-value { color: #333; font-size: 1.4rem; font-weight: 700; margin-top: 4px; }
+        .security-note { background: #E8F5E9; color: #1B5E20; border: 1px solid #C8E6C9; border-radius: 10px; padding: 12px 14px; font-size: 0.82rem; margin-bottom: 18px; }
         
         .table-box { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         table { width: 100%; border-collapse: collapse; }
@@ -46,7 +54,7 @@
         .status-cancelado { background: #FFEBEE; color: #D32F2F; } 
         
         .action-icon { cursor: pointer; margin-left: 10px; font-size: 1.2rem; transition: 0.2s; padding: 5px; }
-        .icon-edit { color: #2196F3; } .icon-trash { color: #ccc; } .icon-trash:hover { color: #F44336; } .icon-toggle { color: #4CAF50; }
+        .icon-edit { color: #2196F3; } .icon-trash { color: #ccc; } .icon-trash:hover { color: #F44336; } .icon-toggle { color: #4CAF50; } .icon-archive { color: #9E9E9E; }
         .mini-foto { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; background: #eee; border: 1px solid #ddd; }
 
         #form-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; }
@@ -82,10 +90,10 @@
         .btn-cancel:hover { background: #e0e0e0; }
         .btn-action { flex: 1; padding: 12px; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; transition: 0.2s; }
 
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
             body { flex-direction: column; height: auto; overflow: auto; }
             #painel-app { flex-direction: column; height: auto; }
-            .sidebar { width: 100%; flex-direction: row; height: auto; padding: 15px; overflow-x: auto; position: sticky; top:0; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+            .sidebar { width: 100%; box-sizing: border-box; flex-direction: row; height: auto; padding: 15px; overflow-x: auto; position: sticky; top:0; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
             .sidebar h2 { display:none; }
             .menu-item { margin-bottom: 0; margin-right: 10px; white-space: nowrap; font-size: 0.9rem; padding: 10px 15px; }
             .main-content { padding: 15px; height: auto; }
@@ -102,6 +110,8 @@
             .btn-new { float: none; width: 100%; margin-top: 10px; }
             .header-vendas { flex-direction: column; align-items: flex-start; }
             .search-admin-input { max-width: 100%; }
+            .admin-filters, .admin-select { width: 100%; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
         }
     </style>
 </head>
@@ -131,20 +141,22 @@
             <input type="password" id="senha-admin" class="login-input" placeholder="Senha">
             <button class="btn-entrar" onclick="login()">Acessar Painel</button>
             <p id="login-erro" class="error-msg">Dados incorretos!</p>
+            <p style="color:#888; font-size:0.75rem; margin-top:15px;">Painel privado. O acesso depende do Firebase Auth e das regras do banco.</p>
         </div>
     </div>
 
     <div id="painel-app">
         <div class="sidebar">
             <h2>Admin Gabriele</h2>
-            <div class="menu-item active" onclick="mudarAba('produtos')"><i class="fas fa-box"></i> Produtos</div>
-            <div class="menu-item" onclick="mudarAba('vendas')"><i class="fas fa-shopping-bag"></i> Vendas <span id="badge-vendas" style="background:#F44336; color:white; border-radius:50%; padding:2px 6px; font-size:0.7rem; display:none; margin-left:auto;">Novo</span></div>
-            <div class="menu-item" onclick="mudarAba('pix')"><i class="fas fa-bolt" style="color: #FFC107;"></i> Pix Expresso</div>
+            <div class="menu-item active" data-aba="produtos" onclick="mudarAba('produtos', this)"><i class="fas fa-box"></i> Produtos</div>
+            <div class="menu-item" data-aba="vendas" onclick="mudarAba('vendas', this)"><i class="fas fa-shopping-bag"></i> Vendas <span id="badge-vendas" style="background:#F44336; color:white; border-radius:50%; padding:2px 6px; font-size:0.7rem; display:none; margin-left:auto;">Novo</span></div>
+            <div class="menu-item" data-aba="pix" onclick="mudarAba('pix', this)"><i class="fas fa-bolt" style="color: #FFC107;"></i> Pix Expresso</div>
             <div class="menu-item" id="btn-sair" style="margin-top: auto;"><i class="fas fa-sign-out-alt"></i> Sair</div>
         </div>
 
         <div class="main-content">
             <div id="view-produtos" class="view-section active">
+                <div class="security-note"><i class="fas fa-shield-alt"></i> O atalho secreto foi removido da loja. Este painel fica fora do fluxo público e deve depender das regras do Firebase para bloquear leitura e escrita de quem não estiver autenticado.</div>
                 <div style="margin-bottom: 20px;">
                     <h2 style="margin: 0 0 10px 0;">Estoque 📦</h2>
                     <button class="btn-new" onclick="abrirFormulario()">+ Novo Produto</button>
@@ -160,7 +172,22 @@
             <div id="view-vendas" class="view-section">
                 <div class="header-vendas">
                     <h2 style="margin: 0;">Pedidos Realizados 🛒</h2>
-                    <input type="text" id="busca-id" class="search-admin-input" placeholder="🔍 Buscar por código (#XXXX)" onkeyup="filtrarVendas()">
+                    <div class="admin-filters">
+                        <input type="text" id="busca-id" class="search-admin-input" placeholder="🔍 Código, cliente ou produto" oninput="filtrarVendas()">
+                        <select id="filtro-status" class="admin-select" onchange="filtrarVendas()">
+                            <option value="todos">Todos os status</option>
+                            <option value="Pendente">Pendente</option>
+                            <option value="Concluído">Concluído</option>
+                            <option value="Cancelado">Cancelado</option>
+                        </select>
+                        <button class="btn-new" onclick="exportarPedidosCsv()" style="float:none; border-radius:8px;"><i class="fas fa-file-csv"></i> Exportar CSV</button>
+                    </div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-label">Pedidos Visíveis</div><div class="stat-value" id="stat-pedidos">0</div></div>
+                    <div class="stat-card"><div class="stat-label">Pendentes</div><div class="stat-value" id="stat-pendentes">0</div></div>
+                    <div class="stat-card"><div class="stat-label">Concluídos</div><div class="stat-value" id="stat-concluidos">0</div></div>
+                    <div class="stat-card"><div class="stat-label">Total Concluído</div><div class="stat-value" id="stat-total">R$ 0,00</div></div>
                 </div>
                 <div class="table-box">
                     <table>
@@ -266,29 +293,46 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, doc, updateDoc, addDoc, deleteDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc, addDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
         const firebaseConfig = { apiKey: "AIzaSyBrRLiEFF8dfWHVxhK3popdYgEDQLiKzCM", authDomain: "gabriele-personaliza.firebaseapp.com", projectId: "gabriele-personaliza", storageBucket: "gabriele-personaliza.firebasestorage.app", messagingSenderId: "403724311605", appId: "1:403724311605:web:850e1bb14459a3ec60e57c", measurementId: "G-T24GYM57CT" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-
-        const IMGBB_API_KEY = "466fe160d29a71d0e6a2d6194d53173a"; 
+        const storage = getStorage(app);
         
         let listaFotosEdicao = []; 
         let produtoEmEdicaoId = null;
         let produtosCache = {};
+        let pedidosCache = [];
         let unsubscribeVendas = null;
 
         const VERCEL_API_URL = "https://backand-gabrielepersonaliza.vercel.app/api/pix";
 
+        const limparTexto = (valor = '') => String(valor ?? '');
+        const criarEl = (tag, attrs = {}, text = '') => {
+            const el = document.createElement(tag);
+            Object.entries(attrs).forEach(([key, value]) => {
+                if (key === 'className') el.className = value;
+                else if (key === 'dataset') Object.assign(el.dataset, value);
+                else if (key === 'style') el.setAttribute('style', value);
+                else if (key.startsWith('on') && typeof value === 'function') el.addEventListener(key.slice(2).toLowerCase(), value);
+                else el.setAttribute(key, value);
+            });
+            if (text !== '') el.textContent = text;
+            return el;
+        };
+
         window.filtrarVendas = () => {
-            const termo = document.getElementById('busca-id').value.toLowerCase();
-            const linhas = document.querySelectorAll('#lista-vendas tr');
+            const termo = document.getElementById('busca-id').value.toLowerCase().trim();
+            const status = document.getElementById('filtro-status').value;
+            const linhas = document.querySelectorAll('#lista-vendas tr[data-search]');
             linhas.forEach(linha => {
-                const colunaId = linha.querySelector('td[data-label="ID / Detalhes"] strong');
-                if (colunaId) { const textoId = colunaId.innerText.toLowerCase(); linha.style.display = textoId.includes(termo) ? '' : 'none'; }
+                const bateTexto = !termo || linha.dataset.search.includes(termo);
+                const bateStatus = status === 'todos' || linha.dataset.status === status;
+                linha.style.display = bateTexto && bateStatus ? '' : 'none';
             });
         }
 
@@ -310,9 +354,15 @@
         window.fecharConfirm = () => document.getElementById('confirm-modal').style.display = 'none';
 
         window.showToast = (message, type = 'success') => {
-            const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast toast-${type}`;
-            let icon = type === 'success' ? 'check-circle' : 'exclamation-circle'; if(type === 'info') icon = 'info-circle';
-            toast.innerHTML = `<i class="fas fa-${icon}"></i> <span>${message}</span>`; container.appendChild(toast); setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 4000);
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            let icon = type === 'success' ? 'check-circle' : 'exclamation-circle';
+            if(type === 'info') icon = 'info-circle';
+            toast.appendChild(criarEl('i', { className: `fas fa-${icon}` }));
+            toast.appendChild(criarEl('span', {}, message));
+            container.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 4000);
         }
 
         window.showLoading = (msg) => { document.getElementById('loading-msg').innerText = msg; document.getElementById('loading-overlay').style.display = 'flex'; }
@@ -329,17 +379,19 @@
             try { await signInWithEmailAndPassword(auth, email, senha); showToast("Acesso Liberado!", "success"); } 
             catch (error) { erro.innerText = "Senha incorreta."; erro.style.display = 'block'; btn.innerText = "Acessar Painel"; showToast("Senha Incorreta", "error"); }
         }
+        document.getElementById('senha-admin').addEventListener('keydown', (e) => { if(e.key === 'Enter') login(); });
         
         document.getElementById('btn-sair').addEventListener('click', () => { showConfirm("Deseja realmente sair do painel?", () => { signOut(auth); window.location.href = 'index.html'; }, 'info'); });
 
         const formatarMoeda = (v) => parseFloat(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         window.togglePromoField = () => { document.getElementById('promo-field-container').style.display = document.getElementById('cb-promocao').checked ? 'block' : 'none'; }
         
-        window.mudarAba = (aba) => { 
+        window.mudarAba = (aba, alvo = null) => { 
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active')); 
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active')); 
             document.getElementById(`view-${aba}`).classList.add('active'); 
-            event.currentTarget.classList.add('active'); 
+            const itemMenu = alvo || document.querySelector(`.menu-item[data-aba="${aba}"]`);
+            if(itemMenu) itemMenu.classList.add('active'); 
             if(aba === 'vendas') { document.getElementById('badge-vendas').style.display = 'none'; document.getElementById('busca-id').value = ''; filtrarVendas(); }
         }
 
@@ -399,6 +451,33 @@
             }
         }
 
+        window.exportarPedidosCsv = () => {
+            const linhas = [['ID visual','Cliente','WhatsApp','Produto','Total','Status','Origem','Data']];
+            pedidosCache
+                .filter(p => p.status !== 'Aguardando Pagamento')
+                .forEach(p => linhas.push([
+                    p.id_visual || '',
+                    p.cliente || '',
+                    p.whatsapp || '',
+                    p.produto || '',
+                    p.total || 0,
+                    p.status || '',
+                    p.origem || '',
+                    p.data || ''
+                ]));
+            const csv = linhas.map(l => l.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `pedidos-gabriele-${new Date().toISOString().slice(0,10)}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+            showToast("CSV exportado!", "success");
+        }
+
         document.getElementById('novo-categoria').addEventListener('change', (e) => { document.getElementById('div-evento').style.display = e.target.value === 'comemorativas' ? 'block' : 'none'; });
         const nomeEventos = { 'mulher':'Dia da Mulher', 'pascoa':'Páscoa', 'maes':'Dia das Mães', 'namorados':'Dia dos Namorados', 'pais':'Dia dos Pais', 'criancas':'Dia das Crianças', 'professores':'Dia dos Professores', 'natal':'Natal', 'ano_novo':'Ano Novo' };
 
@@ -406,26 +485,66 @@
             const tbody = document.getElementById('lista-produtos');
             try {
                 const q = await getDocs(collection(db, "produtos"));
-                let html = ''; produtosCache = {};
+                tbody.innerHTML = '';
+                produtosCache = {};
                 q.forEach(docSnap => {
                     const p = docSnap.data(); produtosCache[docSnap.id] = p;
                     let thumb = (p.fotos && p.fotos.length > 0) ? p.fotos[0] : (p.foto || '');
-                    const timestamp = new Date().getTime(); let finalThumb = thumb.startsWith('http') ? `${thumb}?t=${timestamp}` : thumb;
-                    const img = thumb ? `<img src="${finalThumb}" class="mini-foto">` : '<div class="mini-foto"></div>';
                     const color = p.ativo ? '#4CAF50' : '#F44336';
                     const minDisplay = p.minimo > 1 ? `${p.minimo} un` : '1 un';
-                    let priceDisplay = formatarMoeda(p.preco);
-                    if(p.em_promocao && p.preco_promocional > 0) priceDisplay = `<div><span style="text-decoration:line-through;color:#999;font-size:0.8em">${formatarMoeda(p.preco)}</span> <strong style="color:#E91E63">${formatarMoeda(p.preco_promocional)}</strong></div>`;
                     let nomeCatDisplay = p.categoria;
                     if(p.categoria === 'comemorativas' && p.evento) nomeCatDisplay = `Especial: ${nomeEventos[p.evento]}`;
                     else if(p.categoria === 'comemorativas') nomeCatDisplay = 'Datas Comemorativas';
                     else if(p.categoria === 'kitfestas' || p.categoria === 'festa') nomeCatDisplay = 'Kit Festas';
                     else if(p.categoria === 'lembrancas' || p.categoria === 'simples' || p.categoria === 'semiluxo') nomeCatDisplay = 'Lembranças';
 
-                    html += `<tr><td data-label="Produto"><div style="display:flex; gap:15px; align-items:center;">${img} <div style="text-align:left"><strong>${p.nome}</strong><br><small style="color:#777">${nomeCatDisplay}</small></div></div></td><td data-label="Preço">${priceDisplay}</td><td data-label="Mínimo">${minDisplay}</td><td data-label="Status"><span style="color:${color}; font-weight:bold">${p.ativo ? 'Ativo' : 'Esgotado'}</span></td><td data-label="Ações"><i class="fas fa-pencil-alt action-icon icon-edit" onclick="editarProduto('${docSnap.id}')"></i><i class="fas fa-trash action-icon icon-trash" onclick="apagarProduto('${docSnap.id}')"></i><i class="fas fa-toggle-on action-icon icon-toggle" style="color:${color}" onclick="alterarEstoque('${docSnap.id}', ${!p.ativo})"></i></td></tr>`;
+                    const tr = criarEl('tr');
+                    const tdProduto = criarEl('td', { 'data-label': 'Produto' });
+                    const produtoBox = criarEl('div', { style: 'display:flex; gap:15px; align-items:center;' });
+                    const img = thumb ? criarEl('img', { src: thumb, className: 'mini-foto', alt: limparTexto(p.nome) }) : criarEl('div', { className: 'mini-foto' });
+                    const textoProduto = criarEl('div', { style: 'text-align:left' });
+                    textoProduto.appendChild(criarEl('strong', {}, limparTexto(p.nome)));
+                    textoProduto.appendChild(criarEl('br'));
+                    textoProduto.appendChild(criarEl('small', { style: 'color:#777' }, limparTexto(nomeCatDisplay)));
+                    produtoBox.appendChild(img);
+                    produtoBox.appendChild(textoProduto);
+                    tdProduto.appendChild(produtoBox);
+
+                    const tdPreco = criarEl('td', { 'data-label': 'Preço' });
+                    if(p.em_promocao && p.preco_promocional > 0) {
+                        const wrap = criarEl('div');
+                        wrap.appendChild(criarEl('span', { style: 'text-decoration:line-through;color:#999;font-size:0.8em' }, formatarMoeda(p.preco)));
+                        wrap.appendChild(document.createTextNode(' '));
+                        wrap.appendChild(criarEl('strong', { style: 'color:#E91E63' }, formatarMoeda(p.preco_promocional)));
+                        tdPreco.appendChild(wrap);
+                    } else {
+                        tdPreco.textContent = formatarMoeda(p.preco);
+                    }
+
+                    const tdMinimo = criarEl('td', { 'data-label': 'Mínimo' }, minDisplay);
+                    const tdStatus = criarEl('td', { 'data-label': 'Status' });
+                    tdStatus.appendChild(criarEl('span', { style: `color:${color}; font-weight:bold` }, p.ativo ? 'Ativo' : 'Pausado'));
+                    const tdAcoes = criarEl('td', { 'data-label': 'Ações' });
+                    tdAcoes.appendChild(criarEl('i', { className: 'fas fa-pencil-alt action-icon icon-edit', title: 'Editar', onclick: () => editarProduto(docSnap.id) }));
+                    tdAcoes.appendChild(criarEl('i', { className: 'fas fa-toggle-on action-icon icon-toggle', title: p.ativo ? 'Pausar produto' : 'Ativar produto', style: `color:${color}`, onclick: () => alterarEstoque(docSnap.id, !p.ativo) }));
+                    tdAcoes.appendChild(criarEl('i', { className: 'fas fa-archive action-icon icon-archive', title: 'Arquivar produto', onclick: () => apagarProduto(docSnap.id) }));
+
+                    tr.append(tdProduto, tdPreco, tdMinimo, tdStatus, tdAcoes);
+                    tbody.appendChild(tr);
                 });
-                tbody.innerHTML = html;
+                if(!tbody.children.length) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px;">Nenhum produto encontrado.</td></tr>';
             } catch (e) { console.error(e); }
+        }
+
+        function atualizarResumoPedidos(lista) {
+            const visiveis = lista.filter(p => p.status !== 'Aguardando Pagamento');
+            const pendentes = visiveis.filter(p => p.status === 'Pendente').length;
+            const concluidos = visiveis.filter(p => p.status === 'Concluído');
+            const total = concluidos.reduce((acc, p) => acc + (parseFloat(p.total) || 0), 0);
+            document.getElementById('stat-pedidos').innerText = visiveis.length;
+            document.getElementById('stat-pendentes').innerText = pendentes;
+            document.getElementById('stat-concluidos').innerText = concluidos.length;
+            document.getElementById('stat-total').innerText = formatarMoeda(total);
         }
 
         function carregarVendasTempoReal() {
@@ -434,7 +553,8 @@
             const q = query(collection(db, "pedidos"), orderBy("data", "desc"));
             
             unsubscribeVendas = onSnapshot(q, (snapshot) => {
-                let html = '';
+                tbody.innerHTML = '';
+                pedidosCache = [];
                 if(!snapshot.empty && !snapshot.metadata.hasPendingWrites) {
                     snapshot.docChanges().forEach((change) => {
                         if (change.type === "added" && change.doc.data().status !== 'Cancelado' && document.getElementById('view-vendas').classList.contains('active') === false) {
@@ -446,6 +566,7 @@
                 snapshot.forEach(doc => {
                     const p = doc.data();
                     if(p.status === 'Aguardando Pagamento') return;
+                    pedidosCache.push({ id: doc.id, ...p });
 
                     const dataF = p.data ? new Date(p.data).toLocaleString('pt-BR', {day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}) : '-';
                     let statusClass = 'status-pendente'; 
@@ -454,12 +575,50 @@
                     if(p.status === 'Cancelado') statusClass = 'status-cancelado'; 
 
                     const telefoneFormatado = formatarTelefone(p.whatsapp);
-                    const linkZap = p.whatsapp.includes('Não informado') ? '#' : `https://wa.me/55${p.whatsapp.replace(/\D/g,'')}`;
+                    const zapLimpo = limparTexto(p.whatsapp).replace(/\D/g,'');
+                    const linkZap = limparTexto(p.whatsapp).includes('Não informado') || !zapLimpo ? '#' : `https://wa.me/55${zapLimpo}`;
 
-                    html += `<tr style="transition: background 0.5s;"><td data-label="ID / Detalhes"><div style="text-align:left"><strong style="color:#B39DDB">${p.id_visual||'-'}</strong><br>${p.produto}</div></td><td data-label="Data">${dataF}</td><td data-label="Cliente"><div style="text-align:left">${p.cliente}<br><small><a href="${linkZap}" target="_blank" style="color:#25D366;text-decoration:none"><i class="fab fa-whatsapp"></i> ${telefoneFormatado}</a></small></div></td><td data-label="Total"><strong>${formatarMoeda(p.total)}</strong></td><td data-label="Status"><span class="btn-status ${statusClass}" onclick="mudarStatusPedido('${doc.id}','${p.status}')" style="cursor:pointer">${p.status}</span></td><td data-label="Ações"><i class="fas fa-trash action-icon icon-trash" onclick="apagarPedido('${doc.id}')"></i></td></tr>`;
+                    const tr = criarEl('tr', {
+                        style: 'transition: background 0.5s;',
+                        dataset: {
+                            status: limparTexto(p.status),
+                            search: `${limparTexto(p.id_visual)} ${limparTexto(p.produto)} ${limparTexto(p.cliente)} ${telefoneFormatado}`.toLowerCase()
+                        }
+                    });
+
+                    const tdDetalhes = criarEl('td', { 'data-label': 'ID / Detalhes' });
+                    const detalhesBox = criarEl('div', { style: 'text-align:left' });
+                    detalhesBox.appendChild(criarEl('strong', { style: 'color:#B39DDB' }, limparTexto(p.id_visual || '-')));
+                    detalhesBox.appendChild(criarEl('br'));
+                    detalhesBox.appendChild(criarEl('span', {}, limparTexto(p.produto)));
+                    tdDetalhes.appendChild(detalhesBox);
+
+                    const tdData = criarEl('td', { 'data-label': 'Data' }, dataF);
+                    const tdCliente = criarEl('td', { 'data-label': 'Cliente' });
+                    const clienteBox = criarEl('div', { style: 'text-align:left' });
+                    clienteBox.appendChild(criarEl('span', {}, limparTexto(p.cliente)));
+                    clienteBox.appendChild(criarEl('br'));
+                    const small = criarEl('small');
+                    const link = criarEl('a', { href: linkZap, target: '_blank', rel: 'noopener', style: 'color:#25D366;text-decoration:none' });
+                    link.appendChild(criarEl('i', { className: 'fab fa-whatsapp' }));
+                    link.appendChild(document.createTextNode(` ${telefoneFormatado}`));
+                    small.appendChild(link);
+                    clienteBox.appendChild(small);
+                    tdCliente.appendChild(clienteBox);
+
+                    const tdTotal = criarEl('td', { 'data-label': 'Total' });
+                    tdTotal.appendChild(criarEl('strong', {}, formatarMoeda(p.total)));
+                    const tdStatus = criarEl('td', { 'data-label': 'Status' });
+                    tdStatus.appendChild(criarEl('span', { className: `btn-status ${statusClass}`, style: 'cursor:pointer', onclick: () => mudarStatusPedido(doc.id, p.status) }, limparTexto(p.status)));
+                    const tdAcoes = criarEl('td', { 'data-label': 'Ações' });
+                    tdAcoes.appendChild(criarEl('i', { className: 'fas fa-ban action-icon icon-trash', title: 'Cancelar pedido', onclick: () => apagarPedido(doc.id) }));
+
+                    tr.append(tdDetalhes, tdData, tdCliente, tdTotal, tdStatus, tdAcoes);
+                    tbody.appendChild(tr);
                 });
                 
-                tbody.innerHTML = html || '<tr><td colspan="6" style="text-align:center; padding: 20px;">Nenhum pedido encontrado.</td></tr>';
+                atualizarResumoPedidos(pedidosCache);
+                if(!tbody.children.length) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 20px;">Nenhum pedido encontrado.</td></tr>';
                 filtrarVendas();
             });
         }
@@ -519,7 +678,10 @@
                     } else {
                         src = URL.createObjectURL(item); 
                     }
-                    area.innerHTML += `<div class="thumb-wrapper"><img src="${src}" class="thumb-img"><div class="btn-remove-foto" onclick="removerFoto(${index})">X</div></div>`; 
+                    const wrapper = criarEl('div', { className: 'thumb-wrapper' });
+                    wrapper.appendChild(criarEl('img', { src, className: 'thumb-img', alt: `Foto ${index + 1}` }));
+                    wrapper.appendChild(criarEl('div', { className: 'btn-remove-foto', onclick: () => removerFoto(index) }, 'X'));
+                    area.appendChild(wrapper);
                 });
             } catch (err) {
                 alert("ERRO AO GERAR MINIATURA DA FOTO: " + err.message);
@@ -567,6 +729,24 @@
             }); 
         };
 
+        const enviarImagemStorage = async (arquivo, produtoNome, indice) => {
+            const arquivoLeve = await comprimirImagem(arquivo);
+            const slug = limparTexto(produtoNome)
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9]+/gi, '-')
+                .replace(/^-+|-+$/g, '')
+                .toLowerCase() || 'produto';
+            const nomeArquivo = `${Date.now()}-${indice}-${slug}.jpg`;
+            const caminho = `produtos/${nomeArquivo}`;
+            const storageRef = ref(storage, caminho);
+            await uploadBytes(storageRef, arquivoLeve, {
+                contentType: 'image/jpeg',
+                customMetadata: { origem: 'admin-gabriele' }
+            });
+            return await getDownloadURL(storageRef);
+        };
+
         window.salvarProduto = async () => {
             const nome = document.getElementById('novo-nome').value; const desc = document.getElementById('novo-desc').value; const preco = document.getElementById('novo-preco').value; const minimo = document.getElementById('novo-minimo').value; const link = document.getElementById('novo-link').value; const cat = document.getElementById('novo-categoria').value; const evento = cat === 'comemorativas' ? document.getElementById('novo-evento').value : null; const emPromocao = document.getElementById('cb-promocao').checked; const precoPromo = document.getElementById('novo-preco-promo').value;
             if(!nome || !preco) { showToast("Preencha o nome e o preço!", "error"); return; }
@@ -576,15 +756,8 @@
                     const item = listaFotosEdicao[i];
                     if (typeof item === 'string') { listaFinaisUrls.push(item); } else {
                         contadorNovas++; showLoading(`Processando foto ${contadorNovas}/${arquivosParaEnviar.length}...`);
-                        
-                        const arquivoLeve = await comprimirImagem(item); 
-                        const formData = new FormData(); formData.append("image", arquivoLeve);
-                        const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData });
-                        
-                        if (!response.ok) throw new Error("Falha de conexão com o banco de fotos."); 
-                        
-                        const result = await response.json();
-                        if(result.success) { listaFinaisUrls.push(result.data.url); } else { throw new Error(result.error.message); }
+                        const url = await enviarImagemStorage(item, nome, contadorNovas);
+                        listaFinaisUrls.push(url);
                     }
                 }
                 let dados = { nome, descricao: desc, preco: parseFloat(preco), minimo: parseInt(minimo)||1, link_pagamento: link, categoria: cat, evento: evento, emPromocao: emPromocao, preco_promocional: emPromocao ? parseFloat(precoPromo) : null, fotos: listaFinaisUrls };
@@ -620,9 +793,9 @@
         }
         window.fecharFormulario=()=>document.getElementById('form-overlay').style.display='none';
         
-        window.mudarStatusPedido=async(id,s)=>{ const n=s==='Concluído'?'Pendente':'Concluído'; showConfirm(`Deseja alterar o status para ${n}?`, async () => { try { await updateDoc(doc(db,"pedidos",id),{status:n}); showToast("Status atualizado!", "info"); } catch(e) { showToast("Erro ao atualizar", "error"); } }, 'info'); }
-        window.apagarPedido=async(id)=>{ showConfirm("Tem certeza que deseja APAGAR este pedido?", async () => { try { await deleteDoc(doc(db,"pedidos",id)); showToast("Pedido removido!", "success"); } catch(e) { showToast("Erro ao apagar", "error"); } }); }
-        window.apagarProduto=async(id)=>{ showConfirm("Tem certeza que deseja EXCLUIR este produto? Ação irreversível.", async () => { try { await deleteDoc(doc(db,"produtos",id)); showToast("Produto removido!", "success"); carregarDados(); } catch(e) { showToast("Erro ao apagar", "error"); } }); }
+        window.mudarStatusPedido=async(id,s)=>{ const n=s==='Concluído'?'Pendente':'Concluído'; showConfirm(`Deseja alterar o status para ${n}?`, async () => { try { await updateDoc(doc(db,"pedidos",id),{status:n, atualizado_em:new Date().toISOString()}); showToast("Status atualizado!", "info"); } catch(e) { showToast("Erro ao atualizar", "error"); } }, 'info'); }
+        window.apagarPedido=async(id)=>{ showConfirm("Cancelar este pedido? Ele não será apagado do histórico.", async () => { try { await updateDoc(doc(db,"pedidos",id),{status:'Cancelado', atualizado_em:new Date().toISOString()}); showToast("Pedido cancelado e preservado no histórico.", "success"); } catch(e) { showToast("Erro ao cancelar", "error"); } }); }
+        window.apagarProduto=async(id)=>{ showConfirm("Arquivar este produto? Ele ficará pausado na loja, sem excluir o histórico.", async () => { try { await updateDoc(doc(db,"produtos",id),{ativo:false, arquivado:true, atualizado_em:new Date().toISOString()}); showToast("Produto arquivado!", "success"); carregarDados(); } catch(e) { showToast("Erro ao arquivar", "error"); } }); }
         window.alterarEstoque=async(id,s)=>{ try { await updateDoc(doc(db,"produtos",id),{ativo:s}); showToast(s ? "Produto ativado!" : "Produto pausado", "info"); carregarDados(); } catch(e) { showToast("Erro ao alterar estoque", "error"); } }
     </script>
 </body>

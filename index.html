@@ -3,16 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loja | Gabriele Personaliza</title>
+    <title>Gabriele Personaliza | Papelaria criativa e personalizados</title>
+    <meta name="description" content="Papelaria criativa e personalizados feitos à mão para festas, lembranças, mimos e datas especiais. Confira o catálogo da Gabriele Personaliza.">
+    <link rel="canonical" href="https://gabrielepersonaliza.com.br/">
     
-    <link rel="icon" href="assets/img/icone-aba.png?v=5" type="image/png">
+    <link rel="icon" href="assets/img/favicon-64.png?v=1" type="image/png">
 
     <meta property="og:title" content="Gabriele Personaliza | Papelaria Criativa">
     <meta property="og:description" content="Transforme sua festa com mimos e personalizados feitos à mão. Confira nosso catálogo!">
     <meta property="og:image" content="https://i.ibb.co/h7XN8kG/logo.png"> 
     <meta property="og:url" content="https://gabrielepersonaliza.com.br">
     <meta property="og:type" content="website">
+    <meta property="og:locale" content="pt_BR">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="theme-color" content="#B39DDB">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Store",
+      "name": "Gabriele Personaliza",
+      "url": "https://gabrielepersonaliza.com.br/",
+      "description": "Papelaria criativa e personalizados feitos à mão para festas, lembranças, mimos e datas especiais.",
+      "sameAs": [
+        "https://www.instagram.com/gabriele_personaliza/",
+        "https://wa.me/559292770409"
+      ]
+    }
+    </script>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,7 +44,7 @@
       gtag('config', 'G-T24GYM57CT');
     </script>
 
-    <link rel="stylesheet" href="style.css?v=11">
+    <link rel="stylesheet" href="style.css?v=12">
     
     <style>
         body { background-color: #F4F6F8; transition: background 0.5s ease; margin: 0; }
@@ -52,7 +69,7 @@
         .filter-container {
             display: flex; overflow-x: auto; gap: 12px; background: transparent !important;
             box-shadow: none !important; border: none !important; padding: 15px 0 !important;
-            position: static !important; -webkit-overflow-scrolling: touch; scrollbar-width: none; 
+            position: static !important; -webkit-overflow-scrolling: touch; scrollbar-width: none; flex-wrap: nowrap !important;
         }
         .filter-container::-webkit-scrollbar { display: none; }
         .filter-btn { border-radius: 20px !important; padding: 8px 18px !important; font-weight: 500 !important; flex: 0 0 auto; white-space: nowrap; }
@@ -101,7 +118,7 @@
         .mobile-bottom-nav { display: none; }
         @media (max-width: 768px) {
             body { padding-bottom: 70px; } 
-            .floating-whatsapp { bottom: 85px !important; transition: opacity 0.3s; } 
+            .floating-whatsapp { bottom: 92px !important; right: 18px !important; width: 52px !important; height: 52px !important; font-size: 26px !important; transition: opacity 0.3s; } 
             .mobile-bottom-nav { display: flex; justify-content: space-around; align-items: center; position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); z-index: 1000; padding: 12px 0; padding-bottom: env(safe-area-inset-bottom, 12px); }
             .nav-item { display: flex; flex-direction: column; align-items: center; color: #888; text-decoration: none; font-size: 0.75rem; gap: 5px; transition: 0.3s; width: 33%; }
             .nav-item i { font-size: 1.3rem; }
@@ -118,6 +135,7 @@
         #fullscreen-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; justify-content: center; align-items: center; cursor: zoom-out; animation: fadeIn 0.3s; } #fullscreen-img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 5px; box-shadow: 0 0 20px rgba(0,0,0,0.5); } .close-fullscreen { position: absolute; top: 20px; right: 20px; color: white; font-size: 40px; cursor: pointer; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
         .highlight-section { background: #fff; padding: 25px; border-radius: 20px; margin-bottom: 30px; display: none; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: none; } 
         .highlight-title { color: #B39DDB; margin-top: 0; margin-bottom: 20px; font-family: 'Playfair Display', serif; font-size: 1.8rem; text-align: left; }
+        .visually-hidden { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
         .pix-checkout-container { display: none; text-align: center; padding-top: 10px; border-top: 1px solid #eee; animation: fadeIn 0.4s; }
         .pix-title { font-size: 1.2rem; color: #009EE3; font-weight: bold; margin-bottom: 5px; }
@@ -161,7 +179,7 @@
                     <li><a href="#loja" class="active">Loja</a></li>
                     <li><a href="#sobre">Sobre</a></li>
                     <li><a href="#" onclick="abrirPoliticas()">Como Funciona?</a></li>
-                    <li><a href="https://wa.me/559292770409" target="_blank" class="btn-nav">Falar no WhatsApp</a></li>
+                    <li><a href="https://wa.me/559292770409" target="_blank" rel="noopener" class="btn-nav">Falar no WhatsApp</a></li>
                 </ul>
             </nav>
         </div>
@@ -169,8 +187,9 @@
 
     <section id="loja" class="section-padding store-section" style="margin-top: 80px;">
         <div class="container">
+            <h1 class="visually-hidden">Gabriele Personaliza - papelaria criativa e personalizados para festas</h1>
             <div class="search-container">
-                <input type="text" id="campo-busca" class="search-input" placeholder="O que você procura hoje?" onkeyup="filtrarPorNome()">
+                <input type="search" id="campo-busca" class="search-input" placeholder="O que você procura hoje?" autocomplete="off" oninput="filtrarPorNome()" onkeyup="filtrarPorNome()">
                 <i class="fas fa-search search-icon"></i>
             </div>
 
@@ -207,19 +226,19 @@
         <div class="container">
             <div class="footer-brand"><h3>Gabriele Personaliza</h3><p>Feito com amor.</p></div>
             <div class="socials">
-                <a href="https://www.instagram.com/gabriele_personaliza/" target="_blank"><i class="fab fa-instagram"></i></a>
-                <a href="https://wa.me/559292770409" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://www.instagram.com/gabriele_personaliza/" target="_blank" rel="noopener" aria-label="Instagram da Gabriele Personaliza"><i class="fab fa-instagram"></i></a>
+                <a href="https://wa.me/559292770409" target="_blank" rel="noopener" aria-label="WhatsApp da Gabriele Personaliza"><i class="fab fa-whatsapp"></i></a>
             </div>
             <div class="copyright" style="text-align: center; margin-top: 20px;">
                 <p>&copy; <span id="ano-atual"></span> Gabriele Personaliza.</p>
                 <p style="font-size: 0.8rem; color: #888; margin-top: 10px; letter-spacing: 0.5px;">
-                    Desenvolvido por <strong id="novastack-logo" style="color: #B39DDB;">NovaStack</strong>: A base tecnológica para o seu negócio evoluir.<span id="btn-secreto" style="opacity: 0.3; cursor: pointer; font-weight: bold; margin-left: 5px;">G</span>
+                    Desenvolvido por <strong id="novastack-logo" style="color: #B39DDB;">NovaStack</strong>: A base tecnológica para o seu negócio evoluir.
                 </p>
             </div>
         </div>
     </footer>
 
-    <a href="https://wa.me/559292770409" class="floating-whatsapp" id="btn-flutuante-zap" target="_blank">
+    <a href="https://wa.me/559292770409" class="floating-whatsapp" id="btn-flutuante-zap" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
         <i class="fab fa-whatsapp"></i>
     </a>
 
@@ -338,6 +357,11 @@
         window.fecharImagemCheia = () => { document.getElementById('fullscreen-overlay').style.display = 'none'; document.getElementById('fullscreen-img').src = ''; }
 
         const formatarMoeda = (valor) => parseFloat(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        const escaparHtml = (valor = '') => String(valor).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const urlImagemSegura = (url = '') => {
+            const limpa = String(url).trim();
+            return /^(https?:\/\/|data:image\/)/i.test(limpa) ? limpa : '';
+        };
         window.mostrarAlerta = (msg) => { document.getElementById('msg-alerta').innerText = msg; document.getElementById('custom-alert').style.display = 'flex'; }
         window.fecharAlerta = () => document.getElementById('custom-alert').style.display = 'none';
 
@@ -469,7 +493,13 @@
         function criarCardProduto(p) {
             let listaImagens = (p.fotos && p.fotos.length > 0) ? p.fotos : (p.foto ? [p.foto] : []);
             let imagensHtml = ''; let estiloExtra = p.ativo ? '' : 'filter: grayscale(1); opacity: 0.6;';
-            if (listaImagens.length > 0) { listaImagens.forEach((imgUrl, i) => { imagensHtml += `<img src="${imgUrl}" class="carousel-img ${i===0?'active':''}" style="${estiloExtra}">`; }); } else imagensHtml = `<div class="carousel-img active" style="background:#E1BEE7;height:100%"></div>`;
+            if (listaImagens.length > 0) {
+                listaImagens.forEach((imgUrl, i) => {
+                    const src = urlImagemSegura(imgUrl);
+                    if(src) imagensHtml += `<img src="${escaparHtml(src)}" alt="${escaparHtml(p.nome)}" class="carousel-img ${i===0?'active':''}" style="${estiloExtra}" loading="lazy" decoding="async">`;
+                });
+            }
+            if (!imagensHtml) imagensHtml = `<div class="carousel-img active" role="img" aria-label="${escaparHtml(p.nome)}" style="background:#E1BEE7;height:100%"></div>`;
             const minLabel = (p.minimo && p.minimo > 1) ? `<small style="display:block; color:#666; margin-top:5px">Mínimo: ${p.minimo} un</small>` : '';
             let btnHtml = p.ativo ? `<button class="btn-sm" style="width:100%;border:none;padding:8px;border-radius:5px;cursor:pointer;margin-top:5px;">Ver Detalhes</button>` : `<span style="color:red;font-size:0.8rem">Esgotado</span>`;
             
@@ -480,13 +510,13 @@
             let priceHtml = formatarMoeda(p.preco);
             if (p.ativo && p.em_promocao && p.preco_promocional > 0) priceHtml = `<span class="original-price">${formatarMoeda(p.preco)}</span> <span class="promo-price">${formatarMoeda(p.preco_promocional)}</span>`;
             
-            let nomeCatDisplay = p.categoria.toUpperCase();
+            let nomeCatDisplay = String(p.categoria || '').toUpperCase();
             if (p.categoria === 'comemorativas') nomeCatDisplay = 'DATAS COMEMORATIVAS';
             if (p.categoria === 'kitfestas' || p.categoria === 'festa') nomeCatDisplay = 'KIT FESTAS';
             if (p.categoria === 'lembrancas' || p.categoria === 'simples' || p.categoria === 'semiluxo') nomeCatDisplay = 'LEMBRANÇAS';
 
             const card = document.createElement('div'); card.className = 'product-card';
-            card.innerHTML = `<div class="product-img-wrapper carousel-container">${etiqueta}${imagensHtml}</div><div class="product-info"><span class="category-tag">${nomeCatDisplay}</span><h3>${p.nome}</h3><div class="product-price">${priceHtml}</div>${minLabel}${btnHtml}</div>`;
+            card.innerHTML = `<div class="product-img-wrapper carousel-container">${etiqueta}${imagensHtml}</div><div class="product-info"><span class="category-tag">${escaparHtml(nomeCatDisplay)}</span><h3>${escaparHtml(p.nome)}</h3><div class="product-price">${priceHtml}</div>${minLabel}${btnHtml}</div>`;
             if(p.ativo) card.onclick = () => abrirModal(p);
             return card;
         }
@@ -560,7 +590,19 @@
             document.getElementById('btn-flutuante-zap').style.display = 'none';
 
             const imgC = document.getElementById('modal-imagens'); imgC.innerHTML = ''; 
-            (p.fotos || [p.foto]).forEach(f => { if(f) { imgC.innerHTML += `<img src="${f}" class="modal-img" onclick="abrirImagemCheia(this.src)">`; } });
+            (p.fotos || [p.foto]).forEach(f => {
+                const src = urlImagemSegura(f);
+                if(src) {
+                    const img = document.createElement('img');
+                    img.src = src;
+                    img.alt = p.nome || 'Produto personalizado';
+                    img.className = 'modal-img';
+                    img.loading = 'lazy';
+                    img.decoding = 'async';
+                    img.addEventListener('click', () => abrirImagemCheia(src));
+                    imgC.appendChild(img);
+                }
+            });
             atualizarUI();
         }
 
@@ -682,7 +724,6 @@
             if (navigator.share) { try { await navigator.share({ title: `Olha que lindo: ${produtoAtual.nome}`, text: `Achei esse ${produtoAtual.nome} na Gabriele Personaliza!`, url: linkProduto }); } catch (err) {} } else { mostrarAlerta("Link do produto copiado com sucesso!"); navigator.clipboard.writeText(linkProduto); } 
         }
         
-        document.getElementById('btn-secreto').addEventListener('click', () => { window.location.href = 'admin.html'; });
         document.getElementById('ano-atual').innerText = new Date().getFullYear();
 
         aplicarTemaSutil(); carregarLoja();
