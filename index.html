@@ -8,6 +8,8 @@
     <link rel="canonical" href="https://gabrielepersonaliza.com.br/">
     
     <link rel="icon" href="assets/img/favicon-64.png?v=1" type="image/png">
+    <link rel="apple-touch-icon" href="assets/img/icon-192.png?v=1">
+    <link rel="manifest" href="manifest.webmanifest">
 
     <meta property="og:title" content="Gabriele Personaliza | Papelaria Criativa">
     <meta property="og:description" content="Transforme sua festa com mimos e personalizados feitos à mão. Confira nosso catálogo!">
@@ -286,6 +288,10 @@
                                 <input type="text" id="pedido-idade" placeholder="Ex: 5 anos">
                             </div>
                         </div>
+                        <div class="input-group">
+                            <label>Data da festa/evento</label>
+                            <input type="text" id="pedido-data-evento" placeholder="Ex: 20/07/2026">
+                        </div>
                     </div>
 
                     <div class="qtd-wrapper"><div class="qtd-controls"><button class="btn-qtd" onclick="mudarQtd(-1)">-</button><span id="qtd-numero" class="qtd-display">1</span><button class="btn-qtd" onclick="mudarQtd(1)">+</button></div><div id="total-final" class="total-price">Total: R$ 0,00</div></div>
@@ -361,6 +367,18 @@
         const urlImagemSegura = (url = '') => {
             const limpa = String(url).trim();
             return /^(https?:\/\/|data:image\/)/i.test(limpa) ? limpa : '';
+        };
+        const normalizarBusca = (valor = '') => String(valor)
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase()
+            .trim();
+        const rotuloCategoria = (p) => {
+            const cat = p.categoria;
+            if (cat === 'comemorativas') return 'datas comemorativas';
+            if (cat === 'kitfestas' || cat === 'festa') return 'kit festas';
+            if (cat === 'lembrancas' || cat === 'simples' || cat === 'semiluxo') return 'lembrancas';
+            return cat || '';
         };
         window.mostrarAlerta = (msg) => { document.getElementById('msg-alerta').innerText = msg; document.getElementById('custom-alert').style.display = 'flex'; }
         window.fecharAlerta = () => document.getElementById('custom-alert').style.display = 'none';
@@ -485,8 +503,16 @@
         }
 
         window.filtrarPorNome = () => {
-            const termo = document.getElementById('campo-busca').value.toLowerCase();
-            const filtrados = todosProdutos.filter(p => p.nome.toLowerCase().includes(termo));
+            const termo = normalizarBusca(document.getElementById('campo-busca').value);
+            const filtrados = todosProdutos.filter(p => {
+                const textoProduto = normalizarBusca([
+                    p.nome,
+                    p.descricao,
+                    p.evento,
+                    rotuloCategoria(p)
+                ].filter(Boolean).join(' '));
+                return textoProduto.includes(termo);
+            });
             renderizarCards(filtrados, termo !== "" ? "Nenhum produto encontrado." : "Nenhum produto encontrado.", 'busca');
         }
 
@@ -585,6 +611,7 @@
             document.getElementById('pedido-tema').value = '';
             document.getElementById('pedido-nome-arte').value = '';
             document.getElementById('pedido-idade').value = '';
+            document.getElementById('pedido-data-evento').value = '';
             
             window.history.pushState(null, null, `#produto=${p.id}`);
             document.getElementById('btn-flutuante-zap').style.display = 'none';
@@ -646,6 +673,12 @@
                 if(idade) detalhes += `\n- Idade: ${idade}`;
             }
             return detalhes;
+        }
+
+        function montarMensagemPedido(nome, id, total, detalhesPers) {
+            const dataEvento = document.getElementById('pedido-data-evento')?.value.trim();
+            const prazoExtra = dataEvento ? `\nData da festa/evento: ${dataEvento}` : '';
+            return `Olá, Gabriele! Sou *${nome}*.\n\nVim pelo catálogo e quero fazer o pedido *${id}*:\n${qtdAtual}x *${produtoAtual.nome}*${detalhesPers}${prazoExtra}\n\nTotal do pedido: *${formatarMoeda(total)}*.\n\n✅ Li e concordo com os 50% de entrada.\nPode me confirmar prazo de produção, retirada/entrega e a chave Pix?`;
         }
 
         async function registrarPedidoDb(origem) {
@@ -714,7 +747,7 @@
             const id = '#' + Math.random().toString(36).substr(2, 4).toUpperCase(); let precoEfetivo = (produtoAtual.em_promocao && produtoAtual.preco_promocional > 0) ? produtoAtual.preco_promocional : produtoAtual.preco; let total = precoEfetivo * qtdAtual;
             await addDoc(collection(db, "pedidos"), { id_visual: id, cliente: nome, whatsapp: zap, produto: `${produtoAtual.nome} (x${qtdAtual}) ${detalhesPers}`, total: total, data: new Date().toISOString(), status: 'Pendente', origem: 'WhatsApp' });
             
-            const msg = `Olá! Sou *${nome}*.\nPedido *${id}*: ${qtdAtual}x *${produtoAtual.nome}*${detalhesPers}\nTotal: ${formatarMoeda(total)}.\n\n✅ *Li e concordo com os 50% de entrada.*\nAguardo chave Pix para pagamento.`; window.open(`https://wa.me/559292770409?text=${encodeURIComponent(msg)}`, '_blank'); fecharModal();
+            const msg = montarMensagemPedido(nome, id, total, detalhesPers); window.open(`https://wa.me/559292770409?text=${encodeURIComponent(msg)}`, '_blank'); fecharModal();
         }
 
         window.fecharSucesso = () => { const id = document.getElementById('sucesso-id').innerText; const msg = `Olá! Meu pedido *${id}* já foi pago e aprovado pelo site. Podemos combinar os detalhes da arte?`; window.open(`https://wa.me/559292770409?text=${encodeURIComponent(msg)}`, '_blank'); document.getElementById('modal-sucesso').style.display = 'none'; }
@@ -725,6 +758,9 @@
         }
         
         document.getElementById('ano-atual').innerText = new Date().getFullYear();
+        if ('serviceWorker' in navigator && location.protocol === 'https:') {
+            navigator.serviceWorker.register('/sw.js').catch(() => {});
+        }
 
         aplicarTemaSutil(); carregarLoja();
     </script>

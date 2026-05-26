@@ -1,0 +1,24 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email == "gabyguedes534@gmail.com";
+    }
+
+    match /produtos/{produtoId} {
+      allow read: if resource.data.ativo == true || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /pedidos/{pedidoId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
