@@ -545,7 +545,7 @@
                     tdStatus.appendChild(criarEl('span', { style: `color:${color}; font-weight:bold` }, p.ativo ? 'Ativo' : 'Pausado'));
                     const tdAcoes = criarEl('td', { 'data-label': 'Ações' });
                     tdAcoes.appendChild(criarEl('i', { className: 'fas fa-pencil-alt action-icon icon-edit', title: 'Editar', onclick: () => editarProduto(docSnap.id) }));
-                    tdAcoes.appendChild(criarEl('i', { className: 'fas fa-toggle-on action-icon icon-toggle', title: p.ativo ? 'Pausar produto' : 'Ativar produto', style: `color:${color}`, onclick: () => alterarEstoque(docSnap.id, !p.ativo) }));
+                    tdAcoes.appendChild(criarEl('i', { className: 'fas fa-toggle-on action-icon icon-toggle', title: p.ativo ? 'Pausar e ocultar produto' : 'Ativar e mostrar produto', style: `color:${color}`, onclick: () => alterarEstoque(docSnap.id, !p.ativo) }));
                     tdAcoes.appendChild(criarEl('i', { className: 'fas fa-trash action-icon icon-trash', title: 'Excluir produto', onclick: () => apagarProduto(docSnap.id) }));
 
                     tr.append(tdProduto, tdPreco, tdMinimo, tdStatus, tdAcoes);
@@ -837,7 +837,7 @@
                 let dados = { nome, descricao: desc, preco: parseFloat(preco), minimo: parseInt(minimo)||1, link_pagamento: link, categoria: cat, evento: evento, emPromocao: emPromocao, preco_promocional: emPromocao ? parseFloat(precoPromo) : null, fotos: listaFinaisUrls };
                 showLoading("Salvando no sistema...");
                 if(produtoEmEdicaoId){ await updateDoc(doc(db,"produtos",produtoEmEdicaoId), dados); showToast("Produto atualizado com sucesso!", "success"); } 
-                else { dados.ativo = true; dados.vendas = 0; await addDoc(collection(db,"produtos"), dados); showToast("Produto criado com sucesso!", "success"); }
+                else { dados.ativo = true; dados.arquivado = false; dados.vendas = 0; await addDoc(collection(db,"produtos"), dados); showToast("Produto criado com sucesso!", "success"); }
                 fecharFormulario(); carregarDados();
             } catch(e) { 
                 console.error(e); 
@@ -870,7 +870,7 @@
         window.mudarStatusPedido=async(id,s)=>{ const n=s==='Concluído'?'Pendente':'Concluído'; showConfirm(`Deseja alterar o status para ${n}?`, async () => { try { await updateDoc(doc(db,"pedidos",id),{status:n, atualizado_em:new Date().toISOString()}); showToast("Status atualizado!", "info"); } catch(e) { showToast("Erro ao atualizar", "error"); } }, 'info'); }
         window.apagarPedido=async(id)=>{ showConfirm("Cancelar este pedido? Ele não será apagado do histórico.", async () => { try { await updateDoc(doc(db,"pedidos",id),{status:'Cancelado', atualizado_em:new Date().toISOString()}); showToast("Pedido cancelado e preservado no histórico.", "success"); } catch(e) { showToast("Erro ao cancelar", "error"); } }); }
         window.apagarProduto=async(id)=>{ showConfirm("Excluir este produto de verdade? Essa ação remove o item do painel e da loja.", async () => { try { await deleteDoc(doc(db,"produtos",id)); showToast("Produto excluído!", "success"); carregarDados(); } catch(e) { showToast("Erro ao excluir produto", "error"); } }); }
-        window.alterarEstoque=async(id,s)=>{ try { await updateDoc(doc(db,"produtos",id),{ativo:s}); showToast(s ? "Produto ativado!" : "Produto pausado", "info"); carregarDados(); } catch(e) { showToast("Erro ao alterar estoque", "error"); } }
+        window.alterarEstoque=async(id,s)=>{ try { await updateDoc(doc(db,"produtos",id),{ativo:s, arquivado:!s, atualizado_em:new Date().toISOString()}); showToast(s ? "Produto ativado e voltou para a loja!" : "Produto pausado e oculto da loja.", "info"); carregarDados(); } catch(e) { showToast("Erro ao alterar estoque", "error"); } }
     </script>
 </body>
 </html>
