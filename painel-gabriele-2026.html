@@ -305,6 +305,8 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
         const storage = getStorage(app);
+        const IMGBB_API_KEY = "466fe160d29a71d0e6a2d6194d53173a";
+        const UPLOAD_TIMEOUT_MS = 20000;
         
         let listaFotosEdicao = []; 
         let produtoEmEdicaoId = null;
@@ -705,45 +707,85 @@
             }
         }
 
-        // Mantem detalhes das artes: só reduz fotos muito grandes e usa JPEG com qualidade alta.
+        const comTempoLimite = (promessa, ms, mensagem) => {
+            return new Promise((resolve, reject) => {
+                const timer = setTimeout(() => reject(new Error(mensagem)), ms);
+                promessa
+                    .then(resolve)
+                    .catch(reject)
+                    .finally(() => clearTimeout(timer));
+            });
+        };
+
+        // Mantem detalhes das artes, mas evita travar celulares com fotos muito grandes.
         const comprimirImagem = async (arquivo) => { 
             return new Promise((resolve, reject) => { 
-                const reader = new FileReader(); 
-                
-                reader.onload = (event) => { 
-                    const img = new Image(); 
-                    img.onerror = () => reject(new Error("A foto selecionada está corrompida. Tente outra."));
-                    
-                    img.onload = () => { 
-                        try {
-                            const canvas = document.createElement('canvas'); 
-                            const MAX_WIDTH = 1800; 
-                            let width = img.width; 
-                            let height = img.height; 
-                            
-                            if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } 
-                            
-                            canvas.width = width; canvas.height = height; 
-                            const ctx = canvas.getContext('2d'); 
-                            ctx.drawImage(img, 0, 0, width, height); 
-                            
-                            canvas.toBlob((blob) => { 
-                                if (!blob) {
-                                    reject(new Error("O celular não tem memória livre para processar a foto."));
-                                    return;
-                                }
-                                resolve(new File([blob], arquivo.name, { type: 'image/jpeg', lastModified: Date.now() })); 
-                            }, 'image/jpeg', 0.88); 
-                            
-                        } catch (err) {
-                            reject(new Error("Memória RAM insuficiente: " + err.message));
-                        }
-                    }; 
-                    img.src = event.target.result;
+                const urlTemporaria = URL.createObjectURL(arquivo);
+                const img = new Image();
+                let finalizado = false;
+                const encerrar = (callback, valor) => {
+                    if (finalizado) return;
+                    finalizado = true;
+                    URL.revokeObjectURL(urlTemporaria);
+                    callback(valor);
+                };
+                const timer = setTimeout(() => {
+                    encerrar(reject, new Error("A foto demorou demais para processar. Tente uma imagem menor ou tire outra foto em JPG."));
+                }, 20000);
+
+                img.onerror = () => {
+                    clearTimeout(timer);
+                    encerrar(reject, new Error("A foto selecionada está corrompida ou em formato não suportado. Tente outra em JPG."));
+                };
+
+                img.onload = () => {
+                    try {
+                        clearTimeout(timer);
+                        const canvas = document.createElement('canvas');
+                        const MAX_DIMENSION = 1800;
+                        const escala = Math.min(1, MAX_DIMENSION / Math.max(img.width, img.height));
+                        const width = Math.max(1, Math.round(img.width * escala));
+                        const height = Math.max(1, Math.round(img.height * escala));
+
+                        canvas.width = width; canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        const toBlobTimer = setTimeout(() => {
+                            encerrar(reject, new Error("O celular demorou demais para gerar a foto otimizada. Tente uma foto menor."));
+                        }, 20000);
+
+                        canvas.toBlob((blob) => {
+                            clearTimeout(toBlobTimer);
+                            if (!blob) {
+                                encerrar(reject, new Error("O celular não tem memória livre para processar a foto."));
+                                return;
+                            }
+                            const nomeJpg = arquivo.name.replace(/\.[^.]+$/, '.jpg') || 'foto-produto.jpg';
+                            encerrar(resolve, new File([blob], nomeJpg, { type: 'image/jpeg', lastModified: Date.now() }));
+                        }, 'image/jpeg', 0.9);
+
+                    } catch (err) {
+                        clearTimeout(timer);
+                        encerrar(reject, new Error("Memória RAM insuficiente: " + err.message));
+                    }
                 }; 
-                reader.onerror = () => reject(new Error("Erro ao tentar ler o arquivo selecionado."));
-                reader.readAsDataURL(arquivo);
+                img.src = urlTemporaria;
             }); 
+        };
+
+        const enviarImagemImgBB = async (arquivoLeve) => {
+            const formData = new FormData();
+            formData.append("image", arquivoLeve);
+            const response = await comTempoLimite(
+                fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData }),
+                UPLOAD_TIMEOUT_MS,
+                "O envio alternativo da foto demorou demais. Verifique a internet e tente novamente."
+            );
+            if (!response.ok) throw new Error("Falha no envio alternativo da foto.");
+            const result = await response.json();
+            if (result.success && result.data && result.data.url) return result.data.url;
+            throw new Error(result.error?.message || "O envio alternativo recusou a foto.");
         };
 
         const enviarImagemStorage = async (arquivo, produtoNome, indice) => {
@@ -757,11 +799,26 @@
             const nomeArquivo = `${Date.now()}-${indice}-${slug}.jpg`;
             const caminho = `produtos/${nomeArquivo}`;
             const storageRef = ref(storage, caminho);
-            await uploadBytes(storageRef, arquivoLeve, {
-                contentType: 'image/jpeg',
-                customMetadata: { origem: 'admin-gabriele' }
-            });
-            return await getDownloadURL(storageRef);
+            try {
+                showLoading(`Enviando foto ${indice} para o banco de imagens...`);
+                return await enviarImagemImgBB(arquivoLeve);
+            } catch (erroImgBB) {
+                console.warn("Falha no ImgBB; tentando Firebase Storage.", erroImgBB);
+                showLoading(`Envio alternativo falhou. Tentando Firebase na foto ${indice}...`);
+                await comTempoLimite(
+                    uploadBytes(storageRef, arquivoLeve, {
+                        contentType: arquivoLeve.type || 'image/jpeg',
+                        customMetadata: { origem: 'admin-gabriele' }
+                    }),
+                    UPLOAD_TIMEOUT_MS,
+                    "O Firebase demorou demais para receber a foto."
+                );
+                return await comTempoLimite(
+                    getDownloadURL(storageRef),
+                    UPLOAD_TIMEOUT_MS,
+                    "O Firebase demorou demais para liberar o link da foto."
+                );
+            }
         };
 
         window.salvarProduto = async () => {
