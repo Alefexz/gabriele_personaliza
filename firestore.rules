@@ -7,13 +7,52 @@ service cloud.firestore {
         && request.auth.token.email == "gabyguedes534@gmail.com";
     }
 
+    function textoValido(valor, maximo) {
+      return valor is string
+        && valor.size() > 0
+        && valor.size() <= maximo;
+    }
+
+    function pedidoPublicoValido() {
+      return request.resource.data.keys().hasOnly([
+          "id_visual",
+          "cliente",
+          "whatsapp",
+          "produto",
+          "total",
+          "data",
+          "status",
+          "origem"
+        ])
+        && request.resource.data.keys().hasAll([
+          "id_visual",
+          "cliente",
+          "whatsapp",
+          "produto",
+          "total",
+          "data",
+          "status",
+          "origem"
+        ])
+        && textoValido(request.resource.data.id_visual, 12)
+        && textoValido(request.resource.data.cliente, 80)
+        && textoValido(request.resource.data.whatsapp, 30)
+        && textoValido(request.resource.data.produto, 500)
+        && textoValido(request.resource.data.data, 40)
+        && request.resource.data.total is number
+        && request.resource.data.total > 0
+        && request.resource.data.total <= 10000
+        && request.resource.data.status in ["Pendente", "Aguardando Pagamento"]
+        && request.resource.data.origem in ["WhatsApp", "Site Pix"];
+    }
+
     match /produtos/{produtoId} {
       allow read: if resource.data.ativo == true || isAdmin();
       allow create, update, delete: if isAdmin();
     }
 
     match /pedidos/{pedidoId} {
-      allow create: if true;
+      allow create: if isAdmin() || pedidoPublicoValido();
       allow read, update, delete: if isAdmin();
     }
 

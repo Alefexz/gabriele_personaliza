@@ -137,7 +137,7 @@
             <i class="fas fa-user-shield" style="font-size: 3rem; color: #B39DDB; margin-bottom: 10px;"></i>
             <h3>Acesso Restrito</h3>
             <p style="color:#666; font-size:0.8rem; margin-bottom:20px;">Entre com suas credenciais</p>
-            <input type="email" id="email-admin" class="login-input" value="gabyguedes534@gmail.com" readonly style="background:#f0f0f0; color:#555">
+            <input type="email" id="email-admin" class="login-input" placeholder="E-mail do admin" autocomplete="username">
             <input type="password" id="senha-admin" class="login-input" placeholder="Senha">
             <button class="btn-entrar" onclick="login()">Acessar Painel</button>
             <p id="login-erro" class="error-msg">Dados incorretos!</p>
@@ -305,7 +305,6 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
         const storage = getStorage(app);
-        const IMGBB_API_KEY = "466fe160d29a71d0e6a2d6194d53173a";
         const UPLOAD_TIMEOUT_MS = 20000;
         
         let listaFotosEdicao = []; 
@@ -774,20 +773,6 @@
             }); 
         };
 
-        const enviarImagemImgBB = async (arquivoLeve) => {
-            const formData = new FormData();
-            formData.append("image", arquivoLeve);
-            const response = await comTempoLimite(
-                fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData }),
-                UPLOAD_TIMEOUT_MS,
-                "O envio alternativo da foto demorou demais. Verifique a internet e tente novamente."
-            );
-            if (!response.ok) throw new Error("Falha no envio alternativo da foto.");
-            const result = await response.json();
-            if (result.success && result.data && result.data.url) return result.data.url;
-            throw new Error(result.error?.message || "O envio alternativo recusou a foto.");
-        };
-
         const enviarImagemStorage = async (arquivo, produtoNome, indice) => {
             const arquivoLeve = await comprimirImagem(arquivo);
             const slug = limparTexto(produtoNome)
@@ -799,26 +784,20 @@
             const nomeArquivo = `${Date.now()}-${indice}-${slug}.jpg`;
             const caminho = `produtos/${nomeArquivo}`;
             const storageRef = ref(storage, caminho);
-            try {
-                showLoading(`Enviando foto ${indice} para o banco de imagens...`);
-                return await enviarImagemImgBB(arquivoLeve);
-            } catch (erroImgBB) {
-                console.warn("Falha no ImgBB; tentando Firebase Storage.", erroImgBB);
-                showLoading(`Envio alternativo falhou. Tentando Firebase na foto ${indice}...`);
-                await comTempoLimite(
-                    uploadBytes(storageRef, arquivoLeve, {
-                        contentType: arquivoLeve.type || 'image/jpeg',
-                        customMetadata: { origem: 'admin-gabriele' }
-                    }),
-                    UPLOAD_TIMEOUT_MS,
-                    "O Firebase demorou demais para receber a foto."
-                );
-                return await comTempoLimite(
-                    getDownloadURL(storageRef),
-                    UPLOAD_TIMEOUT_MS,
-                    "O Firebase demorou demais para liberar o link da foto."
-                );
-            }
+            showLoading(`Enviando foto ${indice} com segurança...`);
+            await comTempoLimite(
+                uploadBytes(storageRef, arquivoLeve, {
+                    contentType: arquivoLeve.type || 'image/jpeg',
+                    customMetadata: { origem: 'admin-gabriele' }
+                }),
+                UPLOAD_TIMEOUT_MS,
+                "O Firebase demorou demais para receber a foto."
+            );
+            return await comTempoLimite(
+                getDownloadURL(storageRef),
+                UPLOAD_TIMEOUT_MS,
+                "O Firebase demorou demais para liberar o link da foto."
+            );
         };
 
         window.salvarProduto = async () => {

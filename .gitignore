@@ -1,0 +1,18 @@
+# Local secrets and credentials
+.env
+.env.*
+!.env.example
+*serviceAccount*.json
+*service-account*.json
+credentials*.json
+firebase-adminsdk*.json
+*.pem
+*.p12
+*.key
+
+# Local dependency/build folders
+node_modules/
+dist/
+build/
+.firebase/
+firebase-debug.log

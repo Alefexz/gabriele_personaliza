@@ -167,6 +167,51 @@
             cursor: pointer;
         }
         .marketing-dot.active { width: 20px; background: #B39DDB; }
+        .trust-strip {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 0 0 12px;
+        }
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #ffffff;
+            border: 1px solid #ece7f5;
+            border-radius: 14px;
+            padding: 12px;
+            color: #4a4454;
+            font-size: 0.82rem;
+            line-height: 1.3;
+            box-shadow: 0 4px 12px rgba(80, 70, 110, 0.04);
+        }
+        .trust-item i {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #F3E5F5;
+            color: #8E63B8;
+            flex: 0 0 auto;
+        }
+        .image-fallback {
+            width: 100%;
+            height: 100%;
+            min-height: 210px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 18px;
+            box-sizing: border-box;
+            background: #F7F1FA;
+            color: #7B5EA8;
+            font-weight: 700;
+            line-height: 1.35;
+        }
         @media (max-width: 768px) {
             .marketing-slide {
                 min-height: 168px;
@@ -183,6 +228,8 @@
             .marketing-copy p { font-size: 0.8rem; }
             .marketing-action { grid-area: action; justify-content: center; width: 100%; box-sizing: border-box; }
             .marketing-dots { right: 18px; bottom: 64px; }
+            .trust-strip { grid-template-columns: 1fr; }
+            .trust-item { padding: 10px 12px; }
         }
 
         .product-card { border-radius: 16px !important; background: #ffffff !important; border: 1px solid #f0f0f0 !important; box-shadow: 0 4px 15px rgba(0,0,0,0.04) !important; transition: transform 0.3s ease, box-shadow 0.3s ease !important; overflow: hidden !important; }
@@ -268,7 +315,7 @@
                 loader.style.opacity = '0';
                 setTimeout(function() { loader.style.display = 'none'; }, 500);
             }
-        }, 2500); 
+        }, 1600);
     </script>
 
     <header>
@@ -330,6 +377,12 @@
                     </article>
                 </div>
                 <div class="marketing-dots" id="marketing-dots" aria-label="Selecionar destaque"></div>
+            </div>
+
+            <div class="trust-strip" aria-label="Informações importantes da loja">
+                <div class="trust-item"><i class="fas fa-location-dot"></i><span>Atendimento em Manacapuru-AM com retirada ou entrega local combinada.</span></div>
+                <div class="trust-item"><i class="fas fa-calendar-check"></i><span>Pedidos personalizados com prazo médio de 7 a 15 dias úteis.</span></div>
+                <div class="trust-item"><i class="fas fa-shield-heart"></i><span>Arte enviada para aprovação antes da produção final.</span></div>
             </div>
 
             <div class="filter-container">
@@ -483,7 +536,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, onSnapshot, doc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         
         const firebaseConfig = { apiKey: "AIzaSyBrRLiEFF8dfWHVxhK3popdYgEDQLiKzCM", authDomain: "gabriele-personaliza.firebaseapp.com", projectId: "gabriele-personaliza", storageBucket: "gabriele-personaliza.firebasestorage.app", messagingSenderId: "403724311605", appId: "1:403724311605:web:850e1bb14459a3ec60e57c", measurementId: "G-T24GYM57CT" };
         const app = initializeApp(firebaseConfig);
@@ -581,11 +634,21 @@
             if(tema) { document.body.classList.add(tema.classe); window.tituloSazonalAtual = tema.titulo; } else window.tituloSazonalAtual = null;
         }
 
-        async function aguardarImagensEFecharLoader() {
-            const loader = document.getElementById('site-loader'); const imagens = document.querySelectorAll('img'); 
-            let promessas = Array.from(imagens).map(img => { return new Promise(resolve => { if (img.complete) resolve(); else { img.onload = resolve; img.onerror = resolve; } }); });
-            await Promise.all(promessas);
-            if(loader && loader.style.display !== 'none') { loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 500); }
+        function fecharLoaderRapido() {
+            const loader = document.getElementById('site-loader');
+            if(loader && loader.style.display !== 'none') {
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 350);
+            }
+        }
+
+        function substituirImagemQuebrada(img, nome = 'Produto personalizado') {
+            const fallback = document.createElement('div');
+            fallback.className = 'image-fallback carousel-img active';
+            fallback.setAttribute('role', 'img');
+            fallback.setAttribute('aria-label', nome);
+            fallback.textContent = 'Foto indisponível no momento';
+            img.replaceWith(fallback);
         }
 
         function atualizarContadoresFiltros(produtos) {
@@ -618,7 +681,7 @@
         window.carregarLoja = async (filtroInicial = 'todos') => {
             mostrarSkeleton();
             try {
-                const q = await getDocs(collection(db, "produtos"));
+                const q = await getDocs(query(collection(db, "produtos"), where("ativo", "==", true)));
                 todosProdutos = []; q.forEach(doc => { let p = doc.data(); p.id = doc.id; if (produtoVisivelNaLoja(p)) todosProdutos.push(p); });
                 
                 // ==========================================
@@ -649,7 +712,7 @@
                 // FLUXO NORMAL
                 atualizarContadoresFiltros(todosProdutos);
                 aplicarFiltros(filtroInicial);
-                aguardarImagensEFecharLoader();
+                fecharLoaderRapido();
                 
             } catch(e) { 
                 console.error(e); document.getElementById('container-produtos').innerHTML = '<p style="text-align:center; grid-column:1/-1;">Erro ao carregar produtos. Verifique sua conexão.</p>';
@@ -720,6 +783,9 @@
 
             const card = document.createElement('div'); card.className = 'product-card';
             card.innerHTML = `<div class="product-img-wrapper carousel-container">${etiqueta}${imagensHtml}</div><div class="product-info"><span class="category-tag">${escaparHtml(nomeCatDisplay)}</span><h3>${escaparHtml(p.nome)}</h3><div class="product-price">${priceHtml}</div>${minLabel}${btnHtml}</div>`;
+            card.querySelectorAll('img.carousel-img').forEach(img => {
+                img.addEventListener('error', () => substituirImagemQuebrada(img, p.nome));
+            });
             if(p.ativo) card.onclick = () => abrirModal(p);
             return card;
         }
@@ -761,7 +827,10 @@
             const totalDisponiveis = listaOrdenada.filter(p => p.ativo).length;
             const posicaoSobMedida = totalDisponiveis > 0 ? Math.min(6, totalDisponiveis) : 0;
 
-            if (lista.length === 0 && containerSazonal.style.display === 'none') { containerProdutos.innerHTML += `<p style="text-align:center; width:100%; grid-column: 1 / -1; padding: 40px; color: #888;">${msgVazio}</p>`; } 
+            if (lista.length === 0 && containerSazonal.style.display === 'none') {
+                containerProdutos.innerHTML += `<p style="text-align:center; width:100%; grid-column: 1 / -1; padding: 40px; color: #888;">${msgVazio}</p>`;
+                if (aba === 'busca') containerProdutos.appendChild(cardSobMedida);
+            }
             else {
                 listaOrdenada.forEach((p, index) => {
                     if (deveMostrarSobMedida && index === posicaoSobMedida) containerProdutos.appendChild(cardSobMedida);
@@ -812,6 +881,7 @@
                     img.className = 'modal-img';
                     img.loading = 'lazy';
                     img.decoding = 'async';
+                    img.addEventListener('error', () => substituirImagemQuebrada(img, p.nome));
                     img.addEventListener('click', () => abrirImagemCheia(src));
                     imgC.appendChild(img);
                 }
