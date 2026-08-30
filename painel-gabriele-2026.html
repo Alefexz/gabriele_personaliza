@@ -238,7 +238,7 @@
     <div id="form-overlay">
         <div class="form-card">
             <h3 id="titulo-modal">Novo Produto</h3>
-            <label>Fotos (Máx 3) - ALTA QUALIDADE 📸</label>
+            <label>Fotos (Máx 3) - otimizadas para a loja</label>
             <div style="margin-bottom: 15px;">
                 <label for="novo-fotos" style="background:#B39DDB; color:white; padding:8px 15px; border-radius:20px; cursor:pointer; font-size:0.9rem; display:inline-block;"><i class="fas fa-camera"></i> Adicionar Foto</label>
                 <input type="file" id="novo-fotos" accept="image/*" multiple style="display:none" onchange="adicionarFotos(this)">
@@ -298,14 +298,13 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, doc, updateDoc, addDoc, deleteDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
         const firebaseConfig = { apiKey: "AIzaSyBrRLiEFF8dfWHVxhK3popdYgEDQLiKzCM", authDomain: "gabriele-personaliza.firebaseapp.com", projectId: "gabriele-personaliza", storageBucket: "gabriele-personaliza.firebasestorage.app", messagingSenderId: "403724311605", appId: "1:403724311605:web:850e1bb14459a3ec60e57c", measurementId: "G-T24GYM57CT" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const storage = getStorage(app);
         const UPLOAD_TIMEOUT_MS = 20000;
+        const MAX_FOTO_DATA_URL_LENGTH = 240000;
         
         let listaFotosEdicao = []; 
         let produtoEmEdicaoId = null;
@@ -314,6 +313,7 @@
         let unsubscribeVendas = null;
 
         const VERCEL_API_URL = "https://backand-gabrielepersonaliza.vercel.app/api/pix";
+        const UPLOAD_IMAGE_API_URL = "https://backand-gabrielepersonaliza.vercel.app/api/upload-image";
 
         const limparTexto = (valor = '') => String(valor ?? '');
         const criarEl = (tag, attrs = {}, text = '') => {
@@ -716,7 +716,23 @@
             });
         };
 
-        // Mantem detalhes das artes, mas evita travar celulares com fotos muito grandes.
+        const canvasParaBlob = (canvas, qualidade) => new Promise((resolve, reject) => {
+            const timer = setTimeout(() => reject(new Error("O celular demorou demais para gerar a foto otimizada. Tente uma foto menor.")), 20000);
+            canvas.toBlob((blob) => {
+                clearTimeout(timer);
+                if (blob) resolve(blob);
+                else reject(new Error("O celular não tem memória livre para processar a foto."));
+            }, 'image/jpeg', qualidade);
+        });
+
+        const arquivoParaDataUrl = (arquivo) => new Promise((resolve, reject) => {
+            const leitor = new FileReader();
+            leitor.onload = () => resolve(leitor.result);
+            leitor.onerror = () => reject(new Error("Não foi possível preparar a foto para salvar."));
+            leitor.readAsDataURL(arquivo);
+        });
+
+        // Mantem detalhes das artes, mas evita travar celulares e evita depender de storage pago.
         const comprimirImagem = async (arquivo) => { 
             return new Promise((resolve, reject) => { 
                 const urlTemporaria = URL.createObjectURL(arquivo);
@@ -738,10 +754,10 @@
                 };
 
                 img.onload = () => {
-                    try {
+                    (async () => {
                         clearTimeout(timer);
                         const canvas = document.createElement('canvas');
-                        const MAX_DIMENSION = 1800;
+                        const MAX_DIMENSION = 1200;
                         const escala = Math.min(1, MAX_DIMENSION / Math.max(img.width, img.height));
                         const width = Math.max(1, Math.round(img.width * escala));
                         const height = Math.max(1, Math.round(img.height * escala));
@@ -750,54 +766,70 @@
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
 
-                        const toBlobTimer = setTimeout(() => {
-                            encerrar(reject, new Error("O celular demorou demais para gerar a foto otimizada. Tente uma foto menor."));
-                        }, 20000);
-
-                        canvas.toBlob((blob) => {
-                            clearTimeout(toBlobTimer);
-                            if (!blob) {
-                                encerrar(reject, new Error("O celular não tem memória livre para processar a foto."));
+                        const qualidades = [0.82, 0.74, 0.66, 0.58, 0.5];
+                        let melhorArquivo = null;
+                        for (const qualidade of qualidades) {
+                            const blob = await canvasParaBlob(canvas, qualidade);
+                            const nomeJpg = arquivo.name.replace(/\.[^.]+$/, '.jpg') || 'foto-produto.jpg';
+                            melhorArquivo = new File([blob], nomeJpg, { type: 'image/jpeg', lastModified: Date.now() });
+                            const dataUrl = await arquivoParaDataUrl(melhorArquivo);
+                            if (dataUrl.length <= MAX_FOTO_DATA_URL_LENGTH) {
+                                encerrar(resolve, melhorArquivo);
                                 return;
                             }
-                            const nomeJpg = arquivo.name.replace(/\.[^.]+$/, '.jpg') || 'foto-produto.jpg';
-                            encerrar(resolve, new File([blob], nomeJpg, { type: 'image/jpeg', lastModified: Date.now() }));
-                        }, 'image/jpeg', 0.9);
+                        }
 
-                    } catch (err) {
+                        encerrar(reject, new Error("A foto ficou pesada demais para salvar sem Storage. Tente recortar a imagem ou escolher outra foto."));
+                    })().catch((err) => {
                         clearTimeout(timer);
                         encerrar(reject, new Error("Memória RAM insuficiente: " + err.message));
-                    }
+                    });
                 }; 
                 img.src = urlTemporaria;
             }); 
         };
 
-        const enviarImagemStorage = async (arquivo, produtoNome, indice) => {
-            const arquivoLeve = await comprimirImagem(arquivo);
-            const slug = limparTexto(produtoNome)
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .replace(/[^a-z0-9]+/gi, '-')
-                .replace(/^-+|-+$/g, '')
-                .toLowerCase() || 'produto';
-            const nomeArquivo = `${Date.now()}-${indice}-${slug}.jpg`;
-            const caminho = `produtos/${nomeArquivo}`;
-            const storageRef = ref(storage, caminho);
-            showLoading(`Enviando foto ${indice} com segurança...`);
-            await comTempoLimite(
-                uploadBytes(storageRef, arquivoLeve, {
-                    contentType: arquivoLeve.type || 'image/jpeg',
-                    customMetadata: { origem: 'admin-gabriele' }
+        const enviarImagemBackend = async (dataUrl, produtoNome) => {
+            const user = auth.currentUser;
+            if (!user) throw new Error("Faça login novamente para enviar fotos.");
+
+            const token = await user.getIdToken();
+            const response = await comTempoLimite(
+                fetch(UPLOAD_IMAGE_API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ image: dataUrl, name: produtoNome })
                 }),
                 UPLOAD_TIMEOUT_MS,
-                "O Firebase demorou demais para receber a foto."
+                "O backend demorou demais para enviar a foto."
             );
-            return await comTempoLimite(
-                getDownloadURL(storageRef),
+
+            const result = await response.json().catch(() => ({}));
+            if (!response.ok || !result.url) {
+                throw new Error(result.error || "O backend não conseguiu enviar a foto.");
+            }
+            return result.url;
+        };
+
+        const enviarImagemStorage = async (arquivo, produtoNome, indice) => {
+            const arquivoLeve = await comprimirImagem(arquivo);
+            showLoading(`Preparando foto ${indice} para salvar...`);
+            const dataUrl = await comTempoLimite(
+                arquivoParaDataUrl(arquivoLeve),
                 UPLOAD_TIMEOUT_MS,
-                "O Firebase demorou demais para liberar o link da foto."
+                "A foto demorou demais para ficar pronta. Tente uma imagem menor."
             );
+            try {
+                showLoading(`Enviando foto ${indice} pelo backend seguro...`);
+                return await enviarImagemBackend(dataUrl, produtoNome);
+            } catch (erroBackend) {
+                console.warn("Upload pelo backend indisponível; salvando foto otimizada no Firestore.", erroBackend);
+                showToast("Backend de imagens indisponível. Salvando foto otimizada no banco.", "info");
+                return dataUrl;
+            }
         };
 
         window.salvarProduto = async () => {
