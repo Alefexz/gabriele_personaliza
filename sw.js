@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gabriele-personaliza-v2';
+const CACHE_NAME = 'gabriele-personaliza-v3';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -34,11 +34,16 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          const copy = response.clone();
-          event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.put('/index.html', copy)));
+          if (response.ok && new URL(request.url).pathname === '/') {
+            const copy = response.clone();
+            event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.put('/index.html', copy)));
+          }
           return response;
         })
-        .catch(() => caches.match('/index.html'))
+        .catch(async () => {
+          if (new URL(request.url).pathname === '/') return caches.match('/index.html');
+          return new Response('Sem conexão. Reconecte e tente novamente.', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+        })
     );
     return;
   }
@@ -46,7 +51,7 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(request).then((cached) => {
       if (cached) return cached;
-      return fetch(request).catch(() => caches.match('/index.html'));
+      return fetch(request);
     })
   );
 });

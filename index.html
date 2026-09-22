@@ -13,11 +13,15 @@
 
     <meta property="og:title" content="Gabriele Personaliza | Papelaria Criativa">
     <meta property="og:description" content="Transforme sua festa com mimos e personalizados feitos à mão. Confira nosso catálogo!">
-    <meta property="og:image" content="https://i.ibb.co/h7XN8kG/logo.png"> 
+    <meta property="og:image" content="https://gabrielepersonaliza.com.br/assets/img/icon-512.png">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
+    <meta property="og:image:alt" content="Gabriele Personaliza - papelaria criativa em Manacapuru-AM">
+    <meta name="twitter:image" content="https://gabrielepersonaliza.com.br/assets/img/icon-512.png">
     <meta property="og:url" content="https://gabrielepersonaliza.com.br">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="pt_BR">
-    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:card" content="summary">
     <meta name="theme-color" content="#B39DDB">
     <script type="application/ld+json">
     {
@@ -40,13 +44,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T24GYM57CT"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-T24GYM57CT');
-    </script>
+    <script src="/privacidade.js" defer></script>
 
     <link rel="stylesheet" href="style.css?v=12">
     
@@ -229,7 +227,8 @@
             .marketing-copy h2 { font-size: 1rem; }
             .marketing-copy p { font-size: 0.8rem; }
             .marketing-action { grid-area: action; justify-content: center; width: 100%; box-sizing: border-box; }
-            .marketing-dots { right: 18px; bottom: 64px; }
+            .marketing-dots { position:static; justify-content:center; padding:8px 0; background:#fff; }
+            .marketing-dot { width:24px; height:24px; border:8px solid white; box-sizing:border-box; }
             .trust-strip { grid-template-columns: 1fr; }
             .trust-item { padding: 10px 12px; }
         }
@@ -302,6 +301,19 @@
         #modal-sucesso { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; justify-content: center; align-items: center; text-align: center; }
         .sucesso-card { background: white; padding: 40px; border-radius: 20px; width: 90%; max-width: 400px; }
         .pedido-id { font-size: 1.5rem; font-weight: bold; color: #B39DDB; margin: 10px 0; letter-spacing: 2px; border: 2px dashed #B39DDB; padding: 10px; border-radius: 12px; display: inline-block; }
+        .legal-links { display:flex; justify-content:center; flex-wrap:wrap; gap:12px 24px; margin:24px 0; }
+        .legal-links a, .legal-links button { min-height:44px; display:inline-flex; align-items:center; color:#69448a; font:inherit; font-size:14px; background:none; border:0; text-decoration:underline; cursor:pointer; }
+        @media(max-width:768px) {
+            input, select, textarea { font-size:16px !important; }
+            .product-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+            .product-card, .product-info { min-width:0; }
+            .product-info h3 { overflow-wrap:anywhere; }
+            .filter-btn, .btn-sm, .close-modal { min-height:44px; }
+            .modal-content { max-height:90dvh; padding-bottom:calc(24px + env(safe-area-inset-bottom)); }
+            footer { padding-bottom:90px !important; }
+        }
+        @media(max-width:359px) { .product-grid { grid-template-columns:minmax(0,1fr); } }
+        @media(prefers-reduced-motion:reduce) { *, *::before, *::after { scroll-behavior:auto !important; animation-duration:0.01ms !important; transition-duration:0.01ms !important; } }
     </style>
 </head>
 <body>
@@ -423,6 +435,11 @@
                 <a href="https://www.instagram.com/gabriele_personaliza/" target="_blank" rel="noopener" aria-label="Instagram da Gabriele Personaliza"><i class="fab fa-instagram"></i></a>
                 <a href="https://wa.me/559292770409" target="_blank" rel="noopener" aria-label="WhatsApp da Gabriele Personaliza"><i class="fab fa-whatsapp"></i></a>
             </div>
+            <nav class="legal-links" aria-label="Informações legais">
+                <a href="/privacidade.html">Política de privacidade</a>
+                <a href="/termos.html">Termos de uso</a>
+                <button type="button" onclick="abrirPreferencias()">Preferências de cookies</button>
+            </nav>
             <div class="copyright" style="text-align: center; margin-top: 20px;">
                 <p>&copy; <span id="ano-atual"></span> Gabriele Personaliza.</p>
                 <p style="font-size: 0.8rem; color: #888; margin-top: 10px; letter-spacing: 0.5px;">
@@ -491,7 +508,7 @@
                     <div class="input-group"><label>Seu Nome *</label><input type="text" id="cliente-nome" placeholder="Como podemos te chamar?"></div>
                     <div class="input-group"><label>Seu WhatsApp *</label><input type="tel" id="cliente-zap" placeholder="Seu número com DDD"></div>
                     
-                    <div class="termos-box" id="box-termos"><input type="checkbox" id="check-termos"><div class="termos-text">Estou ciente do pagamento de <strong>50% de entrada</strong> para iniciar a produção.<br><span style="font-size:0.75rem;">* Valor não reembolsável em caso de desistência.</span></div></div>
+                    <div class="termos-box" id="box-termos"><input type="checkbox" id="check-termos"><label class="termos-text" for="check-termos">Estou ciente do pagamento de <strong>50% de entrada</strong> para iniciar a produção e dos <a href="/termos.html" target="_blank" rel="noopener">termos de compra</a>.<br><span style="font-size:0.75rem;">Cancelamentos e reembolsos respeitam os direitos previstos em lei. Consulte a <a href="/privacidade.html" target="_blank" rel="noopener">Política de privacidade</a>.</span></label></div>
                     <div id="aviso-valor-pix" style="text-align:center; margin-bottom: 10px; font-weight: bold; color: #E91E63; background: #FCE4EC; padding: 10px; border-radius: 12px; border: 1px dashed #F8BBD0; display: none;">O Pix será gerado no valor de <span>R$ 0,00</span> (50% de entrada)</div>
                     
                     <button id="btn-gerar-pix" class="btn-cartao" style="background:#009EE3" onclick="iniciarPagamentoPix()"><i class="fas fa-qrcode"></i> Pagar Agora via Pix</button>
@@ -522,7 +539,7 @@
             <ul class="politicas-lista">
                 <li><i class="fas fa-calendar-alt"></i> <strong>Prazos:</strong> Pedimos antecedência mínima de 7 a 15 dias, dependendo do produto.</li>
                 <li><i class="fas fa-hand-holding-usd"></i> <strong>Pagamento:</strong> Solicitamos 50% do valor no ato do pedido para iniciar a produção.</li>
-                <li><i class="fas fa-exclamation-triangle"></i> <strong>Cancelamento:</strong> Em caso de desistência, o valor da entrada não é reembolsado.</li>
+                <li><i class="fas fa-exclamation-triangle"></i> <strong>Cancelamento:</strong> Solicite pelo WhatsApp. Cancelamentos e reembolsos respeitam os direitos previstos em lei e os <a href="/termos.html">termos de compra</a>.</li>
                 <li><i class="fas fa-paint-brush"></i> <strong>Arte:</strong> Enviamos a arte para aprovação antes da impressão final.</li>
                 <li><i class="fas fa-shipping-fast"></i> <strong>Entrega:</strong> Retirada em Manacapuru ou entrega local combinada pelo WhatsApp (taxa conforme o endereço).</li>
             </ul>
