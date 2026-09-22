@@ -35,6 +35,8 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -576,6 +578,24 @@
             return [...disponiveis, ...esgotados];
         };
         const produtoVisivelNaLoja = (produto) => produto.ativo === true && produto.arquivado !== true;
+        const CACHE_PRODUTOS = 'gabriele-catalogo-v1';
+        const CACHE_PRODUTOS_DURACAO = 30 * 60 * 1000;
+
+        function lerProdutosEmCache() {
+            try {
+                const cache = JSON.parse(localStorage.getItem(CACHE_PRODUTOS));
+                if (!cache || !Array.isArray(cache.produtos) || Date.now() - cache.salvoEm > CACHE_PRODUTOS_DURACAO) return [];
+                return cache.produtos.filter(produtoVisivelNaLoja);
+            } catch (_) {
+                return [];
+            }
+        }
+
+        function salvarProdutosEmCache(produtos) {
+            try {
+                localStorage.setItem(CACHE_PRODUTOS, JSON.stringify({ salvoEm: Date.now(), produtos }));
+            } catch (_) {}
+        }
 
         function iniciarBannerMarketing() {
             const track = document.getElementById('marketing-track');
@@ -679,10 +699,19 @@
         }
 
         window.carregarLoja = async (filtroInicial = 'todos') => {
-            mostrarSkeleton();
+            const produtosEmCache = lerProdutosEmCache();
+            if (produtosEmCache.length) {
+                todosProdutos = produtosEmCache;
+                atualizarContadoresFiltros(todosProdutos);
+                aplicarFiltros(filtroInicial);
+                fecharLoaderRapido();
+            } else {
+                mostrarSkeleton();
+            }
             try {
                 const q = await getDocs(query(collection(db, "produtos"), where("ativo", "==", true)));
                 todosProdutos = []; q.forEach(doc => { let p = doc.data(); p.id = doc.id; if (produtoVisivelNaLoja(p)) todosProdutos.push(p); });
+                salvarProdutosEmCache(todosProdutos);
                 
                 // ==========================================
                 // TRATAMENTO VIP: PRIORIDADE MÁXIMA PRO LINK
@@ -715,7 +744,8 @@
                 fecharLoaderRapido();
                 
             } catch(e) { 
-                console.error(e); document.getElementById('container-produtos').innerHTML = '<p style="text-align:center; grid-column:1/-1;">Erro ao carregar produtos. Verifique sua conexão.</p>';
+                console.error(e);
+                if (!todosProdutos.length) document.getElementById('container-produtos').innerHTML = '<p style="text-align:center; grid-column:1/-1;">Não foi possível atualizar o catálogo agora. Verifique sua conexão e tente novamente.</p>';
                 const loader = document.getElementById('site-loader'); if(loader) { loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 500); }
             }
         }

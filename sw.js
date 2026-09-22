@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gabriele-personaliza-v1';
+const CACHE_NAME = 'gabriele-personaliza-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -29,6 +29,19 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   if (request.method !== 'GET') return;
+
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          const copy = response.clone();
+          event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.put('/index.html', copy)));
+          return response;
+        })
+        .catch(() => caches.match('/index.html'))
+    );
+    return;
+  }
 
   event.respondWith(
     caches.match(request).then((cached) => {
