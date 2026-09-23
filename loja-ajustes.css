@@ -1,0 +1,19 @@
+html,body{max-width:100%;overflow-x:clip}
+.shop-links{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 24px;margin:0 0 18px}
+.shop-links a{color:#594063;min-height:44px;display:flex;align-items:center;gap:8px}
+@media(max-width:768px){.shop-links{display:none}.trust-strip{gap:2px!important;padding:8px 0!important}.trust-item{border-radius:0!important;box-shadow:none!important;background:transparent!important;padding:4px 10px!important;font-size:12px!important}.trust-item span{font-size:12px!important}.marketing-banner{margin-bottom:12px!important}}
+.filter-container{justify-content:flex-start!important}
+.filter-btn{flex-shrink:0;min-height:44px}
+.close-modal{background:white;border:1px solid #ccc;border-radius:6px;min-width:44px;min-height:44px}
+.input-group{min-width:0}
+.product-card h3{overflow-wrap:anywhere}
+.btn-sm,.marketing-action,.filter-btn.active,.alert-btn{background:#715285!important;color:#fff!important}
+.btn-comprar{background:#197548!important}
+.btn-cartao{background:#14668a}
+.nav-item{min-width:0;flex:1;font-size:12px}
+.nav-item span{font-size:11px}
+.product-page-link{display:block;margin-top:10px;text-align:center;font-size:13px;color:#594063}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #007f6e;outline-offset:3px}
+@media(min-width:769px){.filter-container{flex-wrap:wrap!important}.container{width:100%;box-sizing:border-box}}
+@media(max-width:1000px) and (min-width:769px){nav .nav-links{gap:12px}header .logo{font-size:24px}.btn-nav{padding:8px!important}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}

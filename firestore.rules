@@ -1,63 +1,36 @@
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
     function isAdmin() {
       return request.auth != null
         && request.auth.token.email == "gabyguedes534@gmail.com";
     }
-
-    function textoValido(valor, maximo) {
-      return valor is string
-        && valor.size() > 0
-        && valor.size() <= maximo;
+    function validProduct() {
+      let p = request.resource.data;
+      return p.nome is string && p.nome.size() > 0 && p.nome.size() <= 160
+        && p.preco is number && p.preco > 0 && p.preco <= 10000
+        && p.minimo is int && p.minimo >= 1 && p.minimo <= 1000
+        && p.ativo is bool
+        && (!('fotos' in p) || (p.fotos is list && p.fotos.size() <= 3))
+        && (!('em_promocao' in p) || p.em_promocao == false ||
+          (p.preco_promocional is number && p.preco_promocional > 0 && p.preco_promocional < p.preco));
     }
-
-    function pedidoPublicoValido() {
-      return request.resource.data.keys().hasOnly([
-          "id_visual",
-          "cliente",
-          "whatsapp",
-          "produto",
-          "total",
-          "data",
-          "status",
-          "origem"
-        ])
-        && request.resource.data.keys().hasAll([
-          "id_visual",
-          "cliente",
-          "whatsapp",
-          "produto",
-          "total",
-          "data",
-          "status",
-          "origem"
-        ])
-        && textoValido(request.resource.data.id_visual, 12)
-        && textoValido(request.resource.data.cliente, 80)
-        && textoValido(request.resource.data.whatsapp, 30)
-        && textoValido(request.resource.data.produto, 500)
-        && textoValido(request.resource.data.data, 40)
-        && request.resource.data.total is number
-        && request.resource.data.total > 0
-        && request.resource.data.total <= 10000
-        && request.resource.data.status in ["Pendente", "Aguardando Pagamento"]
-        && request.resource.data.origem in ["WhatsApp", "Site Pix"];
-    }
-
-    match /produtos/{produtoId} {
+    match /produtos/{id} {
       allow read: if resource.data.ativo == true || isAdmin();
-      allow create, update, delete: if isAdmin();
+      allow create, update: if isAdmin() && validProduct();
+      allow delete: if isAdmin();
     }
-
-    match /pedidos/{pedidoId} {
-      allow create: if isAdmin() || pedidoPublicoValido();
-      allow read, update, delete: if isAdmin();
+    match /pedidos/{id} {
+      allow read: if isAdmin();
+      allow create: if isAdmin()
+        && request.resource.data.origem == 'Pix Expresso Admin'
+        && request.resource.data.total is number
+        && request.resource.data.total > 0 && request.resource.data.total <= 10000
+        && request.resource.data.status == 'Aguardando Pagamento'
+        && !('schema_version' in request.resource.data);
+      allow update, delete: if false;
+      match /{history=**} { allow read: if isAdmin(); allow write: if false; }
     }
-
-    match /{document=**} {
-      allow read, write: if false;
-    }
+    match /{document=**} { allow read, write: if false; }
   }
 }

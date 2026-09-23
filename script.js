@@ -10,32 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- FILTRAGEM DO CATÁLOGO ---
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    const productCards = document.querySelectorAll('.product-card');
-
-    if (filterBtns.length > 0) {
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                filterBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-
-                const filterValue = btn.getAttribute('data-filter');
-
-                productCards.forEach(card => {
-                    const cardCategory = card.getAttribute('data-category');
-                    if (filterValue === 'todos' || filterValue === cardCategory) {
-                        card.classList.remove('hide');
-                        card.classList.add('show');
-                    } else {
-                        card.classList.add('hide');
-                        card.classList.remove('show');
-                    }
-                });
-            });
-        });
-    }
-
     // --- SOLUÇÃO DEFINITIVA DO INSTAGRAM ---
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     const instaLinks = document.querySelectorAll('a[href*="instagram.com"]');

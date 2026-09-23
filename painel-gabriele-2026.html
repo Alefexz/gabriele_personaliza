@@ -181,7 +181,15 @@
                         <select id="filtro-status" class="admin-select" onchange="filtrarVendas()">
                             <option value="todos">Todos os status</option>
                             <option value="Pendente">Pendente</option>
-                            <option value="Concluído">Concluído</option>
+                            <option value="Aguardando Pagamento">Aguardando pagamento</option>
+                            <option value="Entrada confirmada">Entrada confirmada</option>
+                            <option value="Aguardando arte">Aguardando arte</option>
+                            <option value="Aguardando aprovação da arte">Aguardando aprovação da arte</option>
+                            <option value="Arte aprovada">Arte aprovada</option>
+                            <option value="Em produção">Em produção</option>
+                            <option value="Pronto">Pronto</option>
+                            <option value="Entregue">Entregue</option>
+                            <option value="Concluído">Concluído (legado)</option>
                             <option value="Cancelado">Cancelado</option>
                         </select>
                         <button class="btn-new" onclick="exportarPedidosCsv()" style="float:none; border-radius:8px;"><i class="fas fa-file-csv"></i> Exportar CSV</button>
@@ -190,8 +198,8 @@
                 <div class="stats-grid">
                     <div class="stat-card"><div class="stat-label">Pedidos Visíveis</div><div class="stat-value" id="stat-pedidos">0</div></div>
                     <div class="stat-card"><div class="stat-label">Pendentes</div><div class="stat-value" id="stat-pendentes">0</div></div>
-                    <div class="stat-card"><div class="stat-label">Concluídos</div><div class="stat-value" id="stat-concluidos">0</div></div>
-                    <div class="stat-card"><div class="stat-label">Total Concluído</div><div class="stat-value" id="stat-total">R$ 0,00</div></div>
+                    <div class="stat-card"><div class="stat-label">Entregues</div><div class="stat-value" id="stat-concluidos">0</div></div>
+                    <div class="stat-card"><div class="stat-label">Recebimentos registrados</div><div class="stat-value" id="stat-total">R$ 0,00</div></div>
                 </div>
                 <div class="table-box">
                     <table>
@@ -374,7 +382,7 @@
         window.hideLoading = () => document.getElementById('loading-overlay').style.display = 'none';
 
         onAuthStateChanged(auth, (user) => {
-            if (user) { document.getElementById('login-screen').style.display = 'none'; document.getElementById('painel-app').style.display = 'flex'; carregarDados(); carregarVendasTempoReal(); } 
+            if (user && user.email === 'gabyguedes534@gmail.com') { document.getElementById('login-screen').style.display = 'none'; document.getElementById('painel-app').style.display = 'flex'; carregarDados(); carregarVendasTempoReal(); }
             else { document.getElementById('login-screen').style.display = 'flex'; document.getElementById('painel-app').style.display = 'none'; if(unsubscribeVendas) unsubscribeVendas(); }
         });
 
@@ -382,7 +390,7 @@
             const email = document.getElementById('email-admin').value; const senha = document.getElementById('senha-admin').value; const btn = document.querySelector('.btn-entrar'); const erro = document.getElementById('login-erro');
             btn.innerText = "Verificando..."; erro.style.display = 'none';
             try { await signInWithEmailAndPassword(auth, email, senha); showToast("Acesso Liberado!", "success"); } 
-            catch (error) { erro.innerText = "Senha incorreta."; erro.style.display = 'block'; btn.innerText = "Acessar Painel"; showToast("Senha Incorreta", "error"); }
+            catch (error) { erro.innerText = "Não foi possível entrar. Confira e-mail e senha."; erro.style.display = 'block'; btn.innerText = "Acessar Painel"; showToast("Senha Incorreta", "error"); }
         }
         document.getElementById('senha-admin').addEventListener('keydown', (e) => { if(e.key === 'Enter') login(); });
         
@@ -408,7 +416,8 @@
             if(!cliente || !desc || !totalStr) { showToast("Preencha todos os campos!", "error"); return; }
 
             const total = parseFloat(totalStr);
-            const valorEntrada = total / 2;
+            if (!Number.isFinite(total) || total <= 0 || total > 10000) { showToast('Valor inválido.', 'error'); return; }
+            const valorEntrada = Math.ceil(Math.round(total * 100) / 2) / 100;
             const idVisual = '#' + Math.random().toString(36).substr(2, 4).toUpperCase();
 
             showLoading("Gerando Pix de Cobrança...");
@@ -420,7 +429,7 @@
                 });
 
                 const response = await fetch(VERCEL_API_URL, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${await auth.currentUser.getIdToken()}` },
                     body: JSON.stringify({ valor: valorEntrada.toFixed(2), descricao: `Entrada: Personalizado - Pedido ${idVisual}`, docId: docRef.id })
                 });
 
@@ -459,7 +468,7 @@
         window.exportarPedidosCsv = () => {
             const linhas = [['ID visual','Cliente','WhatsApp','Produto','Total','Status','Origem','Data']];
             pedidosCache
-                .filter(p => p.status !== 'Aguardando Pagamento')
+
                 .forEach(p => linhas.push([
                     p.id_visual || '',
                     p.cliente || '',
@@ -470,7 +479,11 @@
                     p.origem || '',
                     p.data || ''
                 ]));
-            const csv = linhas.map(l => l.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+            const csv = linhas.map(l => l.map(v => {
+                let cell = String(v);
+                if (/^[=+@\t\r-]/.test(cell)) cell = "'" + cell;
+                return '"' + cell.replace(/"/g, '""') + '"';
+            }).join(',')).join('\n');
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -556,10 +569,10 @@
         }
 
         function atualizarResumoPedidos(lista) {
-            const visiveis = lista.filter(p => p.status !== 'Aguardando Pagamento');
-            const pendentes = visiveis.filter(p => p.status === 'Pendente').length;
-            const concluidos = visiveis.filter(p => p.status === 'Concluído');
-            const total = concluidos.reduce((acc, p) => acc + (parseFloat(p.total) || 0), 0);
+            const visiveis = lista;
+            const pendentes = visiveis.filter(p => ['Pendente','Aguardando Pagamento'].includes(p.status)).length;
+            const concluidos = visiveis.filter(p => p.status === 'Entregue');
+            const total = visiveis.reduce((acc, p) => acc + ((p.received_cents || 0) + (p.manual_received_cents || 0)) / 100, 0);
             document.getElementById('stat-pedidos').innerText = visiveis.length;
             document.getElementById('stat-pendentes').innerText = pendentes;
             document.getElementById('stat-concluidos').innerText = concluidos.length;
@@ -584,7 +597,7 @@
 
                 snapshot.forEach(doc => {
                     const p = doc.data();
-                    if(p.status === 'Aguardando Pagamento') return;
+
                     pedidosCache.push({ id: doc.id, ...p });
 
                     const dataF = p.data ? new Date(p.data).toLocaleString('pt-BR', {day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}) : '-';
@@ -627,10 +640,42 @@
 
                     const tdTotal = criarEl('td', { 'data-label': 'Total' });
                     tdTotal.appendChild(criarEl('strong', {}, formatarMoeda(p.total)));
+                    tdTotal.appendChild(criarEl('p', {}, p.schema_version === 2 ? 'Recebido: ' + formatarMoeda(((p.received_cents || 0) + (p.manual_received_cents || 0)) / 100) + ' · Saldo: ' + formatarMoeda(p.balance_cents / 100) : 'Registro antigo: conferir recebimento'));
+                    for (const item of p.items || []) {
+                        const details = item.personalization || {};
+                        detalhesBox.appendChild(criarEl('p', {}, [item.name, details.theme, details.name, details.age, details.date].filter(Boolean).join(' · ')));
+                    }
                     const tdStatus = criarEl('td', { 'data-label': 'Status' });
-                    tdStatus.appendChild(criarEl('span', { className: `btn-status ${statusClass}`, style: 'cursor:pointer', onclick: () => mudarStatusPedido(doc.id, p.status) }, limparTexto(p.status)));
+                    const select = criarEl('select', { 'aria-label': 'Etapa do pedido ' + p.id_visual });
+                    const steps = [...new Set([p.status, 'Aguardando arte', 'Em produção', 'Pronto', 'Entregue', 'Cancelado'])];
+                    steps.forEach(s => { const option = criarEl('option', { value: s }, s); option.selected = s === p.status; select.append(option); });
+                    select.addEventListener('change', async () => {
+                        const requested = select.value;
+                        select.value = p.status;
+                        showConfirm('Alterar etapa para ' + requested + '? Isso não confirma pagamento nem efetua reembolso.', () => administrarPedido(doc.id, 'status', { status: requested }), 'info');
+                    });
+                    tdStatus.append(select);
+                    tdStatus.append(criarEl('p', {}, 'Pagamento: ' + (p.payment_status || 'legado, conferir')));
+
                     const tdAcoes = criarEl('td', { 'data-label': 'Ações' });
-                    tdAcoes.appendChild(criarEl('i', { className: 'fas fa-ban action-icon icon-trash', title: 'Cancelar pedido', onclick: () => apagarPedido(doc.id) }));
+                    tdAcoes.appendChild(criarEl('button', { type: 'button', onclick: () => {
+                        const url = prompt('Link HTTPS da arte para o cliente conferir (não inclua dados desnecessários):');
+                        if (url) administrarPedido(doc.id, 'art', { url });
+                    } }, 'Enviar arte'));
+                    tdAcoes.appendChild(criarEl('button', { type: 'button', onclick: () => {
+                        const date = prompt('Data combinada (AAAA-MM-DD):', p.promised_date || '');
+                        if (!date) return;
+                        const instructions = prompt('Local e orientações de retirada/entrega:', p.pickup_instructions || '');
+                        const balance_due = prompt('Quando deve ser pago o saldo?', p.balance_due || '');
+                        if (instructions && balance_due) administrarPedido(doc.id, 'delivery', { date, instructions, balance_due });
+                    } }, 'Prazo e retirada'));
+                    if (p.schema_version === 2) tdAcoes.appendChild(criarEl('button', { type: 'button', onclick: () => {
+                        const amount = prompt('Valor recebido FORA do Mercado Pago, após conferir no banco. Saldo: ' + formatarMoeda(p.balance_cents / 100));
+                        if (!amount) return;
+                        const note = prompt('Identificação do recebimento e meio usado:');
+                        if (note) showConfirm('Registrar recebimento manual de R$ ' + amount + '? Não registre novamente a entrada do Mercado Pago.', () =>
+                            administrarPedido(doc.id, 'receipt', { amount: Number(amount.replace(',', '.')), note, key: crypto.randomUUID() }), 'info');
+                    } }, 'Registrar saldo'));
 
                     tr.append(tdDetalhes, tdData, tdCliente, tdTotal, tdStatus, tdAcoes);
                     tbody.appendChild(tr);
@@ -734,7 +779,7 @@
         });
 
         // Mantem detalhes das artes, mas evita travar celulares e evita depender de storage pago.
-        const comprimirImagem = async (arquivo) => { 
+        const comprimirImagem = async (arquivo, limite = 1100000) => {
             return new Promise((resolve, reject) => { 
                 const urlTemporaria = URL.createObjectURL(arquivo);
                 const img = new Image();
@@ -774,7 +819,7 @@
                             const nomeJpg = arquivo.name.replace(/\.[^.]+$/, '.jpg') || 'foto-produto.jpg';
                             melhorArquivo = new File([blob], nomeJpg, { type: 'image/jpeg', lastModified: Date.now() });
                             const dataUrl = await arquivoParaDataUrl(melhorArquivo);
-                            if (dataUrl.length <= MAX_FOTO_DATA_URL_LENGTH) {
+                            if (dataUrl.length <= limite) {
                                 encerrar(resolve, melhorArquivo);
                                 return;
                             }
@@ -802,7 +847,8 @@
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`
                     },
-                    body: JSON.stringify({ image: dataUrl, name: produtoNome })
+                    body: JSON.stringify({ image: dataUrl, name: produtoNome }),
+                    signal: AbortSignal.timeout(UPLOAD_TIMEOUT_MS)
                 }),
                 UPLOAD_TIMEOUT_MS,
                 "O backend demorou demais para enviar a foto."
@@ -810,7 +856,8 @@
 
             const result = await response.json().catch(() => ({}));
             if (!response.ok || !result.url) {
-                throw new Error(result.error || "O backend não conseguiu enviar a foto.");
+                const error = new Error(result.error || "O backend não conseguiu enviar a foto.");
+                error.status = response.status; throw error;
             }
             return result.url;
         };
@@ -827,15 +874,20 @@
                 showLoading(`Enviando foto ${indice} pelo backend seguro...`);
                 return await enviarImagemBackend(dataUrl, produtoNome);
             } catch (erroBackend) {
-                console.warn("Upload pelo backend indisponível; salvando foto otimizada no Firestore.", erroBackend);
+                if ([401,403].includes(erroBackend.status)) throw erroBackend;
+                if (!confirm('O servidor de fotos está indisponível. Salvar uma versão mais compacta desta foto no banco?')) throw erroBackend;
                 showToast("Backend de imagens indisponível. Salvando foto otimizada no banco.", "info");
-                return dataUrl;
+                return await arquivoParaDataUrl(await comprimirImagem(arquivo, MAX_FOTO_DATA_URL_LENGTH));
             }
         };
 
         window.salvarProduto = async () => {
             const nome = document.getElementById('novo-nome').value; const desc = document.getElementById('novo-desc').value; const preco = document.getElementById('novo-preco').value; const minimo = document.getElementById('novo-minimo').value; const link = document.getElementById('novo-link').value; const cat = document.getElementById('novo-categoria').value; const evento = cat === 'comemorativas' ? document.getElementById('novo-evento').value : null; const emPromocao = document.getElementById('cb-promocao').checked; const precoPromo = document.getElementById('novo-preco-promo').value;
-            if(!nome || !preco) { showToast("Preencha o nome e o preço!", "error"); return; }
+            if(!nome.trim() || nome.length > 160 || desc.length > 5000 || !Number.isFinite(Number(preco)) || Number(preco) <= 0 || Number(preco) > 10000 ||
+                !Number.isInteger(Number(minimo || 1)) || Number(minimo || 1) < 1 || Number(minimo || 1) > 1000 ||
+                (emPromocao && (!Number.isFinite(Number(precoPromo)) || Number(precoPromo) <= 0 || Number(precoPromo) >= Number(preco)))) {
+                showToast('Confira nome, preço, quantidade mínima e promoção (menor que o preço normal).', 'error'); return;
+            }
             try {
                 showLoading("Iniciando..."); let listaFinaisUrls = []; let contadorNovas = 0; let arquivosParaEnviar = listaFotosEdicao.filter(item => typeof item !== 'string');
                 for (let i = 0; i < listaFotosEdicao.length; i++) {
@@ -846,7 +898,8 @@
                         listaFinaisUrls.push(url);
                     }
                 }
-                let dados = { nome, descricao: desc, preco: parseFloat(preco), minimo: parseInt(minimo)||1, link_pagamento: link, categoria: cat, evento: evento, emPromocao: emPromocao, preco_promocional: emPromocao ? parseFloat(precoPromo) : null, fotos: listaFinaisUrls };
+                let dados = { nome, descricao: desc, preco: parseFloat(preco), minimo: parseInt(minimo)||1, link_pagamento: link, categoria: cat, evento: evento, em_promocao: emPromocao, preco_promocional: emPromocao ? parseFloat(precoPromo) : null, fotos: listaFinaisUrls };
+                if (new Blob([JSON.stringify(dados)]).size > 850000) throw new Error('Fotos grandes demais para o banco. Use menos fotos ou configure o servidor de imagens.');
                 showLoading("Salvando no sistema...");
                 if(produtoEmEdicaoId){ await updateDoc(doc(db,"produtos",produtoEmEdicaoId), dados); showToast("Produto atualizado com sucesso!", "success"); } 
                 else { dados.ativo = true; dados.arquivado = false; dados.vendas = 0; await addDoc(collection(db,"produtos"), dados); showToast("Produto criado com sucesso!", "success"); }
@@ -879,8 +932,18 @@
         }
         window.fecharFormulario=()=>document.getElementById('form-overlay').style.display='none';
         
-        window.mudarStatusPedido=async(id,s)=>{ const n=s==='Concluído'?'Pendente':'Concluído'; showConfirm(`Deseja alterar o status para ${n}?`, async () => { try { await updateDoc(doc(db,"pedidos",id),{status:n, atualizado_em:new Date().toISOString()}); showToast("Status atualizado!", "info"); } catch(e) { showToast("Erro ao atualizar", "error"); } }, 'info'); }
-        window.apagarPedido=async(id)=>{ showConfirm("Cancelar este pedido? Ele não será apagado do histórico.", async () => { try { await updateDoc(doc(db,"pedidos",id),{status:'Cancelado', atualizado_em:new Date().toISOString()}); showToast("Pedido cancelado e preservado no histórico.", "success"); } catch(e) { showToast("Erro ao cancelar", "error"); } }); }
+        async function administrarPedido(docId, action, fields) {
+            showLoading('Atualizando pedido...');
+            try {
+                const response = await fetch(VERCEL_API_URL.replace('/pix','/admin-order'), {
+                    method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + await auth.currentUser.getIdToken() },
+                    body: JSON.stringify({ docId, action, ...fields }), signal: AbortSignal.timeout(25000)
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Não foi possível atualizar.');
+                showToast('Pedido atualizado.', 'success');
+            } catch(e) { showToast(e.message, 'error'); } finally { hideLoading(); }
+        }
         window.apagarProduto=async(id)=>{ showConfirm("Excluir este produto de verdade? Essa ação remove o item do painel e da loja.", async () => { try { await deleteDoc(doc(db,"produtos",id)); showToast("Produto excluído!", "success"); carregarDados(); } catch(e) { showToast("Erro ao excluir produto", "error"); } }); }
         window.alterarEstoque=async(id,s)=>{ try { await updateDoc(doc(db,"produtos",id),{ativo:s, arquivado:!s, atualizado_em:new Date().toISOString()}); showToast(s ? "Produto ativado e voltou para a loja!" : "Produto pausado e oculto da loja.", "info"); carregarDados(); } catch(e) { showToast("Erro ao alterar estoque", "error"); } }
     </script>

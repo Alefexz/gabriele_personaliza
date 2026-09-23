@@ -2,5 +2,9 @@ User-agent: *
 Allow: /
 Disallow: /admin.html
 Disallow: /painel-gabriele-2026.html
+Disallow: /checkout.html
+Disallow: /meu-pedido.html
+Disallow: /tooling/
+Disallow: /tests/
 
 Sitemap: https://gabrielepersonaliza.com.br/sitemap.xml

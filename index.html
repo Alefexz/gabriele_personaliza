@@ -315,6 +315,7 @@
         @media(max-width:359px) { .product-grid { grid-template-columns:minmax(0,1fr); } }
         @media(prefers-reduced-motion:reduce) { *, *::before, *::after { scroll-behavior:auto !important; animation-duration:0.01ms !important; transition-duration:0.01ms !important; } }
     </style>
+    <link rel="stylesheet" href="/loja-ajustes.css">
 </head>
 <body>
 
@@ -350,6 +351,7 @@
     <section id="loja" class="section-padding store-section" style="margin-top: 80px;">
         <div class="container">
             <h1 class="visually-hidden">Gabriele Personaliza - papelaria criativa e personalizados para festas</h1>
+            <nav class="shop-links" aria-label="Compras"><a href="/checkout.html"><i class="fas fa-shopping-bag"></i> Meu carrinho</a><a href="/meu-pedido.html">Meu pedido</a><a href="/como-comprar.html">Como comprar</a></nav>
             <div class="search-container">
                 <input type="search" id="campo-busca" class="search-input" placeholder="O que você procura hoje?" autocomplete="off" oninput="filtrarPorNome()" onkeyup="filtrarPorNome()">
                 <i class="fas fa-search search-icon"></i>
@@ -436,6 +438,9 @@
                 <a href="https://wa.me/559292770409" target="_blank" rel="noopener" aria-label="WhatsApp da Gabriele Personaliza"><i class="fab fa-whatsapp"></i></a>
             </div>
             <nav class="legal-links" aria-label="Informações legais">
+                <a href="/checkout.html">Meu carrinho</a>
+                <a href="/meu-pedido.html">Meu pedido</a>
+                <a href="/como-comprar.html">Como comprar</a>
                 <a href="/privacidade.html">Política de privacidade</a>
                 <a href="/termos.html">Termos de uso</a>
                 <button type="button" onclick="abrirPreferencias()">Preferências de cookies</button>
@@ -453,15 +458,17 @@
         <i class="fab fa-whatsapp"></i>
     </a>
 
-    <nav class="mobile-bottom-nav">
+    <nav class="mobile-bottom-nav" aria-label="Navegação móvel">
+        <a href="/checkout.html" class="nav-item"><i class="fas fa-shopping-bag"></i><span>Carrinho</span></a>
+        <a href="/meu-pedido.html" class="nav-item"><i class="fas fa-box"></i><span>Pedido</span></a>
         <a href="#home" class="nav-item active" onclick="window.scrollTo({top: 0, behavior: 'smooth'});"><i class="fas fa-home"></i><span>Início</span></a>
         <a href="javascript:void(0)" class="nav-item" onclick="focarBuscaMobile()"><i class="fas fa-search"></i><span>Busca</span></a>
         <a href="javascript:void(0)" class="nav-item" onclick="focarCategoriasMobile()"><i class="fas fa-th-large"></i><span>Categorias</span></a>
     </nav>
 
-    <div id="modal-produto" class="modal-produto-overlay">
+    <div id="modal-produto" class="modal-produto-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
         <div class="modal-content">
-            <i class="fas fa-times close-modal" onclick="fecharModal()"></i>
+            <button type="button" class="close-modal" onclick="fecharModal()" aria-label="Fechar produto"><i class="fas fa-times"></i></button>
             <div id="modal-etapa-1">
                 <div id="modal-imagens" class="modal-img-container"></div>
                 
@@ -499,34 +506,18 @@
                         </div>
                         <div class="input-group">
                             <label>Data da festa/evento</label>
-                            <input type="text" id="pedido-data-evento" placeholder="Ex: 20/07/2026">
+                            <input type="date" id="pedido-data-evento">
                         </div>
                     </div>
 
                     <div class="qtd-wrapper"><div class="qtd-controls"><button class="btn-qtd" onclick="mudarQtd(-1)">-</button><span id="qtd-numero" class="qtd-display">1</span><button class="btn-qtd" onclick="mudarQtd(1)">+</button></div><div id="total-final" class="total-price">Total: R$ 0,00</div></div>
                     
-                    <div class="input-group"><label>Seu Nome *</label><input type="text" id="cliente-nome" placeholder="Como podemos te chamar?"></div>
-                    <div class="input-group"><label>Seu WhatsApp *</label><input type="tel" id="cliente-zap" placeholder="Seu número com DDD"></div>
                     
-                    <div class="termos-box" id="box-termos"><input type="checkbox" id="check-termos"><label class="termos-text" for="check-termos">Estou ciente do pagamento de <strong>50% de entrada</strong> para iniciar a produção e dos <a href="/termos.html" target="_blank" rel="noopener">termos de compra</a>.<br><span style="font-size:0.75rem;">Cancelamentos e reembolsos respeitam os direitos previstos em lei. Consulte a <a href="/privacidade.html" target="_blank" rel="noopener">Política de privacidade</a>.</span></label></div>
                     <div id="aviso-valor-pix" style="text-align:center; margin-bottom: 10px; font-weight: bold; color: #E91E63; background: #FCE4EC; padding: 10px; border-radius: 12px; border: 1px dashed #F8BBD0; display: none;">O Pix será gerado no valor de <span>R$ 0,00</span> (50% de entrada)</div>
                     
-                    <button id="btn-gerar-pix" class="btn-cartao" style="background:#009EE3" onclick="iniciarPagamentoPix()"><i class="fas fa-qrcode"></i> Pagar Agora via Pix</button>
-                    <p style="text-align:center; font-size:0.8rem; color:#888; margin:5px 0;">- OU -</p>
+                    <button id="btn-gerar-pix" class="btn-cartao" style="background:#009EE3" onclick="iniciarPagamentoPix()"><i class="fas fa-shopping-bag"></i> Revisar e comprar no site</button>
+                    <button type="button" class="btn-cartao" onclick="adicionarAoCarrinho()"><i class="fas fa-cart-plus"></i> Adicionar ao carrinho</button>
                     <button class="btn-comprar" onclick="finalizarPedidoZap()"><i class="fab fa-whatsapp"></i> Pedir pelo WhatsApp</button>
-                </div>
-            </div>
-            <div id="modal-etapa-2" class="pix-checkout-container">
-                <div class="pix-title"><i class="fab fa-pix"></i> Pagamento Seguro</div>
-                <p style="color:#666; font-size:0.9rem; margin-bottom:5px;">Escaneie o código ou copie a chave para pagar no app do seu banco.</p>
-                <p style="color:#E91E63; font-weight:bold; font-size:1.1rem; margin-bottom:15px;" id="pix-valor-display">Valor a pagar: R$ 0,00</p>
-                <div id="pix-loading"><div class="loader-pix"></div><p>Gerando seu QR Code...</p></div>
-                <div id="pix-conteudo" style="display:none;">
-                    <div class="qr-code-box"><img id="pix-qr-img" src="" class="qr-code-img"></div>
-                    <div class="copia-cola-box"><input type="text" id="pix-copia-cola" class="copia-cola-input" readonly><button class="btn-copiar" onclick="copiarPix()"><i class="fas fa-copy"></i> Copiar</button></div>
-                    <div class="timer-box"><span class="timer-text">Pague em até:</span><span id="pix-timer">05:00</span></div>
-                    <button class="btn-comprar" onclick="confirmarPixManual()" style="margin-top: 10px; background:#25D366"><i class="fab fa-whatsapp"></i> Já Paguei! Enviar Comprovante</button>
-                    <button class="btn-cartao" onclick="voltarEtapa1()" style="margin-top: 10px; background:#f44336"><i class="fas fa-arrow-left"></i> Cancelar Pedido</button>
                 </div>
             </div>
         </div>
@@ -548,21 +539,21 @@
     </div>
 
     <div id="custom-alert"><div class="alert-box"><i class="fas fa-exclamation-circle alert-icon"></i><div class="alert-title">Atenção</div><p class="alert-msg" id="msg-alerta">Mensagem</p><button class="alert-btn" onclick="fecharAlerta()">Entendi</button></div></div>
-    <div id="modal-sucesso"><div class="sucesso-card"><i class="fas fa-check-circle" style="font-size: 3rem; color: #2E7D32; margin-bottom: 20px;"></i><h3>Pagamento Concluído!</h3><div class="pedido-id" id="sucesso-id">#1234</div><p style="margin-top:20px; font-size:0.9rem; color:#666">Recebemos seu Pix de entrada. Envie este código no WhatsApp para combinarmos os detalhes da arte.</p><button class="btn-comprar" onclick="fecharSucesso()" style="margin-top:20px"><i class="fab fa-whatsapp"></i> Falar com Gabriele</button></div></div>
     <div id="fullscreen-overlay" onclick="fecharImagemCheia()"><span class="close-fullscreen">&times;</span><img id="fullscreen-img" src=""></div>
 
-    <script src="script.js?v=28"></script>
+    <script src="script.js?v=29"></script>
 
     <script type="module">
+        import { addItem, track } from "./loja-pedidos.js";
+        import { productPages } from "./produtos/manifest.js";
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, onSnapshot, doc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         
         const firebaseConfig = { apiKey: "AIzaSyBrRLiEFF8dfWHVxhK3popdYgEDQLiKzCM", authDomain: "gabriele-personaliza.firebaseapp.com", projectId: "gabriele-personaliza", storageBucket: "gabriele-personaliza.firebasestorage.app", messagingSenderId: "403724311605", appId: "1:403724311605:web:850e1bb14459a3ec60e57c", measurementId: "G-T24GYM57CT" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         
-        let todosProdutos = []; let produtoAtual = {}, qtdAtual = 1, minimoAtual = 1; let timerInterval; let pedidoAtualIdVisual = ""; let listenerPagamento = null; let pedidoPixPendenteId = null;
-        const VERCEL_API_URL = "https://backand-gabrielepersonaliza.vercel.app/api/pix";
+        let todosProdutos = []; let produtoAtual = {}, qtdAtual = 1, minimoAtual = 1;
 
         window.focarBuscaMobile = () => { const input = document.getElementById('campo-busca'); window.scrollTo({ top: input.offsetTop - 120, behavior: 'smooth' }); setTimeout(() => input.focus(), 400); }
         window.focarCategoriasMobile = () => { const cat = document.querySelector('.filter-container'); window.scrollTo({ top: cat.offsetTop - 100, behavior: 'smooth' }); }
@@ -627,6 +618,7 @@
             const mostrarSlide = (index) => {
                 ativo = (index + slides.length) % slides.length;
                 track.style.transform = `translateX(-${ativo * 100}%)`;
+                slides.forEach((slide, i) => { slide.inert = i !== ativo; slide.setAttribute('aria-hidden', i !== ativo); });
                 dotsContainer.querySelectorAll('.marketing-dot').forEach((dot, i) => {
                     dot.classList.toggle('active', i === ativo);
                     dot.setAttribute('aria-current', i === ativo ? 'true' : 'false');
@@ -644,7 +636,7 @@
 
             mostrarSlide(0);
             if (window.marketingBannerInterval) clearInterval(window.marketingBannerInterval);
-            window.marketingBannerInterval = setInterval(() => mostrarSlide(ativo + 1), 5000);
+            // Slides change only on request, preserving keyboard focus and reduced-motion preferences.
         }
         window.mostrarAlerta = (msg) => { document.getElementById('msg-alerta').innerText = msg; document.getElementById('custom-alert').style.display = 'flex'; }
         window.fecharAlerta = () => document.getElementById('custom-alert').style.display = 'none';
@@ -720,7 +712,7 @@
             if (produtosEmCache.length) {
                 todosProdutos = produtosEmCache;
                 atualizarContadoresFiltros(todosProdutos);
-                aplicarFiltros(filtroInicial);
+                aplicarFiltros(categoriaAtual === 'todos' ? filtroInicial : categoriaAtual);
                 fecharLoaderRapido();
             } else {
                 mostrarSkeleton();
@@ -748,7 +740,7 @@
                         // 3. Dá 1 segundo de vantagem para a foto do modal carregar sozinha
                         setTimeout(() => {
                             atualizarContadoresFiltros(todosProdutos);
-                            aplicarFiltros(filtroInicial);
+                            aplicarFiltros(categoriaAtual === 'todos' ? filtroInicial : categoriaAtual);
                         }, 1000); 
                         
                         return; // Encerra a função aqui
@@ -757,7 +749,7 @@
 
                 // FLUXO NORMAL
                 atualizarContadoresFiltros(todosProdutos);
-                aplicarFiltros(filtroInicial);
+                aplicarFiltros(categoriaAtual === 'todos' ? filtroInicial : categoriaAtual);
                 fecharLoaderRapido();
                 
             } catch(e) { 
@@ -767,41 +759,25 @@
             }
         }
 
-        window.aplicarFiltros = (categoria) => {
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active'); let isActive = false; let b = btn.innerText.toLowerCase();
-                if (categoria === 'todos' && b === 'todos') isActive = true;
-                if (categoria === 'promocao' && b.includes('promoçõe')) isActive = true;
-                if (categoria === 'kitfestas' && b.includes('kit festas')) isActive = true;
-                if (categoria === 'comemorativas' && b.includes('comemorativas')) isActive = true;
-                if (categoria === 'cadernos' && b.includes('cadernos')) isActive = true;
-                if (categoria === 'mimos' && b.includes('mimos')) isActive = true;
-                if (categoria === 'lembrancas' && b.includes('lembranças')) isActive = true;
-                if(isActive) btn.classList.add('active');
-            });
-            const filtrados = todosProdutos.filter(p => {
-                if (categoria === 'todos') return true;
-                if (categoria === 'promocao') return p.em_promocao && p.ativo;
-                if (categoria === 'kitfestas') return p.categoria === 'kitfestas' || p.categoria === 'festa';
-                if (categoria === 'lembrancas') return p.categoria === 'lembrancas' || p.categoria === 'simples' || p.categoria === 'semiluxo';
-                return p.categoria === categoria;
-            });
-            renderizarCards(filtrados, "Nenhum produto encontrado.", categoria);
-        }
-
-        window.filtrarPorNome = () => {
+        let categoriaAtual = 'todos';
+        function filtrarCatalogo() {
             const termo = normalizarBusca(document.getElementById('campo-busca').value);
-            const filtrados = todosProdutos.filter(p => {
-                const textoProduto = normalizarBusca([
-                    p.nome,
-                    p.descricao,
-                    p.evento,
-                    rotuloCategoria(p)
-                ].filter(Boolean).join(' '));
-                return textoProduto.includes(termo);
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.filter === categoriaAtual);
+                b.setAttribute('aria-pressed', b.dataset.filter === categoriaAtual ? 'true' : 'false');
             });
-            renderizarCards(filtrados, termo !== "" ? "Nenhum produto encontrado." : "Nenhum produto encontrado.", 'busca');
+            const list = todosProdutos.filter(p => {
+                const c = categoriaAtual;
+                const category = c === 'todos' || (c === 'promocao' && p.em_promocao) ||
+                    (c === 'kitfestas' && ['kitfestas','festa'].includes(p.categoria)) ||
+                    (c === 'lembrancas' && ['lembrancas','simples','semiluxo'].includes(p.categoria)) ||
+                    p.categoria === c;
+                return category && normalizarBusca([p.nome,p.descricao,p.evento,rotuloCategoria(p)].join(' ')).includes(termo);
+            });
+            renderizarCards(list, 'Nenhum produto encontrado.', termo ? 'busca' : categoriaAtual);
         }
+        window.aplicarFiltros = categoria => { categoriaAtual = categoria; filtrarCatalogo(); };
+        window.filtrarPorNome = filtrarCatalogo;
 
         function criarCardProduto(p) {
             let listaImagens = (p.fotos && p.fotos.length > 0) ? p.fotos : (p.foto ? [p.foto] : []);
@@ -834,6 +810,12 @@
                 img.addEventListener('error', () => substituirImagemQuebrada(img, p.nome));
             });
             if(p.ativo) card.onclick = () => abrirModal(p);
+            const pageLink = document.createElement('a');
+            pageLink.href = '/produtos/' + encodeURIComponent(p.id) + '.html';
+            pageLink.className = 'product-page-link';
+            pageLink.textContent = 'Página do produto';
+            pageLink.addEventListener('click', e => e.stopPropagation());
+            if (productPages.has(p.id)) card.querySelector('.product-info').append(pageLink);
             return card;
         }
 
@@ -885,31 +867,40 @@
                 });
                 if (deveMostrarSobMedida && !cardSobMedida.isConnected) containerProdutos.appendChild(cardSobMedida);
             }
+            document.querySelectorAll('.product-grid img.carousel-img.active').forEach((img,i) => { if(i < 4) { img.loading = 'eager'; img.fetchPriority = i === 0 ? 'high' : 'auto'; } });
             iniciarCarrossel();
         }
 
         function iniciarCarrossel() {
             if(window.carrosselInterval) clearInterval(window.carrosselInterval);
-            window.carrosselInterval = setInterval(() => {
-                document.querySelectorAll('.carousel-container').forEach(c => {
-                    const imgs = c.querySelectorAll('.carousel-img'); if (imgs.length <= 1) return;
-                    let active = 0; imgs.forEach((img, i) => { if(img.classList.contains('active')) active = i; img.classList.remove('active'); });
-                    imgs[(active + 1) % imgs.length].classList.add('active');
-                });
-            }, 3000);
+            return;
+
         }
 
+        let modalFocusOrigin = null;
+        document.addEventListener('keydown', e => {
+            const modal = document.getElementById('modal-produto');
+            if (modal.style.display !== 'flex') return;
+            if (e.key === 'Escape') { e.preventDefault(); fecharModal(); }
+            if (e.key === 'Tab') {
+                const nodes = [...modal.querySelectorAll('button,a[href],input,select,textarea,[tabindex="0"]')].filter(n => n.offsetParent !== null && !n.disabled);
+                const first = nodes[0], last = nodes[nodes.length - 1];
+                if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
+                if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
+            }
+        });
         window.abrirModal = (p) => {
+            modalFocusOrigin = document.activeElement;
+            document.body.style.overflow = 'hidden';
+            track('view_item', { items: [{ item_id: p.id, item_name: p.nome }] });
             produtoAtual = p; minimoAtual = p.minimo || 1; qtdAtual = minimoAtual; 
-            document.getElementById('modal-etapa-1').style.display = 'block'; document.getElementById('modal-etapa-2').style.display = 'none';
-            if(timerInterval) clearInterval(timerInterval); if(listenerPagamento) { listenerPagamento(); listenerPagamento = null; }
+            document.getElementById('modal-etapa-1').style.display = 'block';
             document.getElementById('modal-produto').style.display = 'flex'; document.getElementById('modal-titulo').innerText = p.nome;
             let priceHtmlModal = formatarMoeda(p.preco); if (p.em_promocao && p.preco_promocional > 0) priceHtmlModal = `<span class="original-price">${formatarMoeda(p.preco)}</span> <span class="promo-price">${formatarMoeda(p.preco_promocional)}</span>`;
             document.getElementById('modal-preco-container').innerHTML = priceHtmlModal; document.getElementById('modal-descricao').innerText = p.descricao || "";
-            document.getElementById('check-termos').checked = false; document.getElementById('box-termos').style.border = "1px solid #FFCC80"; 
             
-            document.getElementById('cliente-nome').value = localStorage.getItem('gabriele_nome') || '';
-            document.getElementById('cliente-zap').value = localStorage.getItem('gabriele_zap') || '';
+            try { localStorage.removeItem('gabriele_nome'); localStorage.removeItem('gabriele_zap'); } catch (_) {}
+
             document.getElementById('pedido-tema').value = '';
             document.getElementById('pedido-nome-arte').value = '';
             document.getElementById('pedido-idade').value = '';
@@ -934,6 +925,7 @@
                 }
             });
             atualizarUI();
+            document.querySelector('#modal-produto .close-modal').focus();
         }
 
         window.mudarQtd = (delta) => { let novaQtd = qtdAtual + delta; if (novaQtd >= minimoAtual) { qtdAtual = novaQtd; atualizarUI(); } }
@@ -947,116 +939,43 @@
         }
 
         window.fecharModal = async () => { 
-            document.getElementById('modal-produto').style.display = 'none'; if(timerInterval) clearInterval(timerInterval); if(listenerPagamento) { listenerPagamento(); listenerPagamento = null; }
-            if (pedidoPixPendenteId) { try { await updateDoc(doc(db, "pedidos", pedidoPixPendenteId), { status: 'Cancelado' }); } catch(e) { } pedidoPixPendenteId = null; }
+            document.getElementById('modal-produto').style.display = 'none';
             
-            window.history.pushState(null, null, ' ');
+            document.body.style.overflow = '';
+            modalFocusOrigin?.focus();
+            window.history.replaceState(null, null, location.pathname);
             document.getElementById('btn-flutuante-zap').style.display = 'flex';
         }
 
-        window.voltarEtapa1 = async () => { 
-            document.getElementById('modal-etapa-2').style.display = 'none'; document.getElementById('modal-etapa-1').style.display = 'block'; if(timerInterval) clearInterval(timerInterval); if(listenerPagamento) { listenerPagamento(); listenerPagamento = null; }
-            if (pedidoPixPendenteId) { try { await updateDoc(doc(db, "pedidos", pedidoPixPendenteId), { status: 'Cancelado' }); } catch(e) { } pedidoPixPendenteId = null; }
+        function personalizacaoAtual() {
+            return { theme: document.getElementById('pedido-tema').value.trim(),
+                name: document.getElementById('pedido-nome-arte').value.trim(),
+                age: document.getElementById('pedido-idade').value.trim(),
+                date: document.getElementById('pedido-data-evento').value };
         }
-
-        function validarTermos() {
-            const check = document.getElementById('check-termos');
-            if(!check.checked) { mostrarAlerta("Para continuar, você precisa confirmar que concorda com a regra de 50% de entrada."); const box = document.getElementById('box-termos'); box.style.border = "2px solid #F44336"; box.style.animation = "shake 0.5s"; setTimeout(() => box.style.animation = "none", 500); return false; } return true;
-        }
-
-        function compilarDetalhesPersonalizacao() {
-            const tema = document.getElementById('pedido-tema').value.trim();
-            const nomeArte = document.getElementById('pedido-nome-arte').value.trim();
-            const idade = document.getElementById('pedido-idade').value.trim();
-            let detalhes = "";
-            if(tema || nomeArte || idade) {
-                detalhes += "\n📋 *Detalhes da Arte:*";
-                if(tema) detalhes += `\n- Tema/Cores: ${tema}`;
-                if(nomeArte) detalhes += `\n- Nome na arte: ${nomeArte}`;
-                if(idade) detalhes += `\n- Idade: ${idade}`;
-            }
-            return detalhes;
-        }
-
-        function montarMensagemPedido(nome, id, total, detalhesPers) {
-            const dataEvento = document.getElementById('pedido-data-evento')?.value.trim();
-            const prazoExtra = dataEvento ? `\nData da festa/evento: ${dataEvento}` : '';
-            return `Olá, Gabriele! Sou *${nome}*.\n\nVim pelo catálogo e quero fazer o pedido *${id}*:\n${qtdAtual}x *${produtoAtual.nome}*${detalhesPers}${prazoExtra}\n\nTotal do pedido: *${formatarMoeda(total)}*.\n\n✅ Li e concordo com os 50% de entrada.\nPode me confirmar prazo de produção, retirada/entrega e a chave Pix?`;
-        }
-
-        async function registrarPedidoDb(origem) {
-            const nome = document.getElementById('cliente-nome').value; const zap = document.getElementById('cliente-zap').value;
-            if(!nome || !zap) { mostrarAlerta("Por favor, preencha seu Nome e WhatsApp!"); return null; }
-            
-            localStorage.setItem('gabriele_nome', nome);
-            localStorage.setItem('gabriele_zap', zap);
-
-            const detalhesPers = compilarDetalhesPersonalizacao();
-            pedidoAtualIdVisual = '#' + Math.random().toString(36).substr(2, 4).toUpperCase();
-            
+        window.adicionarAoCarrinho = () => {
             try {
-                let precoEfetivo = (produtoAtual.em_promocao && produtoAtual.preco_promocional > 0) ? produtoAtual.preco_promocional : produtoAtual.preco;
-                let total = precoEfetivo * qtdAtual; let valorCobrar = total / 2;
-                const docRef = await addDoc(collection(db, "pedidos"), { id_visual: pedidoAtualIdVisual, cliente: nome, whatsapp: zap, produto: `${produtoAtual.nome} (x${qtdAtual}) ${detalhesPers}`, total: total, data: new Date().toISOString(), status: 'Aguardando Pagamento', origem });
-                return { id_visual: pedidoAtualIdVisual, valor: valorCobrar, docId: docRef.id, detalhesPers: detalhesPers };
-            } catch(e) { mostrarAlerta("Erro: " + e.message); return null; }
-        }
+                addItem(produtoAtual, qtdAtual, personalizacaoAtual());
+                fecharModal();
+                mostrarAlerta("Produto adicionado ao carrinho. Continue escolhendo ou abra Meu carrinho para revisar.");
+            } catch (e) { mostrarAlerta(e.message); }
+        };
+        window.iniciarPagamentoPix = () => {
+            try { addItem(produtoAtual, qtdAtual, personalizacaoAtual()); location.href = '/checkout.html'; }
+            catch(e) { mostrarAlerta(e.message); }
+        };
+        window.finalizarPedidoZap = () => {
+            const details = personalizacaoAtual();
+            const msg = 'Olá! Gostaria de um orçamento para ' + qtdAtual + 'x ' + produtoAtual.nome +
+                '. Personalização: ' + [details.theme, details.name, details.age, details.date].filter(Boolean).join('; ') +
+                '. Podemos confirmar prazo, entrega ou retirada e valor?';
+            track('contact', { method: 'WhatsApp' });
+            window.open('https://wa.me/559292770409?text=' + encodeURIComponent(msg), '_blank', 'noopener');
+        };
 
-        window.iniciarPagamentoPix = async () => {
-            if(!validarTermos()) return; const dadosPedido = await registrarPedidoDb('Site Pix'); if(!dadosPedido) return;
-            pedidoPixPendenteId = dadosPedido.docId;
-            document.getElementById('pix-valor-display').innerText = `Valor da entrada: ${formatarMoeda(dadosPedido.valor)}`; document.getElementById('modal-etapa-1').style.display = 'none'; document.getElementById('modal-etapa-2').style.display = 'block'; document.getElementById('pix-loading').style.display = 'block'; document.getElementById('pix-conteudo').style.display = 'none';
-            try {
-                const response = await fetch(VERCEL_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ valor: dadosPedido.valor.toFixed(2), descricao: `Entrada: ${produtoAtual.nome} - Pedido ${dadosPedido.id_visual}`, docId: dadosPedido.docId }) });
-                const data = await response.json();
-                if(response.ok && data.qr_code_base64) {
-                    document.getElementById('pix-qr-img').src = `data:image/jpeg;base64,${data.qr_code_base64}`; document.getElementById('pix-copia-cola').value = data.qr_code; document.getElementById('pix-loading').style.display = 'none'; document.getElementById('pix-conteudo').style.display = 'block'; iniciarTimer();
-                    if(listenerPagamento) listenerPagamento();
-                    listenerPagamento = onSnapshot(doc(db, "pedidos", dadosPedido.docId), (docSnap) => { if (docSnap.exists() && docSnap.data().status === 'Concluído') { pedidoPixPendenteId = null; clearInterval(timerInterval); document.getElementById('modal-produto').style.display = 'none'; document.getElementById('sucesso-id').innerText = dadosPedido.id_visual; document.getElementById('modal-sucesso').style.display = 'flex'; if(listenerPagamento) listenerPagamento(); } });
-                } else { throw new Error("Erro na Vercel: " + (data.error || "Desconhecido")); }
-            } catch(erro) { console.error(erro); mostrarAlerta("Desculpe, o sistema Pix está indisponível no momento. Por favor, faça o pedido pelo WhatsApp."); voltarEtapa1(); }
-        }
-
-        window.copiarPix = () => {
-            const input = document.getElementById('pix-copia-cola'); input.select(); input.setSelectionRange(0, 99999); navigator.clipboard.writeText(input.value);
-            const btn = document.querySelector('.btn-copiar'); btn.innerHTML = '<i class="fas fa-check"></i> Copiado!'; btn.style.background = '#25D366'; setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Copiar'; btn.style.background = '#009EE3'; }, 2000);
-        }
-
-        function iniciarTimer() {
-            let tempo = 5 * 60; const display = document.getElementById('pix-timer'); if(timerInterval) clearInterval(timerInterval);
-            timerInterval = setInterval(async () => {
-                let minutos = parseInt(tempo / 60, 10); let segundos = parseInt(tempo % 60, 10); minutos = minutos < 10 ? "0" + minutos : minutos; segundos = segundos < 10 ? "0" + segundos : segundos; display.textContent = minutos + ":" + segundos;
-                if (--tempo < 0) { clearInterval(timerInterval); display.textContent = "Expirado"; if (pedidoPixPendenteId) { try { await updateDoc(doc(db, "pedidos", pedidoPixPendenteId), { status: 'Cancelado' }); } catch(e) { } pedidoPixPendenteId = null; } mostrarAlerta("O tempo do Pix expirou. Por favor, gere um novo pedido ou chame no WhatsApp."); }
-            }, 1000);
-        }
-
-        window.confirmarPixManual = async () => {
-            if (pedidoPixPendenteId) { try { await updateDoc(doc(db, "pedidos", pedidoPixPendenteId), { status: 'Pendente' }); } catch(e) { } pedidoPixPendenteId = null;  }
-            document.getElementById('modal-produto').style.display = 'none'; const nome = document.getElementById('cliente-nome').value; let total = (produtoAtual.em_promocao && produtoAtual.preco_promocional > 0) ? produtoAtual.preco_promocional : produtoAtual.preco; total = total * qtdAtual;
-            
-            const detalhesPers = compilarDetalhesPersonalizacao();
-            
-            const msg = `✅ *Pagamento Realizado!*\n\nOlá, sou *${nome}*.\nFiz o Pix de 50% de entrada referente ao Pedido *${pedidoAtualIdVisual}*.\nProduto: ${qtdAtual}x *${produtoAtual.nome}*${detalhesPers}\nTotal do pedido: ${formatarMoeda(total)}.\n\nSegue o comprovante abaixo:`; window.open(`https://wa.me/559292770409?text=${encodeURIComponent(msg)}`, '_blank');
-        }
-
-        window.finalizarPedidoZap = async () => {
-            if(!validarTermos()) return; const nome = document.getElementById('cliente-nome').value; const zap = document.getElementById('cliente-zap').value; if(!nome || !zap) { mostrarAlerta("Por favor, preencha seu Nome e WhatsApp!"); return; }
-            
-            localStorage.setItem('gabriele_nome', nome);
-            localStorage.setItem('gabriele_zap', zap);
-
-            const detalhesPers = compilarDetalhesPersonalizacao();
-
-            const id = '#' + Math.random().toString(36).substr(2, 4).toUpperCase(); let precoEfetivo = (produtoAtual.em_promocao && produtoAtual.preco_promocional > 0) ? produtoAtual.preco_promocional : produtoAtual.preco; let total = precoEfetivo * qtdAtual;
-            await addDoc(collection(db, "pedidos"), { id_visual: id, cliente: nome, whatsapp: zap, produto: `${produtoAtual.nome} (x${qtdAtual}) ${detalhesPers}`, total: total, data: new Date().toISOString(), status: 'Pendente', origem: 'WhatsApp' });
-            
-            const msg = montarMensagemPedido(nome, id, total, detalhesPers); window.open(`https://wa.me/559292770409?text=${encodeURIComponent(msg)}`, '_blank'); fecharModal();
-        }
-
-        window.fecharSucesso = () => { const id = document.getElementById('sucesso-id').innerText; const msg = `Olá! Meu pedido *${id}* já foi pago e aprovado pelo site. Podemos combinar os detalhes da arte?`; window.open(`https://wa.me/559292770409?text=${encodeURIComponent(msg)}`, '_blank'); document.getElementById('modal-sucesso').style.display = 'none'; }
         
         window.compartilharProduto = async () => { 
-            const linkProduto = window.location.href; 
+            const linkProduto = location.origin + (productPages.has(produtoAtual.id) ? '/produtos/' + encodeURIComponent(produtoAtual.id) + '.html' : '/#produto=' + encodeURIComponent(produtoAtual.id));
             if (navigator.share) { try { await navigator.share({ title: `Olha que lindo: ${produtoAtual.nome}`, text: `Achei esse ${produtoAtual.nome} na Gabriele Personaliza!`, url: linkProduto }); } catch (err) {} } else { mostrarAlerta("Link do produto copiado com sucesso!"); navigator.clipboard.writeText(linkProduto); } 
         }
         
@@ -1065,6 +984,10 @@
             navigator.serviceWorker.register('/sw.js').catch(() => {});
         }
 
+        document.querySelectorAll('.input-group label').forEach(label => {
+            const input = label.parentElement.querySelector('input');
+            if (input) label.htmlFor = input.id;
+        });
         aplicarTemaSutil(); iniciarBannerMarketing(); carregarLoja();
     </script>
 </body>

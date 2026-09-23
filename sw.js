@@ -1,9 +1,9 @@
-const CACHE_NAME = 'gabriele-personaliza-v3';
+const CACHE_NAME = 'gabriele-personaliza-v4';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/style.css?v=12',
-  '/script.js?v=28',
+  '/script.js?v=29',
   '/manifest.webmanifest',
   '/assets/img/favicon-64.png',
   '/assets/img/icon-192.png',

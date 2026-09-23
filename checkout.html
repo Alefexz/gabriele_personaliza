@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Seu pedido | Gabriele Personaliza</title><meta name="description" content="Revise seus personalizados, quantidades e entrada antes de concluir seu pedido na Gabriele Personaliza, em Manacapuru."><meta name="robots" content="noindex,follow"><meta name="referrer" content="no-referrer"><link rel="icon" href="/assets/img/favicon-64.png"><link rel="stylesheet" href="/paginas.css"><link rel="stylesheet" href="/checkout.css"><script src="/privacidade.js" defer></script><script type="module" src="/checkout.js"></script></head>
+<body><header><a class="brand" href="/">Gabriele Personaliza</a><nav><a href="/">Continuar comprando</a> · <a href="/meu-pedido.html">Meu pedido</a></nav></header>
+<main class="checkout"><h1>Seu pedido</h1><p>Personalizados feitos em Manacapuru-AM.</p><p id="message" class="error" role="alert"></p>
+<div class="checkout-layout"><section aria-labelledby="items-title"><h2 id="items-title">Produtos e personalização</h2><div id="cart"></div><p class="notice">Produção habitual de 7 a 15 dias úteis. A data final, o local de retirada e o vencimento do saldo precisam ser combinados antes do pagamento.</p></section>
+<section><h2>Dados da encomenda</h2><form id="checkout-form">
+<label for="name">Nome completo</label><input id="name" name="name" autocomplete="name" required maxlength="80">
+<label for="phone">WhatsApp com DDD</label><input id="phone" name="phone" type="tel" autocomplete="tel" required maxlength="30">
+<label for="email">E-mail do pagador</label><input id="email" name="email" type="email" autocomplete="email" required maxlength="160">
+<label for="delivery">Recebimento</label><select id="delivery"><option value="retirada">Retirada combinada em Manacapuru</option value="entrega">Quero combinar uma entrega</option></select>
+<p id="delivery-note" class="muted">Não há frete incluído. Para entrega, solicite a cotação antes de pagar.</p>
+<label class="check-label"><input id="terms" type="checkbox" required><span>Concordo com os <a href="/termos.html" target="_blank" rel="noopener">termos de compra</a>, a entrada de 50% e a <a href="/privacidade.html" target="_blank" rel="noopener">política de privacidade</a>.</span></label>
+<label class="check-label"><input id="arranged" type="checkbox" required><span>Já combinei com a loja o prazo, a retirada e o vencimento do saldo. Ainda não combinou? <a href="https://wa.me/559292770409" target="_blank" rel="noopener">Consultar disponibilidade</a>.</span></label>
+<div class="summary" id="estimate"></div><button id="review" type="submit">Revisar valor atualizado</button>
+</form><section id="review-panel" hidden aria-live="polite"><h2>Confira antes de pagar</h2><div id="confirmed"></div><p>Entrada via Pix processada pelo Mercado Pago. A confirmação virá do processador, não de um comprovante enviado.</p><div class="actions"><button id="pay" type="button">Gerar Pix da entrada</button><button id="edit" type="button" class="secondary">Editar pedido</button></div><a id="tracking" href="/meu-pedido.html">Acompanhar este pedido</a></section></section></div>
+</main><footer><a href="/como-comprar.html">Como comprar</a><a href="/privacidade.html">Privacidade</a><a href="/termos.html">Termos de compra</a><span>Manacapuru-AM</span></footer></body></html>
+
